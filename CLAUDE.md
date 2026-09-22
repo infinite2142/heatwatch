@@ -1,7 +1,15 @@
 # HeatWatch — public site repo
 
-Deployed to Cloudflare Workers static assets from the mini, not from CI.
-Private repo on GitHub; the *content* is public, the repo is not.
+Published to GitHub Pages from `master`, built on the mini and committed, not
+built in CI. The Cloudflare Workers move is deferred until the site has been
+evaluated; when it happens, Pages retires rather than running alongside.
+
+Public repo on GitHub: both the *content* and the generator source are public.
+`heatwatch-core` is private and stays private.
+
+Pages serves exactly one file. `.github/workflows/pages.yml` stages `index.html`
+into an empty directory and uploads only that, so the repo being public does not
+mean the repo root is *served*. A new runtime asset needs a `cp` line there.
 
 ## The one rule
 
@@ -39,4 +47,6 @@ repo's deploy bundle — that separation is the point, not a convenience.
 - Standard library only. A third-party import is what broke the MarketWatch
   fetch for five days.
 - Everything inlined, no external requests except the Google Fonts stylesheet.
-- Deploy surface controlled by `.assetsignore`, deny-by-default.
+- Deploy surface is deny-by-default and always an allowlist. On Pages that is
+  the staging step in `pages.yml`; on Cloudflare it becomes `.assetsignore`.
+  The mechanism changes, the rule does not.

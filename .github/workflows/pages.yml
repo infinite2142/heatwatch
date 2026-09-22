@@ -1,0 +1,56 @@
+name: Publish HeatWatch to Pages
+
+# The page is built on the mini and committed; this workflow only publishes it.
+# It never writes to the repo -- a second writer is how MarketWatch lost a day.
+#
+# Deny-by-default publish surface, the same principle as .assetsignore on the
+# Cloudflare side: the artifact is staged from an empty directory and gets
+# index.html and nothing else. Publishing the repo root instead would serve
+# generate_site.py and CLAUDE.md as well. Adding a runtime asset later means
+# adding a cp line here, or it silently 404s.
+on:
+  push:
+    branches: [master]
+    paths:
+      - index.html
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Two pushes minutes apart both queue on this group. The page is regenerated
+# from scratch every run, so newest-wins is always correct here.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage the publish surface
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+          echo "publishing:"; ls -la _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
