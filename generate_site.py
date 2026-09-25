@@ -416,6 +416,7 @@ def head(title,desc):
     return f"""<!doctype html><html lang="en" data-theme="light"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}">
+<link rel="icon" href="{globe.favicon()}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -1148,8 +1149,6 @@ def page_sector(state, slug, title, key, nav, dl):
 {hero(title, lede, "Sector detail", dl)}
 {topbar(slug, title, nav)}
 <div class="wrap">
-{('<section class="card"><span class="kicker">Key numbers</span><h2>The numbers</h2>'
-  + metrics_html(state) + '</section>') if metrics_html(state) else ''}
 <section class="card">
   <span class="kicker">Current</span>
   <h2>Headlines — {esc(title.split(" ")[0].lower())}</h2>

@@ -3,6 +3,7 @@ SVG with no external requests. Geometry from world_paths.json (Natural Earth 110
 public domain) by inverting its Robinson projection back to lat/lon -- parameters
 fitted and validated to sub-degree longitude accuracy (see globe_params.json)."""
 import json, math, os, re
+import urllib.parse
 
 NUM = re.compile(r'-?\d+(?:\.\d+)?')
 TBL = [(0,1.0000,0.0000),(5,.9986,.0620),(10,.9954,.1240),(15,.9900,.1860),(20,.9822,.2480),
@@ -208,3 +209,24 @@ def icon(size=22):
             f'<circle cx="{c}" cy="{c}" r="{r:.1f}" fill="url(#li)"/>'
             f'<circle cx="{c}" cy="{c}" r="{r:.1f}" fill="none" stroke="#000" '
             f'stroke-opacity=".22" stroke-width=".8"/></svg>')
+
+
+def favicon():
+    """Favicon as a data URI, so it costs no request and needs no entry in the
+    Pages allowlist. A disc carrying the same field gradient as the hero globe:
+    cool at the poles, hot through the middle. At 16px a graticule turns to
+    stripes, so there is none -- the gradient alone reads as a planet."""
+    stops = "".join(
+        f'<stop offset="{(1 - math.sin(math.radians(lat))) / 2 * 100:.0f}%" '
+        f'stop-color="{field(lat)}"/>'
+        for lat in (90, 55, 20, -20, -55, -90))
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">'
+           f'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">{stops}</linearGradient>'
+           '<radialGradient id="s" cx="36%" cy="30%" r="48%">'
+           '<stop offset="0%" stop-color="#fff" stop-opacity=".34"/>'
+           '<stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>'
+           '<circle cx="16" cy="16" r="15" fill="url(#g)"/>'
+           '<circle cx="16" cy="16" r="15" fill="url(#s)"/>'
+           '<circle cx="16" cy="16" r="15" fill="none" stroke="#2b1c12" '
+           'stroke-opacity=".55" stroke-width="1.6"/></svg>')
+    return "data:image/svg+xml," + urllib.parse.quote(svg, safe="")
