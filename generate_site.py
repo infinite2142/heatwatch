@@ -484,9 +484,7 @@ h3{{letter-spacing:-.015em}}
 .mini{{display:flex;align-items:center;gap:9px;flex:none;white-space:nowrap}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
-.minisep{{color:var(--line-2)}}
-.minipage{{font-size:14px;color:var(--ink-dim)}}
-@media(max-width:820px){{.minipage,.minisep{{display:none}}}}
+
 .minidate{{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--muted)}}
 .tabs{{display:flex;flex-wrap:wrap}}
 .tab{{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;
@@ -667,13 +665,15 @@ def topbar(active, page_title, nav):
         + (' aria-current="true"' if slug == active else '')
         + f'>{icon(NAV_ICON.get(slug, "thermo"), "ico")}{esc(label)}</a>'
         for slug, label in nav)
-    sep = (f'<span class="minisep">/</span><span class="minipage">{esc(page_title)}</span>'
-           if page_title else "")
+    # No page title in the bar, on purpose. It varied in length per page, which put
+    # the tabs at a different x on every page -- and the active tab already says
+    # where you are, in bold with an underline. page_title is still an argument
+    # because <title> and the hero use it.
     # Deliberately NOT inside .wrap: a sticky element can only stick within its
     # parent's box, and .wrap is the bar's height plus 90px of padding -- so it
     # unstuck two scroll-lines in.
     return (f'<nav class="topbar" id="topbar"><div class="topinner">'
-            f'<span class="mini">{brandmark()}<span class="mininame">HeatWatch</span>{sep}</span>'
+            f'<span class="mini">{brandmark()}<span class="mininame">HeatWatch</span></span>'
             f'<span class="tabs">{tabs}</span><span class="spacer"></span>'
             f'<button class="ghost" onclick="tog()">Theme</button></div></nav>')
 
