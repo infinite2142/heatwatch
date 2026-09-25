@@ -47,6 +47,23 @@ A sector page is only written when the state carries that section, and the nav i
 built from the same test — so a tab never leads to an empty page. `health.html`
 appears once the run starts producing `sections.health`.
 
+## The map's time windows are gated on real coverage
+
+`WINDOWS` in `generate_site.py` declares 1W / 1M / 3M / 1Y, but a window is only
+offered when the archive covers at least `WINDOW_MIN_COVERAGE` (60%) of its span.
+
+**1Y is therefore hidden right now** — history begins 2026-07-24, which is 64 days,
+17% of a year, and a button labelled "1Y" showing 64 days of data is a lie told by
+a label. It comes back **on its own at roughly 220 days of history, around April
+2027**. Nothing to remember and nothing to re-enable: do not hardcode it back.
+
+Window depth comes from two sources. State files (`heatwatch-core/state/`) supply
+the items and their real titles. The archived briefings
+(`heatwatch-core/reports/*.md`) supply older history, and they contribute **counts
+only, never prose** — those reports also contain desk-only Competition and Funding
+sections, so the parser uses a strict heading allowlist and the map payload is
+checked for desk terms. Do not loosen that to make tooltips richer.
+
 ## The map is coupled to the prose
 
 The world map places countries by matching region names in each section item's

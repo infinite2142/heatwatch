@@ -41,7 +41,7 @@ TOKENS = """
     --h1:#f2b134; --h2:#e8912a; --h3:#dd6b20; --h4:#c2410c; --h5:#9a1c13;
     --c3:#4d7387; --c4:#2b5065;
     --good:#0f9d47; --warning:#c08a10; --serious:#d5622a; --critical:#cf3838;
-    --gut:44px;
+    --gut:48px;
     --land:#e7e0d4; --land-line:rgba(22,19,15,0.20);
   }
   :root[data-theme="dark"]{
@@ -96,6 +96,8 @@ ICONS = {
  "sun":    '<circle cx="20" cy="20" r="7"/><path d="M20 4v5M20 31v5M4 20h5M31 20h5'
            'M9 9l3.5 3.5M27.5 27.5L31 31M31 9l-3.5 3.5M12.5 27.5L9 31"/>',
  "shade":  '<path d="M6 18h28"/><path d="M20 18v16"/><path d="M8 18c0-7 5-12 12-12s12 5 12 12"/>',
+ "globe":  '<circle cx="20" cy="20" r="15"/><ellipse cx="20" cy="20" rx="6.5" ry="15"/>'
+           '<path d="M5.6 15h28.8M5.6 25h28.8"/>',
 }
 
 # Region matching: keyword -> (symbol key, ISO3 set). Most specific first, since
@@ -204,7 +206,14 @@ SOLUTIONS = [
       "Cooling centres in US and Indian cities"]),
 ]
 MATURITY = {"commercial": "Commercial", "pilot": "Pilot", "lab": "Lab"}
+# A window is only OFFERED when the archive covers enough of it to mean something.
+# 1Y is hidden today because history starts 2026-07-24 -- 64 days, 17% of a year --
+# and a "1Y" button showing 64 days of data is a lie told by a label. The gate is
+# automatic rather than a hardcoded removal, so 1Y returns on its own at roughly
+# 220 days of history (around April 2027) with no code change. Same rule protects
+# 3M and 1M in a fresh install.
 WINDOWS = [("1W", 7), ("1M", 31), ("3M", 92), ("1Y", 366)]
+WINDOW_MIN_COVERAGE = 0.60
 COUNTLAB = {1: "1 signal", 2: "2 signals", 3: "3 signals", 4: "4 signals"}
 
 
@@ -256,7 +265,71 @@ def items_of(state):
     return out
 
 
-def derive_signals(history, today):
+# Only these report sections may inform the public map. The daily reports also
+# carry "Competition & technology" and "Funding & investor climate", which are
+# desk-only -- parsing the whole file would walk that straight onto a public page.
+# Belt and braces: history contributes COUNTS ONLY, never prose, so even a
+# mis-parsed heading cannot surface desk text in a tooltip.
+PUBLIC_REPORT_SECTIONS = {
+    "heat events & records": "heat",
+    "heat events": "heat",
+    "extremes": "heat",
+    "regulation & policy": "reg",
+    "regulation": "reg",
+    "fire": "fire",
+    "fire weather": "fire",
+    "health": "health",
+    "health & mortality": "health",
+}
+DESK_ONLY_HEADINGS = ("competition", "funding", "investor", "memory update",
+                      "ledger", "uniqueness", "threat board", "pipeline")
+
+
+def backfill_from_reports(core_dir):
+    """Per-date (category, ISO3) signals read out of the archived briefings, so
+    the map's longer windows are real on day one instead of months from now.
+
+    Returns {date: {iso: set(categories)}} -- deliberately no text. The reports
+    are the only place two months of history exists, and they also contain
+    desk-only sections, so the safe contract is that history can say a signal
+    existed and nothing more."""
+    rdir = os.path.join(core_dir, "reports")
+    if not os.path.isdir(rdir):
+        return {}
+    out = {}
+    for fn in sorted(os.listdir(rdir)):
+        if not fn.endswith(".md"):
+            continue
+        m = re.search(r"(\d{4}-\d{2}-\d{2})", fn)
+        if not m:
+            continue
+        try:
+            d = date.fromisoformat(m.group(1))
+            text = open(os.path.join(rdir, fn), encoding="utf-8", errors="replace").read()
+        except Exception:
+            continue
+        cur = None
+        per = out.setdefault(d, {})
+        for line in text.splitlines():
+            if line.startswith("#"):
+                head = line.lstrip("#").strip().lower()
+                head = re.sub(r"[·—-].*$", "", head).strip()
+                if any(k in head for k in DESK_ONLY_HEADINGS):
+                    cur = None
+                else:
+                    cur = PUBLIC_REPORT_SECTIONS.get(head)
+                continue
+            if not cur or not line.strip():
+                continue
+            _k, _l, isos = region_of(line)
+            if not isos:
+                continue
+            for iso in isos:
+                per.setdefault(iso, set()).add(cur)
+    return out
+
+
+def derive_signals(history, today, backfill=None):
     """Per-window, per-country signal counts, derived from the real reports.
 
     A country carries a signal in a category when a section item for that
@@ -268,11 +341,13 @@ def derive_signals(history, today):
     map is too. That is a true picture of what is being watched, which is the
     honest failure mode -- the alternative is inventing values for countries
     nobody looked at."""
+    backfill = backfill or {}
     out, depth = {}, {}
     for label, days in WINDOWS:
         cutoff = today - timedelta(days=days)
         per = {}
         oldest = today
+        # State files first: they carry real titles, which the tooltip shows.
         for d, st in history:
             if d < cutoff:
                 continue
@@ -284,6 +359,16 @@ def derive_signals(history, today):
                     continue
                 for iso in isos:
                     per.setdefault(iso, {}).setdefault(cat, it.get("title", ""))
+        # Then the archive, which only ever adds a category that has no entry
+        # yet, and labels it generically -- history contributes counts, not prose.
+        for d, isomap in backfill.items():
+            if d < cutoff or d > today:
+                continue
+            oldest = min(oldest, d)
+            for iso, cats in isomap.items():
+                for cat in cats:
+                    per.setdefault(iso, {}).setdefault(
+                        cat, f"Reported in earlier briefings ({d.isoformat()})")
         out[label] = {iso: {"n": min(len(c), 4), "hit": c} for iso, c in per.items()}
         depth[label] = (today - oldest).days + 1
     return out, depth
@@ -351,6 +436,10 @@ h3{{letter-spacing:-.015em}}
 .chip::before{{content:"";width:8px;height:8px;border-radius:2px;background:currentColor;flex:none}}
 .chip.critical{{color:var(--critical)}} .chip.serious{{color:var(--serious)}}
 .chip.warning{{color:var(--warning)}} .chip.good{{color:var(--good)}}
+/* a status with no asserted band gets no colour -- the dot becomes a hairline
+   marker rather than implying a severity the run never stated */
+.chip:not(.critical):not(.serious):not(.warning):not(.good)::before{{
+  background:none;border:1.5px solid currentColor}}
 
 /* ---- hero, and the compressed band it becomes ---- */
 .masthead{{position:relative;overflow:hidden;padding:52px 0 38px}}
@@ -373,9 +462,9 @@ h3{{letter-spacing:-.015em}}
 
 /* region thumbnails: the actual coastline, so the eye finds the place before it
    reads the words. Defined once as <symbol>s and referenced, not repeated. */
-.rg{{width:38px;height:28px;display:block;color:var(--h4)}}
-.rg path{{fill:currentColor;fill-opacity:.45;stroke:currentColor;stroke-opacity:.9;
-  stroke-width:1.3;vector-effect:non-scaling-stroke}}
+.rg{{width:42px;height:31px;display:block;color:var(--h4)}}
+.rg path{{fill:currentColor;fill-opacity:.62;stroke:currentColor;stroke-opacity:.62;
+  stroke-linejoin:round;stroke-linecap:round}}
 .rgrim{{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.1;
   vector-effect:non-scaling-stroke}}
 .rgland polygon{{fill:var(--ink);fill-opacity:.42;stroke:var(--ink);stroke-opacity:.6;
@@ -389,26 +478,26 @@ h3{{letter-spacing:-.015em}}
 /* The compressed hero: the mark, the page title and the date stay with you.
    Not just a nav bar -- the hero's identity survives the scroll. */
 .topbar{{position:sticky;top:0;z-index:40;background:var(--bg);border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);transition:padding .16s ease;padding:11px 0}}
-.topbar.compact{{padding:7px 0}}
+  border-bottom:1px solid var(--line);padding:0}}
 .topinner{{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.2vw,40px);
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap}}
-.mini{{display:flex;align-items:center;gap:9px;flex:none;max-width:0;opacity:0;overflow:hidden;
-  transition:max-width .24s ease,opacity .18s ease;white-space:nowrap}}
-.topbar.compact .mini{{max-width:440px;opacity:1}}
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-height:56px}}
+.mini{{display:flex;align-items:center;gap:9px;flex:none;white-space:nowrap}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
 .minisep{{color:var(--line-2)}}
 .minipage{{font-size:14px;color:var(--ink-dim)}}
+@media(max-width:820px){{.minipage,.minisep{{display:none}}}}
 .minidate{{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--muted)}}
 .tabs{{display:flex;flex-wrap:wrap}}
-.tab{{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.09em;color:var(--ink-dim);background:none;border:0;
-  border-bottom:2px solid transparent;padding:7px 3px;margin-right:14px;cursor:pointer;
-  text-decoration:none;transition:color .14s}}
+.tab{{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--ink-dim);background:none;border:0;
+  border-bottom:2px solid transparent;padding:9px 3px;margin-right:20px;cursor:pointer;
+  text-decoration:none;transition:color .14s;display:inline-flex;align-items:center;gap:7px}}
+.tab .ico{{width:17px;height:17px;color:var(--muted);transition:color .14s}}
+.tab:hover .ico,.tab[aria-current="true"] .ico{{color:var(--h4)}}
 .tab:hover{{color:var(--ink)}}
 .tab[aria-current="true"]{{color:var(--ink);border-bottom-color:var(--h4)}}
-.topbar.compact .tab{{font-size:11px}}
+
 .spacer{{flex:1}}
 .ghost{{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;
   letter-spacing:.08em;color:var(--muted);background:none;border:0;cursor:pointer;padding:6px 2px}}
@@ -492,8 +581,11 @@ summary{{cursor:pointer}}
 .pagefoot{{border-top:1px solid var(--line-2);margin-top:56px;padding-top:26px;
   display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px}}
 .pagefoot h4{{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--ink);margin:0 0 8px;font-weight:700}}
-.pagefoot p{{margin:0;font-size:13px;color:var(--ink-dim);line-height:1.65}}
+  text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:700}}
+/* Footer copy is apparatus -- method, cadence, limits, disclosure -- not body
+   text. Setting it in the muted tone alongside the source lines means a reader
+   can tell at a glance what is reporting and what is small print. */
+.pagefoot p{{margin:0;font-size:12.5px;color:var(--muted);line-height:1.7}}
 
 /* ---- metrics ---- */
 .metrics{{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
@@ -553,6 +645,10 @@ def brandmark():
     return globe.icon(22)
 
 
+NAV_ICON = {"index": "globe", "climate": "thermo", "health": "pulse",
+            "workers": "hardhat", "fire": "flame", "solutions": "shade"}
+
+
 def nav_items(state):
     """Only pages the state can actually fill. A tab leading to an empty page is
     worse than a missing tab."""
@@ -568,7 +664,8 @@ def nav_items(state):
 def topbar(active, page_title, nav):
     tabs = "".join(
         f'<a class="tab" href="{"index.html" if slug == "index" else slug + ".html"}"'
-        + (' aria-current="true"' if slug == active else '') + f'>{esc(label)}</a>'
+        + (' aria-current="true"' if slug == active else '')
+        + f'>{icon(NAV_ICON.get(slug, "thermo"), "ico")}{esc(label)}</a>'
         for slug, label in nav)
     sep = (f'<span class="minisep">/</span><span class="minipage">{esc(page_title)}</span>'
            if page_title else "")
@@ -617,7 +714,7 @@ def region_symbols(used):
             xs += nums[0::2]; ys += nums[1::2]
         if not ds:
             continue
-        ASPECT = 38 / 28
+        ASPECT = 42 / 31
         x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
         w, h = max(x1 - x0, 1e-6), max(y1 - y0, 1e-6)
         if w / h < ASPECT:
@@ -625,8 +722,16 @@ def region_symbols(used):
         else:
             need = w / ASPECT; c = (y0 + y1) / 2; y0, y1 = c - need / 2, c + need / 2; h = need
         m = 0.06 * max(w, h)
+        # Fitting alone was not the fix. Every symbol already filled its box --
+        # measured: all aspects 1.306-1.307 -- but Europe is 16 fragments at 61%
+        # ink coverage while Gulf is a handful of fat blobs at 121%, so Europe
+        # read as confetti and Gulf as a landmass. A stroke in USER units (so it
+        # scales with the viewBox) dilates each country until neighbours fuse
+        # into one silhouette, which is what makes a region recognisable at 42px.
+        sw = 0.024 * max(w, h)
         out.append(f'<symbol id="rg-{key}" viewBox="{x0-m:.1f} {y0-m:.1f} {w+2*m:.1f} {h+2*m:.1f}">'
-                   + "".join(f'<path d="{d}"/>' for d in ds) + "</symbol>")
+                   + "".join(f'<path d="{d}" stroke-width="{sw:.2f}"/>' for d in ds)
+                   + "</symbol>")
     return ('<svg width="0" height="0" aria-hidden="true" style="position:absolute">'
             f'<defs>{"".join(out)}</defs></svg>')
 
@@ -691,8 +796,10 @@ def src_line(it):
 
 
 def band_of(it):
+    """No band means no severity claim. Defaulting to "warning" painted a colour
+    the run never asserted -- this state has band=null on every section item."""
     b = (it.get("band") or "").lower()
-    return b if b in ("critical", "serious", "warning", "good") else "warning"
+    return b if b in ("critical", "serious", "warning", "good") else ""
 
 
 def entry(it, cat, thumb_key=None):
@@ -700,7 +807,13 @@ def entry(it, cat, thumb_key=None):
     lead = region_thumb(thumb_key) if thumb_key else f'<span class="hlico">{icon(ik, "ico ico-lg")}</span>'
     body = it.get("body") or ""
     so = it.get("so_what")
-    status = it.get("status") or it.get("flag") or label
+    # The right-hand cell carries STATUS, never the category. It used to fall back
+    # to the category label, which is already the topic label two columns left --
+    # so every item without a status printed "Heat & climate" twice on one row.
+    status = it.get("status") or it.get("flag") or ""
+    band = band_of(it)
+    chip = (f'<span class="chip{" " + band if band else ""}">{esc(status)}</span>'
+            if status else (f'<span class="chip {band}">{esc(band)}</span>' if band else ""))
     gap = it.get("gap")
     extra = f'<p class="hlsrc">Gap — {esc(gap)}</p>' if gap else ""
     return (f'<div class="hl">{lead}<div>'
@@ -709,8 +822,7 @@ def entry(it, cat, thumb_key=None):
             f'<p>{esc(body)}</p>'
             + (f'<p><b>So what:</b> {esc(so)}</p>' if so else "")
             + src_line(it) + extra
-            + f'</div><span class="statcell"><span class="chip {band_of(it)}">'
-              f'{esc(status)}</span></span></div>')
+            + f'</div><span class="statcell">{chip}</span></div>')
 
 
 def home_headlines(state):
@@ -800,7 +912,7 @@ function tog(){var r=document.documentElement;
 
 JS_MAP = """
 var SIG=__SIG__,RULES=__RULES__,NAMES=__NAMES__,CATS=__CATS__,ICONS=__ICONS__,DEPTH=__DEPTH__;
-var TF='1M';
+var TF=__DEFAULT_TF__;
 function paint(){
  var m=SIG[TF]||{};
  document.querySelectorAll('.cty').forEach(function(p){
@@ -865,23 +977,29 @@ DESC = ("Where heat is breaking records, who it is reaching, what the rules are 
 
 def page_home(state, sig, depth, rules, nav, dl):
     vb, paths = build_map_paths()
+    offered = [w for w, days in WINDOWS
+               if depth.get(w, 0) >= days * WINDOW_MIN_COVERAGE]
+    if not offered:
+        offered = [WINDOWS[0][0]]
+    default = "1M" if "1M" in offered else offered[-1]
+    wins = "".join(
+        f'<button class="opt" data-tf="{w}" onclick="setTF(\'{w}\')"'
+        + (' aria-pressed="true"' if w == default else '') + f'>{w}</button>'
+        for w in offered)
     js = (JS_MAP.replace("__SIG__", json.dumps(sig))
                 .replace("__RULES__", json.dumps(rules))
                 .replace("__NAMES__", json.dumps(NAMES))
                 .replace("__CATS__", json.dumps({k: list(v) for k, v in CATS.items()}))
                 .replace("__ICONS__", json.dumps(ICONS))
-                .replace("__DEPTH__", json.dumps(depth)))
-    wins = "".join(
-        f'<button class="opt" data-tf="{w}" onclick="setTF(\'{w}\')"'
-        + (' aria-pressed="true"' if w == "1M" else '') + f'>{w}</button>'
-        for w, _d in WINDOWS)
+                .replace("__DEPTH__", json.dumps(depth))
+                .replace("__DEFAULT_TF__", json.dumps(default)))
     return head("HeatWatch — global heat intelligence", DESC) + f"""
 {hero("HeatWatch", DESC, "Global heat intelligence", dl)}
 {topbar("index", "", nav)}
 <div class="wrap">
 <section class="card">
-  <span class="kicker">The world right now</span>
-  <h2>Where something is happening</h2>
+  <span class="kicker">Signal density by country</span>
+  <h2>Global heat signals</h2>
   <p class="lede">Shading is how many signals a country carries in the window — heat,
   health, workers, fire — counted flat, with no weighting. Outlined countries have
   heat-at-work rules, which is the mitigation rather than the hazard, so it is drawn
@@ -912,8 +1030,8 @@ def page_home(state, sig, depth, rules, nav, dl):
   <p class="lede">The long-form read of the map, grouped by geography and marked by topic.</p>
   {home_headlines(state)}
 </section>
-{('<section class="card"><span class="kicker">What happens next</span>'
-  '<h2>Dated ahead</h2>' + forecast_html(state) + '</section>') if forecast_html(state) else ''}
+{('<section class="card"><span class="kicker">Dated, from primary sources</span>'
+  '<h2>Upcoming deadlines</h2>' + forecast_html(state) + '</section>') if forecast_html(state) else ''}
 {footer(state)}
 </div>
 <div id="tip"></div>
@@ -946,9 +1064,10 @@ def page_sector(state, slug, title, key, nav, dl):
   <p class="lede">Only this topic. The other sectors carry their own.</p>
   {hls}
 </section>
-{('<section class="card"><span class="kicker">What happens next</span><h2>Forecast</h2>'
-  '<p class="lede">Dated, so a miss stays visible rather than quietly forgotten.</p>'
-  + fc + '</section>') if fc else ''}
+{('<section class="card"><span class="kicker">Dated, from primary sources</span>'
+  '<h2>Upcoming deadlines</h2>'
+  '<p class="lede">Each one dated, so a slipped deadline stays visible rather than '
+  'quietly forgotten.</p>' + fc + '</section>') if fc else ''}
 {('<section class="card"><span class="kicker">Where the exposure sits</span>'
   '<h2>By occupation</h2><p class="lede">Each group faces a different version of the '
   'same hazard, so each needs a different control. Exposure is a judgement, not a '
@@ -1005,7 +1124,9 @@ def main():
     today = date.fromisoformat(state["meta"]["report_date"])
     dl = today.strftime("%-d %B %Y")
     history = load_history(state_path)
-    sig, depth = derive_signals(history, today)
+    core_dir = os.path.dirname(os.path.dirname(os.path.abspath(state_path)))
+    backfill = backfill_from_reports(core_dir)
+    sig, depth = derive_signals(history, today, backfill)
     rules = derive_rules(history)
     nav = nav_items(state)
 
