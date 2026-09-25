@@ -11,7 +11,7 @@
     --h1:#f2b134; --h2:#e8912a; --h3:#dd6b20; --h4:#c2410c; --h5:#9a1c13;
     --c3:#4d7387; --c4:#2b5065;
     --good:#0f9d47; --warning:#c08a10; --serious:#d5622a; --critical:#cf3838;
-    --gut:48px;
+    --gut:62px;
     --land:#e7e0d4; --land-line:rgba(22,19,15,0.20);
   }
   :root[data-theme="dark"]{
@@ -74,8 +74,8 @@ h3{letter-spacing:-.015em}
 
 /* region thumbnails: the actual coastline, so the eye finds the place before it
    reads the words. Defined once as <symbol>s and referenced, not repeated. */
-.rg{width:42px;height:31px;display:block;color:var(--h4)}
-.rg path{fill:currentColor;fill-opacity:.62;stroke:currentColor;stroke-opacity:.62;
+.rg{width:56px;height:41px;display:block;color:var(--h4)}
+.rg polygon{fill:currentColor;fill-opacity:.7;stroke:currentColor;stroke-opacity:.7;
   stroke-linejoin:round;stroke-linecap:round}
 .rgrim{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.1;
   vector-effect:non-scaling-stroke}
@@ -85,7 +85,9 @@ h3{letter-spacing:-.015em}
 /* every section ends in the same right-hand status cell, so exposure, confidence,
    maturity and flags all land on one line down the page */
 .statcell{justify-self:end;text-align:right;display:flex;flex-direction:column;
-  align-items:flex-end;gap:5px;white-space:nowrap}
+  align-items:flex-end;gap:6px;white-space:nowrap;padding-top:2px}
+.statcell .tlab{order:-1}
+.statcell .chip{max-width:210px;white-space:normal;text-align:right}
 
 /* The compressed hero: the mark, the page title and the date stay with you.
    Not just a nav bar -- the hero's identity survives the scroll. */
@@ -169,8 +171,7 @@ summary{cursor:pointer}
 .hl:first-of-type{border-top:0}
 .geo + .hl{border-top:0}
 .hlico{color:var(--h4);margin-top:2px}
-.hlhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.hlhead h3{font-size:17px;margin:0;font-weight:600;flex:1;min-width:230px}
+.hlhead h3{font-size:17px;margin:0;font-weight:600}
 .hl p{margin:6px 0 0;font-size:14px;color:var(--ink-dim);max-width:78ch}
 .tlab{font-family:'Space Mono',monospace;font-size:9.5px;text-transform:uppercase;
   letter-spacing:.08em;color:var(--muted);display:inline-flex;align-items:center;gap:5px}

@@ -41,7 +41,7 @@ TOKENS = """
     --h1:#f2b134; --h2:#e8912a; --h3:#dd6b20; --h4:#c2410c; --h5:#9a1c13;
     --c3:#4d7387; --c4:#2b5065;
     --good:#0f9d47; --warning:#c08a10; --serious:#d5622a; --critical:#cf3838;
-    --gut:48px;
+    --gut:62px;
     --land:#e7e0d4; --land-line:rgba(22,19,15,0.20);
   }
   :root[data-theme="dark"]{
@@ -471,8 +471,8 @@ h3{{letter-spacing:-.015em}}
 
 /* region thumbnails: the actual coastline, so the eye finds the place before it
    reads the words. Defined once as <symbol>s and referenced, not repeated. */
-.rg{{width:42px;height:31px;display:block;color:var(--h4)}}
-.rg path{{fill:currentColor;fill-opacity:.62;stroke:currentColor;stroke-opacity:.62;
+.rg{{width:56px;height:41px;display:block;color:var(--h4)}}
+.rg polygon{{fill:currentColor;fill-opacity:.7;stroke:currentColor;stroke-opacity:.7;
   stroke-linejoin:round;stroke-linecap:round}}
 .rgrim{{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.1;
   vector-effect:non-scaling-stroke}}
@@ -482,7 +482,9 @@ h3{{letter-spacing:-.015em}}
 /* every section ends in the same right-hand status cell, so exposure, confidence,
    maturity and flags all land on one line down the page */
 .statcell{{justify-self:end;text-align:right;display:flex;flex-direction:column;
-  align-items:flex-end;gap:5px;white-space:nowrap}}
+  align-items:flex-end;gap:6px;white-space:nowrap;padding-top:2px}}
+.statcell .tlab{{order:-1}}
+.statcell .chip{{max-width:210px;white-space:normal;text-align:right}}
 
 /* The compressed hero: the mark, the page title and the date stay with you.
    Not just a nav bar -- the hero's identity survives the scroll. */
@@ -566,8 +568,7 @@ summary{{cursor:pointer}}
 .hl:first-of-type{{border-top:0}}
 .geo + .hl{{border-top:0}}
 .hlico{{color:var(--h4);margin-top:2px}}
-.hlhead{{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}}
-.hlhead h3{{font-size:17px;margin:0;font-weight:600;flex:1;min-width:230px}}
+.hlhead h3{{font-size:17px;margin:0;font-weight:600}}
 .hl p{{margin:6px 0 0;font-size:14px;color:var(--ink-dim);max-width:78ch}}
 .tlab{{font-family:'Space Mono',monospace;font-size:9.5px;text-transform:uppercase;
   letter-spacing:.08em;color:var(--muted);display:inline-flex;align-items:center;gap:5px}}
@@ -696,6 +697,87 @@ def hero(title, sub, kicker, dl):
 </div></header></div>"""
 
 
+THUMB_W, THUMB_H = 56, 41
+
+# The ISO sets in REGION_DEFS drive MAP PLACEMENT and have to stay inclusive --
+# every country the briefings might name. A silhouette wants the opposite: the
+# mainland only, because the eastern and Nordic extremes stretch the bounding box
+# and flatten the recognisable core. These two jobs were the same list, so tuning
+# the thumbnails quietly cut map coverage from 34 countries to 32. They are
+# separate now; anything not listed here falls back to the full set.
+THUMB_ISOS = {
+    "eur":    ["ESP", "PRT", "FRA", "DEU", "ITA", "POL", "GBR", "ROU"],
+    "nweur":  ["GBR", "IRL", "FRA", "DEU", "NLD", "BEL", "DNK"],
+    "med":    ["ESP", "ITA", "GRC", "TUR", "MAR", "DZA", "LBY", "EGY"],
+    "gulf":   ["SAU", "IRQ", "IRN", "OMN", "YEM", "ARE"],
+    "africa": ["DZA", "LBY", "EGY", "SDN", "TCD", "NER", "MLI", "NGA", "COD", "AGO", "ZAF", "ETH"],
+    "easia":  ["CHN", "JPN", "VNM", "THA"],
+    "samer":  ["BRA", "ARG", "CHL", "PER", "COL", "BOL"],
+    "sasia":  ["IND", "PAK", "BGD"],
+}
+
+
+def _rings(d):
+    out = []
+    for ch in d.split("M"):
+        c = ch.strip().rstrip("Zz").strip()
+        if not c:
+            continue
+        nums = [float(v) for v in NUMRE.findall(c)]
+        if len(nums) >= 6:
+            out.append(list(zip(nums[0::2], nums[1::2])))
+    return out
+
+
+def simplify_region(ds, target_px):
+    """Reduce a region to what `target_px` can actually show.
+
+    Measured before writing this: Europe was 27 rings and 862 vertices, whose
+    largest ring covered 3.0% of the bounding box and whose top three covered
+    6.1%. Gulf's largest ring alone was 44%, top three 94.6%. That is the whole
+    reason Europe read as confetti and Gulf as a landmass, and why scaling it up
+    changed nothing -- Europe has no dominant shape, just fragments, and 862
+    vertices across 42px is one vertex per 1.3px.
+
+    So: work in RENDERED pixels. Drop rings too small to see, thin vertices below
+    the resolution of the display, and let the dilation stroke fuse what is left.
+    """
+    xs, ys = [], []
+    allr = []
+    for d in ds:
+        for r in _rings(d):
+            allr.append(r)
+            xs += [q[0] for q in r]
+            ys += [q[1] for q in r]
+    if not allr:
+        return [], (0, 0, 1, 1)
+    bw, bh = max(xs) - min(xs), max(ys) - min(ys)
+    scale = target_px / max(bw, 1e-6)
+    min_area_px = 9.0          # a ring smaller than ~3x3 rendered px is noise
+    min_step_px = 1.15         # a vertex closer than this cannot be resolved
+    keep = []
+    for r in allr:
+        rw = (max(q[0] for q in r) - min(q[0] for q in r)) * scale
+        rh = (max(q[1] for q in r) - min(q[1] for q in r)) * scale
+        if rw * rh < min_area_px:
+            continue
+        thinned = []
+        step = min_step_px / scale
+        for q in r:
+            if thinned:
+                dx, dy = q[0] - thinned[-1][0], q[1] - thinned[-1][1]
+                if dx * dx + dy * dy < step * step:
+                    continue
+            thinned.append(q)
+        if len(thinned) >= 3:
+            keep.append(thinned)
+    if not keep:
+        keep = [max(allr, key=len)]
+    kx = [q[0] for r in keep for q in r]
+    ky = [q[1] for r in keep for q in r]
+    return keep, (min(kx), min(ky), max(kx) - min(kx), max(ky) - min(ky))
+
+
 def region_symbols(used):
     """One <symbol> per region referenced. Each is padded to the thumbnail's own
     aspect before fitting, so a compact region and a wide one occupy the same
@@ -712,19 +794,17 @@ def region_symbols(used):
                        f'<circle class="rgrim" cx="27.2" cy="20" r="17"/>'
                        f'<g class="rgland">{land}</g></symbol>')
             continue
-        ds, xs, ys = [], [], []
-        for iso in isos:
+        ds = []
+        for iso in THUMB_ISOS.get(key, isos):
             rec = W.get(iso)
             if not rec:
                 continue
-            d = rec.get("d") if isinstance(rec, dict) else rec
-            ds.append(d)
-            nums = [float(v) for v in NUMRE.findall(d)]
-            xs += nums[0::2]; ys += nums[1::2]
+            ds.append(rec.get("d") if isinstance(rec, dict) else rec)
         if not ds:
             continue
-        ASPECT = 42 / 31
-        x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+        keep, (bx, by, bw_, bh_) = simplify_region(ds, THUMB_W)
+        ASPECT = THUMB_W / THUMB_H
+        x0, x1, y0, y1 = bx, bx + bw_, by, by + bh_
         w, h = max(x1 - x0, 1e-6), max(y1 - y0, 1e-6)
         if w / h < ASPECT:
             need = h * ASPECT; c = (x0 + x1) / 2; x0, x1 = c - need / 2, c + need / 2; w = need
@@ -737,10 +817,13 @@ def region_symbols(used):
         # read as confetti and Gulf as a landmass. A stroke in USER units (so it
         # scales with the viewBox) dilates each country until neighbours fuse
         # into one silhouette, which is what makes a region recognisable at 42px.
-        sw = 0.024 * max(w, h)
+        # Dilate by ~1.8 rendered px so surviving shapes fuse into one silhouette
+        sw = 1.8 * (w / THUMB_W)
+        body = "".join(
+            '<polygon points="' + " ".join(f"{q[0]:.1f},{q[1]:.1f}" for q in r) + f'" stroke-width="{sw:.2f}"/>'
+            for r in keep)
         out.append(f'<symbol id="rg-{key}" viewBox="{x0-m:.1f} {y0-m:.1f} {w+2*m:.1f} {h+2*m:.1f}">'
-                   + "".join(f'<path d="{d}" stroke-width="{sw:.2f}"/>' for d in ds)
-                   + "</symbol>")
+                   + body + "</symbol>")
     return ('<svg width="0" height="0" aria-hidden="true" style="position:absolute">'
             f'<defs>{"".join(out)}</defs></svg>')
 
@@ -826,12 +909,12 @@ def entry(it, cat, thumb_key=None):
     gap = it.get("gap")
     extra = f'<p class="hlsrc">Gap — {esc(gap)}</p>' if gap else ""
     return (f'<div class="hl">{lead}<div>'
-            f'<div class="hlhead"><h3>{esc(it.get("title", "Untitled"))}</h3>'
-            f'<span class="tlab">{icon(ik, "ico")}{esc(label)}</span></div>'
+            f'<div class="hlhead"><h3>{esc(it.get("title", "Untitled"))}</h3></div>'
             f'<p>{esc(body)}</p>'
             + (f'<p><b>So what:</b> {esc(so)}</p>' if so else "")
             + src_line(it) + extra
-            + f'</div><span class="statcell">{chip}</span></div>')
+            + f'</div><span class="statcell">'
+              f'<span class="tlab">{icon(ik, "ico")}{esc(label)}</span>{chip}</span></div>')
 
 
 def home_headlines(state):
