@@ -59,7 +59,7 @@ TOKENS = """
 CATS = OrderedDict([
     ("heat",    ("Heat & climate", "thermo")),
     ("health",  ("Health", "pulse")),
-    ("workers", ("Workers", "hardhat")),
+    ("workers", ("Workers", "worker")),
     ("fire",    ("Fire", "flame")),
     ("reg",     ("Heat-at-work rules", "rule")),
 ])
@@ -78,12 +78,16 @@ SECTORS = [
 ICONS = {
  "thermo": '<path d="M17 22V8a3 3 0 0 1 6 0v14a6 6 0 1 1-6 0z"/><path d="M20 26v-8"/>',
  "pulse":  '<path d="M5 20h6l3-7 5 14 4-9 3 2h9"/>',
- "hardhat":'<path d="M6 27a14 14 0 0 1 28 0z"/><path d="M15 14a6 6 0 0 1 10 0"/><path d="M4 27h32"/>',
+ # a worker, not a hard hat: at 17px a helmet is indistinguishable from a dome,
+ # and a head-and-shoulders figure is unmistakable
+ "worker": '<circle cx="20" cy="12.5" r="5.5"/>'
+           '<path d="M7.5 33.5c0-7.2 5.6-11.5 12.5-11.5s12.5 4.3 12.5 11.5"/>',
  "flame":  '<path d="M20 5c7 9 10 13 10 18a10 10 0 0 1-20 0c0-5 3-9 10-18z"/>'
            '<path d="M20 30a5 5 0 0 1-3-8"/>',
  "rule":   '<path d="M11 6h13l6 6v22H11z"/><path d="M24 6v6h6"/><path d="M16 21h10M16 26h10"/>',
- "siren":  '<path d="M11 32h18"/><path d="M13 32v-9a7 7 0 0 1 14 0v9"/><path d="M20 10V5"/>'
-           '<path d="M30 14l3-3M10 14l-3-3"/>',
+ # a beacon: lamp on a base, throwing light. The old one was a dome with a stalk.
+ "beacon": '<path d="M12 31.5h16"/><path d="M15 31.5V21a5 5 0 0 1 10 0v10.5"/>'
+           '<path d="M20 12.5V7M30.5 17l3.5-3M9.5 17L6 14"/>',
  "pylon":  '<path d="M14 34L20 6l6 28"/><path d="M16 22h8M15 27h10"/><path d="M8 34h24"/>',
  "shield": '<path d="M20 5l12 4v11c0 8-6 13-12 15-6-2-12-7-12-15V9z"/>',
  "clock":  '<circle cx="20" cy="20" r="14"/><path d="M20 12v8l6 4"/>',
@@ -95,7 +99,12 @@ ICONS = {
  "tube":   '<path d="M8 14h13a6 6 0 0 1 0 12H8"/><path d="M8 20h13"/><circle cx="31" cy="20" r="3"/>',
  "sun":    '<circle cx="20" cy="20" r="7"/><path d="M20 4v5M20 31v5M4 20h5M31 20h5'
            'M9 9l3.5 3.5M27.5 27.5L31 31M31 9l-3.5 3.5M12.5 27.5L9 31"/>',
- "shade":  '<path d="M6 18h28"/><path d="M20 18v16"/><path d="M8 18c0-7 5-12 12-12s12 5 12 12"/>',
+ # a parasol, with a hooked handle so it cannot be read as a food cover
+ "parasol":'<path d="M5.5 19h29"/><path d="M8 19c0-7.2 5.4-13 12-13s12 5.8 12 13"/>'
+           '<path d="M20 19v10.5a4 4 0 0 0 8 0"/>',
+ # interventions you can actually pull -- for the Solutions tab
+ "sliders":'<path d="M7 14h26M7 26h26"/><circle cx="16" cy="14" r="3.6"/>'
+           '<circle cx="25" cy="26" r="3.6"/>',
  "globe":  '<circle cx="20" cy="20" r="15"/><ellipse cx="20" cy="20" rx="6.5" ry="15"/>'
            '<path d="M5.6 15h28.8M5.6 25h28.8"/>',
 }
@@ -134,12 +143,12 @@ REGION_DEFS = [
 # is. If the weekly starts maintaining these, move them into the state file.
 OCCUPATIONS = {
     "workers": [
-        ("Construction", "hardhat", 5,
+        ("Construction", "worker", 5,
          "Outdoor, PPE-bound, and the largest exposed population. Schedule shifting is "
          "the main control and it collides with daylight and contract penalties.",
          ["PPE requirements block the obvious adaptation of removing layers",
           "Midday stoppages are the most common regulatory instrument"]),
-        ("Emergency services", "siren", 4,
+        ("Emergency services", "beacon", 4,
          "Firefighters and paramedics work in heat by definition, in turnout gear, with "
          "no option to defer the task. Exposure is acute rather than cumulative.",
          ["Turnout gear can exceed 25 kg with near-zero breathability",
@@ -198,7 +207,7 @@ SOLUTIONS = [
       "Scales as ordinary clothing"],
      ["Single-digit degrees at best", "Needs sky view to work", "Mostly still lab-stage"],
      ["Early architectural and tenting products", "Field trials in agriculture"]),
-    ("shade", "Site-level cooling", "Environmental", "commercial",
+    ("parasol", "Site-level cooling", "Environmental", "commercial",
      "Cool the place, not the person: shade structures, misting, cooled rest areas.",
      ["Helps everyone at once", "No wearer-compliance problem", "Doubles as a rest facility"],
      ["Fixed in place while the work moves", "Water and energy hungry", "Capital cost per site"],
@@ -644,7 +653,7 @@ def brandmark():
 
 
 NAV_ICON = {"index": "globe", "climate": "thermo", "health": "pulse",
-            "workers": "hardhat", "fire": "flame", "solutions": "shade"}
+            "workers": "worker", "fire": "flame", "solutions": "sliders"}
 
 
 def nav_items(state):
