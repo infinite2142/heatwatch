@@ -7,13 +7,16 @@ evaluated; when it happens, Pages retires rather than running alongside.
 Public repo on GitHub: both the *content* and the generator source are public.
 `heatwatch-core` is private and stays private.
 
-Pages serves exactly one file. `.github/workflows/pages.yml` stages `index.html`
-into an empty directory and uploads only that, so the repo being public does not
-mean the repo root is *served*. A new runtime asset needs a `cp` line there.
+Pages serves only the generated HTML. `.github/workflows/pages.yml` stages a
+named allowlist of pages into an empty directory and uploads that, so the repo
+being public does not mean the repo root is *served* — `generate_site.py`,
+`globe.py` and `world_paths.json` are build inputs and the workflow fails the
+build if any of them reaches the artifact. A new page needs its name added there.
 
 ## The one rule
 
-**Never hand-edit `index.html`.** It is a build artifact that happens to be
+**Never hand-edit a generated page** — `index.html`, `climate.html`,
+`health.html`, `workers.html`, `fire.html`, `solutions.html`. It is a build artifact that happens to be
 committed. Every design or content change goes into `generate_site.py`, then you
 regenerate. A hand-edit is silently destroyed by the next daily run.
 
@@ -21,18 +24,43 @@ regenerate. A hand-edit is silently destroyed by the next daily run.
 
 | | |
 |---|---|
-| `~/heatwatch` (this one) | `generate_site.py`, `index.html` |
+| `~/heatwatch` (this one) | `generate_site.py`, `globe.py`, `world_paths.json`, the generated pages |
 | `~/heatwatch-core` (private) | `state/`, `memory/`, `prompts/`, `reports/`, `desk/`, the run script |
 
 ## Regenerating
 
 ```
-python3 generate_site.py ~/heatwatch-core/state/heatwatch_state_<date>.json index.html
+python3 generate_site.py ~/heatwatch-core/state/heatwatch_state_<date>.json .
 ```
 
-Arg order is `<state.json> <out.html>`. Preview by writing to a scratch path and
-serving it — `open file://` works, but a local `python3 -m http.server` is what
-the browser pane can reach.
+Arg order is `<state.json> <out_dir>` — a **directory**, not a filename, because
+the generator writes several pages. It also scans the state file's own directory
+for siblings to build the map's time windows, so the windows deepen on their own
+as history accumulates.
+
+Preview by writing to a scratch directory and serving it — `open file://` works,
+but a local `python3 -m http.server` is what a browser on another machine can
+reach (bind `0.0.0.0` for that, and send no-cache headers or you will spend an
+hour looking at a stale page).
+
+A sector page is only written when the state carries that section, and the nav is
+built from the same test — so a tab never leads to an empty page. `health.html`
+appears once the run starts producing `sections.health`.
+
+## The map is coupled to the prose
+
+The world map places countries by matching region names in each section item's
+`title`, `body` and `so_what` against a keyword table in `generate_site.py`. An
+item that never names its country reads correctly on the page and silently
+vanishes from the map. `prompts/daily.md` tells the run to name places
+explicitly; if you add a region to the keyword table, add its ISO3 set too.
+
+The globe in the hero is real geometry: `world_paths.json` is a Robinson
+projection with no lat/lon in it, so `globe.py` inverts Robinson back to
+coordinates (parameters fitted and validated to sub-degree longitude accuracy)
+and reprojects orthographically. It deliberately uses its own reserved, quieter
+palette — mean OKLab chroma 0.06 against the map ramp's 0.16 — so the loud colour
+stays reserved for data.
 
 ## Public / private split
 

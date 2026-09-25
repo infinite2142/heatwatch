@@ -12,7 +12,7 @@ on:
   push:
     branches: [master]
     paths:
-      - index.html
+      - "*.html"
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -40,8 +40,18 @@ jobs:
       - name: Stage the publish surface
         run: |
           mkdir -p _site
-          cp index.html _site/index.html
+          # Still an allowlist, still deny-by-default -- the names are explicit.
+          # A page absent from the build (health.html, until the run collects a
+          # health section) is skipped rather than failing the publish.
+          for f in index.html climate.html health.html workers.html fire.html solutions.html; do
+            if [ -f "$f" ]; then cp "$f" _site/; else echo "skipped (not built): $f"; fi
+          done
           echo "publishing:"; ls -la _site
+          # Nothing else may reach the artifact. generate_site.py, globe.py,
+          # world_paths.json and CLAUDE.md are build inputs, not pages.
+          for leak in generate_site.py globe.py world_paths.json CLAUDE.md README.md; do
+            if [ -e "_site/$leak" ]; then echo "::error::$leak reached the artifact"; exit 1; fi
+          done
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
