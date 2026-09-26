@@ -1662,11 +1662,14 @@ def method_html(state):
     blocks = [
         ("Forecast", "Hourly forecasts from the Open-Meteo API, licensed CC BY 4.0, stored as "
                      "issued and never revised afterwards."),
-        ("Heat stress", "WBGT is solved hour by hour after Liljegren et al. (2008) from "
-                        "temperature, humidity, wind, pressure and the direct and diffuse "
-                        "solar components. Shade is the same model with the direct beam "
-                        "removed, not a fixed offset. Limits are the ISO 7243:2017 reference "
-                        "values for the workload and acclimatisation selected."),
+        ("Heat stress", "Wet-bulb globe temperature (WBGT) combines humidity, radiant heat, "
+                        "air temperature and wind into the measure occupational standards are "
+                        "written against; it is explained in full under This week. It is "
+                        "solved hour by hour after Liljegren et al. (2008) from temperature, "
+                        "humidity, wind, pressure and the direct and diffuse solar components. "
+                        "Shade is the same model with the direct beam removed, not a fixed "
+                        "offset. Limits are the ISO 7243:2017 reference values for the "
+                        "workload and acclimatisation selected."),
         ("Rules", "Every rule shown comes from a dated record with at least one source. A "
                   "record that has not been confirmed against a primary source is labelled "
                   "as such and is not counted as a rule in force. Rule summaries are not "

@@ -317,6 +317,50 @@ summary{cursor:pointer}
 .note{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--muted);margin-top:22px;
   border-top:1px solid var(--line);padding-top:13px;line-height:1.7}
 
+/* ---- the WBGT explainer ---------------------------------------------------
+   Two carrying hues plus the page's neutral, validated with the dataviz
+   validator against both surfaces: light #0f7fa8/#dd6b20 and dark
+   #1a89ae/#d97328. The dark pair is CHOSEN for the dark lightness band
+   (L 0.48-0.67), not lightened from the light pair -- the obvious flip lands
+   both hues outside the band. Blue for the wet bulb is a deliberate addition to
+   the palette: the site keeps loud colour for data, and this is data. Grey for
+   air temperature is the point being made, not a shortage of hues. */
+:root{--wx-wet:#0f7fa8; --wx-globe:#dd6b20}
+:root[data-theme="dark"]{--wx-wet:#1a89ae; --wx-globe:#d97328}
+.wbgtx{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.wbgtx > summary{font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;
+  letter-spacing:.06em;color:var(--c3);list-style:none}
+.wbgtx > summary::-webkit-details-marker{display:none}
+.wbgtx > summary::before{content:"+ ";font-weight:700}
+.wbgtx[open] > summary::before{content:"− "}
+.wbgtx > summary:hover{color:var(--ink)}
+.wbgtx > summary:focus-visible{outline:2px solid var(--h4);outline-offset:3px}
+.wxbody{padding-top:14px;max-width:74ch}
+.wxbody p{font-size:14px;color:var(--ink-dim);margin:0 0 11px}
+.wxbar{display:flex;gap:2px;height:30px;margin:18px 0 12px;max-width:560px}
+.wxseg{display:block;height:100%}
+.wxseg:first-child{border-radius:4px 0 0 4px}
+.wxseg:last-child{border-radius:0 4px 4px 0}
+.wx1{background:var(--wx-wet)} .wx2{background:var(--wx-globe)} .wx3{background:var(--muted)}
+.wxkey{margin:0;padding:0;list-style:none;max-width:560px}
+/* Two columns at every width, and the name and its share are ONE cell. Splitting
+   them into separate grid items dropped the "70%" onto its own line on a phone,
+   which read as a stray number under the label it belongs to. */
+.wxkey li{display:grid;grid-template-columns:14px 1fr;gap:3px 9px;
+  padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-dim)}
+.wxkey .sw{width:14px;height:14px;border-radius:3px;margin-top:3px}
+.wxkey .hd{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.wxkey b{font-weight:600;color:var(--ink)}
+.wxkey .pc{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink);
+  font-weight:700}
+.wxkey .ds{grid-column:2}
+/* forced-colors strips the fills; the shares are written out in the key below,
+   so the bar becomes an outline rather than disappearing into one block */
+@media(forced-colors:active){
+  .wxseg{border:1px solid CanvasText}
+  .wxkey .sw{border:1px solid CanvasText}
+}
+
 /* ---- controls ---- */
 .wkctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px 26px;
   margin-top:24px;border-top:1px solid var(--line);padding-top:18px}
@@ -469,7 +513,38 @@ table.season td.n{font-family:'Space Mono',monospace}
   above the ISO 7243 limit for the work being done, at 18 work hubs — set against
   the rule that applies there and whether it covers those hours.</p>
   <div class="metrics"><div class="metric"><div class="mv" id="kn-total">0</div><div class="mk">Unsafe working hours</div><div class="ms" id="kn-total-s"></div></div><div class="metric"><div class="mv" id="kn-unprot">0</div><div class="mk">Of those, not covered by a rule in force</div><div class="ms" id="kn-unprot-s"></div></div><div class="metric"><div class="mv" id="kn-hubs">0</div><div class="mk">Hubs with at least one unsafe hour</div><div class="ms" id="kn-hubs-s"></div></div><div class="metric"><div class="mv" id="kn-worst">0 h</div><div class="mk" id="kn-worst-k">—</div><div class="ms" id="kn-worst-s"></div></div></div>
-  <div class="wkctl"><div class="wkgrp"><span class="ctrllab">Region</span><div class="wkopts"><button class="wkopt" data-ctl="region" data-val="all" aria-pressed="true">All</button><button class="wkopt" data-ctl="region" data-val="italy" aria-pressed="false">Italy</button><button class="wkopt" data-ctl="region" data-val="europe" aria-pressed="false">Europe</button><button class="wkopt" data-ctl="region" data-val="gulf" aria-pressed="false">Gulf</button><button class="wkopt" data-ctl="region" data-val="americas" aria-pressed="false">Americas</button><button class="wkopt" data-ctl="region" data-val="apac" aria-pressed="false">Asia-Pacific</button></div></div><div class="wkgrp"><span class="ctrllab">Workload</span><div class="wkopts"><button class="wkopt" data-ctl="workload" data-val="light" aria-pressed="false">Light</button><button class="wkopt" data-ctl="workload" data-val="moderate" aria-pressed="false">Moderate</button><button class="wkopt" data-ctl="workload" data-val="heavy" aria-pressed="true">Heavy</button></div></div><div class="wkgrp"><span class="ctrllab">Setting</span><div class="wkopts"><button class="wkopt" data-ctl="setting" data-val="sun" aria-pressed="true">Sun</button><button class="wkopt" data-ctl="setting" data-val="shade" aria-pressed="false">Shade</button></div></div><div class="wkgrp"><span class="ctrllab">Workers</span><div class="wkopts"><button class="wkopt" data-ctl="acc" data-val="1" aria-pressed="true">Acclimatised</button><button class="wkopt" data-ctl="acc" data-val="0" aria-pressed="false">New to heat</button></div></div></div><p class="limitline">Limit: <b id="limitv">WBGT 26&deg;C</b><span id="limitrest"> &middot; ISO 7243, heavy work, acclimatised, in the sun</span></p>
+  <div class="wkctl"><div class="wkgrp"><span class="ctrllab">Region</span><div class="wkopts"><button class="wkopt" data-ctl="region" data-val="all" aria-pressed="true">All</button><button class="wkopt" data-ctl="region" data-val="italy" aria-pressed="false">Italy</button><button class="wkopt" data-ctl="region" data-val="europe" aria-pressed="false">Europe</button><button class="wkopt" data-ctl="region" data-val="gulf" aria-pressed="false">Gulf</button><button class="wkopt" data-ctl="region" data-val="americas" aria-pressed="false">Americas</button><button class="wkopt" data-ctl="region" data-val="apac" aria-pressed="false">Asia-Pacific</button></div></div><div class="wkgrp"><span class="ctrllab">Workload</span><div class="wkopts"><button class="wkopt" data-ctl="workload" data-val="light" aria-pressed="false">Light</button><button class="wkopt" data-ctl="workload" data-val="moderate" aria-pressed="false">Moderate</button><button class="wkopt" data-ctl="workload" data-val="heavy" aria-pressed="true">Heavy</button></div></div><div class="wkgrp"><span class="ctrllab">Setting</span><div class="wkopts"><button class="wkopt" data-ctl="setting" data-val="sun" aria-pressed="true">Sun</button><button class="wkopt" data-ctl="setting" data-val="shade" aria-pressed="false">Shade</button></div></div><div class="wkgrp"><span class="ctrllab">Workers</span><div class="wkopts"><button class="wkopt" data-ctl="acc" data-val="1" aria-pressed="true">Acclimatised</button><button class="wkopt" data-ctl="acc" data-val="0" aria-pressed="false">New to heat</button></div></div></div><p class="limitline">Limit: <b id="limitv">WBGT 26&deg;C</b><span id="limitrest"> &middot; ISO 7243, heavy work, acclimatised, in the sun</span></p><details class="wbgtx"><summary>What is WBGT, and why not just the
+ air temperature?</summary>
+<div class="wxbody">
+<p><b>WBGT</b> is the wet-bulb globe temperature: one number combining the four
+things that decide whether a body can stay cool outdoors — humidity, radiant
+heat, air temperature and wind. Occupational heat standards are written against it,
+ISO 7243 among them, which is why this page counts hours in WBGT rather than in
+degrees of air temperature.</p>
+<p>Air temperature on its own is a poor guide. 30&deg;C in dry shade with a breeze
+and 30&deg;C in humid air under open sun are the same forecast and a different day's
+work. The body sheds heat by sweating, and sweat stops evaporating once the air is
+already wet — so humidity, not heat, is usually what makes outdoor work
+unsafe.</p>
+<p>That is why the terms are weighted the way they are:</p>
+<div class="wxbar" role="img" aria-label="WBGT is 70 percent natural wet bulb,
+ 20 percent globe temperature and 10 percent air temperature">
+  <span class="wxseg wx1" style="flex:70"></span>
+  <span class="wxseg wx2" style="flex:20"></span>
+  <span class="wxseg wx3" style="flex:10"></span>
+</div>
+<ul class="wxkey"><li><span class="sw wx1"></span><span class="hd"><b>Natural wet bulb</b><span class="pc">70%</span></span><span class="ds">A thermometer with a wet sleeve, left in the open air. It measures how well sweat can evaporate — which is how a body actually sheds heat. It falls as the air gets drier and windier, and rises as it gets more humid.</span></li><li><span class="sw wx2"></span><span class="hd"><b>Globe</b><span class="pc">20%</span></span><span class="ds">A matt black sphere the size of a grapefruit. It measures radiant heat, which outdoors is mostly the sun. This is the term that makes shade worth having.</span></li><li><span class="sw wx3"></span><span class="hd"><b>Air temperature</b><span class="pc">10%</span></span><span class="ds">The ordinary dry-bulb reading a weather forecast gives you — the smallest part of the answer.</span></li></ul>
+<p style="margin-top:14px">The limit is not a single number either. Harder work
+produces more heat, and a worker not yet used to heat has less room before it
+becomes dangerous, so ISO 7243 sets six of them — from 30&deg;C for light work
+by an acclimatised worker down to 22&deg;C for heavy work by someone new to it. The
+Workload and Workers controls above switch between the six.</p>
+<p><b>What this is not.</b> These hours are computed from a public weather forecast
+for each hub's location. They are not a reading taken on your site, where shade,
+surfaces, enclosure and the work itself all move the number, and they are not an
+instruction to stop work. What the law requires is in the rule column beside them,
+and it comes from dated records, not from this forecast.</p>
+</div></details>
   <p class="srcline">Working day 06:00–20:00 local.
   WBGT computed hour by hour after Liljegren et al. (2008) from Open-Meteo forecast data
   (CC BY 4.0); limits from ISO 7243:2017. Shade recomputes the model with the direct beam
@@ -502,7 +577,7 @@ table.season td.n{font-family:'Space Mono',monospace}
 <section class="card" id="method">
   <span class="kicker">How this page is made</span>
   <h2>Method</h2>
-  <footer class="pagefoot"><div><h4>Forecast</h4><p>Hourly forecasts from the Open-Meteo API, licensed CC BY 4.0, stored as issued and never revised afterwards.</p></div><div><h4>Heat stress</h4><p>WBGT is solved hour by hour after Liljegren et al. (2008) from temperature, humidity, wind, pressure and the direct and diffuse solar components. Shade is the same model with the direct beam removed, not a fixed offset. Limits are the ISO 7243:2017 reference values for the workload and acclimatisation selected.</p></div><div><h4>Rules</h4><p>Every rule shown comes from a dated record with at least one source. A record that has not been confirmed against a primary source is labelled as such and is not counted as a rule in force. Rule summaries are not legal advice.</p></div><div><h4>Archive</h4><p>Each day's forecast, computed hours and rule status are written once and listed in a published manifest of SHA-256 hashes, so a past day can be shown to be unchanged.</p></div><div><h4>Limits</h4><p>The hours are a forecast of heat stress, not an official instruction to stop work, and they are computed for a location rather than a site. Employers keep their own records; this page does not hold them.</p></div><div><h4>Disclosure</h4><p>HeatWatch is published by Groundsuit, which makes active cooling equipment for industrial workers.</p></div></footer>
+  <footer class="pagefoot"><div><h4>Forecast</h4><p>Hourly forecasts from the Open-Meteo API, licensed CC BY 4.0, stored as issued and never revised afterwards.</p></div><div><h4>Heat stress</h4><p>Wet-bulb globe temperature (WBGT) combines humidity, radiant heat, air temperature and wind into the measure occupational standards are written against; it is explained in full under This week. It is solved hour by hour after Liljegren et al. (2008) from temperature, humidity, wind, pressure and the direct and diffuse solar components. Shade is the same model with the direct beam removed, not a fixed offset. Limits are the ISO 7243:2017 reference values for the workload and acclimatisation selected.</p></div><div><h4>Rules</h4><p>Every rule shown comes from a dated record with at least one source. A record that has not been confirmed against a primary source is labelled as such and is not counted as a rule in force. Rule summaries are not legal advice.</p></div><div><h4>Archive</h4><p>Each day's forecast, computed hours and rule status are written once and listed in a published manifest of SHA-256 hashes, so a past day can be shown to be unchanged.</p></div><div><h4>Limits</h4><p>The hours are a forecast of heat stress, not an official instruction to stop work, and they are computed for a location rather than a site. Employers keep their own records; this page does not hold them.</p></div><div><h4>Disclosure</h4><p>HeatWatch is published by Groundsuit, which makes active cooling equipment for industrial workers.</p></div></footer>
 </section>
 </div>
 <script>

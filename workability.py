@@ -385,6 +385,50 @@ def write_csv(out_dir, hubs, computed):
 # Presentation
 
 CSS = """
+/* ---- the WBGT explainer ---------------------------------------------------
+   Two carrying hues plus the page's neutral, validated with the dataviz
+   validator against both surfaces: light #0f7fa8/#dd6b20 and dark
+   #1a89ae/#d97328. The dark pair is CHOSEN for the dark lightness band
+   (L 0.48-0.67), not lightened from the light pair -- the obvious flip lands
+   both hues outside the band. Blue for the wet bulb is a deliberate addition to
+   the palette: the site keeps loud colour for data, and this is data. Grey for
+   air temperature is the point being made, not a shortage of hues. */
+:root{--wx-wet:#0f7fa8; --wx-globe:#dd6b20}
+:root[data-theme="dark"]{--wx-wet:#1a89ae; --wx-globe:#d97328}
+.wbgtx{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.wbgtx > summary{font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;
+  letter-spacing:.06em;color:var(--c3);list-style:none}
+.wbgtx > summary::-webkit-details-marker{display:none}
+.wbgtx > summary::before{content:"+ ";font-weight:700}
+.wbgtx[open] > summary::before{content:"− "}
+.wbgtx > summary:hover{color:var(--ink)}
+.wbgtx > summary:focus-visible{outline:2px solid var(--h4);outline-offset:3px}
+.wxbody{padding-top:14px;max-width:74ch}
+.wxbody p{font-size:14px;color:var(--ink-dim);margin:0 0 11px}
+.wxbar{display:flex;gap:2px;height:30px;margin:18px 0 12px;max-width:560px}
+.wxseg{display:block;height:100%}
+.wxseg:first-child{border-radius:4px 0 0 4px}
+.wxseg:last-child{border-radius:0 4px 4px 0}
+.wx1{background:var(--wx-wet)} .wx2{background:var(--wx-globe)} .wx3{background:var(--muted)}
+.wxkey{margin:0;padding:0;list-style:none;max-width:560px}
+/* Two columns at every width, and the name and its share are ONE cell. Splitting
+   them into separate grid items dropped the "70%" onto its own line on a phone,
+   which read as a stray number under the label it belongs to. */
+.wxkey li{display:grid;grid-template-columns:14px 1fr;gap:3px 9px;
+  padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-dim)}
+.wxkey .sw{width:14px;height:14px;border-radius:3px;margin-top:3px}
+.wxkey .hd{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.wxkey b{font-weight:600;color:var(--ink)}
+.wxkey .pc{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink);
+  font-weight:700}
+.wxkey .ds{grid-column:2}
+/* forced-colors strips the fills; the shares are written out in the key below,
+   so the bar becomes an outline rather than disappearing into one block */
+@media(forced-colors:active){
+  .wxseg{border:1px solid CanvasText}
+  .wxkey .sw{border:1px solid CanvasText}
+}
+
 /* ---- controls ---- */
 .wkctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px 26px;
   margin-top:24px;border-top:1px solid var(--line);padding-top:18px}
@@ -849,6 +893,70 @@ render();
 """
 
 
+
+def wbgt_explainer():
+    """What WBGT is, in the words an HSE manager would use.
+
+    Folded into a <details> and placed where the term first bites -- directly
+    under the limit line -- rather than banished to Method. A reader meets "WBGT
+    26 C" in the controls and in every row of the table; the explanation has to be
+    within reach of that, and closed by default so it never pushes the data down.
+
+    The one thing worth a picture is the weighting: people assume a heat index is
+    mostly temperature, and the wet-bulb term carries seven tenths of it. That is
+    the whole reason a 30 C forecast tells you so little."""
+    parts = [
+        ("wx1", "Natural wet bulb", "70%",
+         "A thermometer with a wet sleeve, left in the open air. It measures how "
+         "well sweat can evaporate \u2014 which is how a body actually sheds heat. "
+         "It falls as the air gets drier and windier, and rises as it gets more humid."),
+        ("wx2", "Globe", "20%",
+         "A matt black sphere the size of a grapefruit. It measures radiant heat, "
+         "which outdoors is mostly the sun. This is the term that makes shade worth "
+         "having."),
+        ("wx3", "Air temperature", "10%",
+         "The ordinary dry-bulb reading a weather forecast gives you \u2014 the "
+         "smallest part of the answer."),
+    ]
+    key = "".join(
+        f'<li><span class="sw {cls}"></span>'
+        f'<span class="hd"><b>{esc(name)}</b><span class="pc">{pc}</span></span>'
+        f'<span class="ds">{esc(desc)}</span></li>'
+        for cls, name, pc, desc in parts)
+    return f"""<details class="wbgtx"><summary>What is WBGT, and why not just the
+ air temperature?</summary>
+<div class="wxbody">
+<p><b>WBGT</b> is the wet-bulb globe temperature: one number combining the four
+things that decide whether a body can stay cool outdoors \u2014 humidity, radiant
+heat, air temperature and wind. Occupational heat standards are written against it,
+ISO 7243 among them, which is why this page counts hours in WBGT rather than in
+degrees of air temperature.</p>
+<p>Air temperature on its own is a poor guide. 30&deg;C in dry shade with a breeze
+and 30&deg;C in humid air under open sun are the same forecast and a different day's
+work. The body sheds heat by sweating, and sweat stops evaporating once the air is
+already wet \u2014 so humidity, not heat, is usually what makes outdoor work
+unsafe.</p>
+<p>That is why the terms are weighted the way they are:</p>
+<div class="wxbar" role="img" aria-label="WBGT is 70 percent natural wet bulb,
+ 20 percent globe temperature and 10 percent air temperature">
+  <span class="wxseg wx1" style="flex:70"></span>
+  <span class="wxseg wx2" style="flex:20"></span>
+  <span class="wxseg wx3" style="flex:10"></span>
+</div>
+<ul class="wxkey">{key}</ul>
+<p style="margin-top:14px">The limit is not a single number either. Harder work
+produces more heat, and a worker not yet used to heat has less room before it
+becomes dangerous, so ISO 7243 sets six of them \u2014 from 30&deg;C for light work
+by an acclimatised worker down to 22&deg;C for heavy work by someone new to it. The
+Workload and Workers controls above switch between the six.</p>
+<p><b>What this is not.</b> These hours are computed from a public weather forecast
+for each hub's location. They are not a reading taken on your site, where shade,
+surfaces, enclosure and the work itself all move the number, and they are not an
+instruction to stop work. What the law requires is in the rule column beside them,
+and it comes from dated records, not from this forecast.</p>
+</div></details>"""
+
+
 def controls_html():
     def grp(label, ctl, opts, default):
         b = "".join(
@@ -866,7 +974,8 @@ def controls_html():
         + '</div>'
         '<p class="limitline">Limit: <b id="limitv">WBGT 26&deg;C</b>'
         '<span id="limitrest"> &middot; ISO 7243, heavy work, acclimatised, in the sun</span>'
-        '</p>')
+        '</p>'
+        + wbgt_explainer())
 
 
 def key_numbers_html():
