@@ -525,6 +525,9 @@ h3{{letter-spacing:-.015em}}
    problem, where they sat at a different x on every page. */
 .mini{{display:none;align-items:center;gap:9px;flex:none;white-space:nowrap}}
 .topbar.compact .mini{{display:flex}}
+/* both bar items are compact-only: at rest the bar is tabs alone, flush left */
+.baronly{{display:none}}
+.topbar.compact .baronly{{display:inline-flex}}
 @media(max-width:700px){{.topbar.compact .mini{{display:none}}}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
@@ -736,7 +739,10 @@ def topbar(active, page_title, nav):
     # unstuck two scroll-lines in.
     return (f'<nav class="topbar" id="topbar"><div class="topinner">'
             f'<span class="mini" aria-hidden="true">{brandmark()}<span class="mininame">HeatWatch</span></span>'
-            f'<span class="tabs">{tabs}</span></div></nav>')
+            f'<span class="tabs">{tabs}</span><span class="spacer"></span>'
+            f'<button class="ghost baronly" onclick="tog()" aria-label="Switch between '
+            f'light and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
+            f'</div></nav>')
 
 
 def hero(title, sub, kicker, dl):
