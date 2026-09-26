@@ -13,6 +13,8 @@ on:
     branches: [master]
     paths:
       - "*.html"
+      - "*.csv"
+      - "archive/**"
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -41,16 +43,38 @@ jobs:
         run: |
           mkdir -p _site
           # Still an allowlist, still deny-by-default -- the names are explicit.
-          # A page absent from the build (health.html, until the run collects a
-          # health section) is skipped rather than failing the publish.
-          # One page now: the per-topic pages became sections of index.html.
+          # A page absent from the build is skipped rather than failing the
+          # publish: workability.html needs a stored forecast, so a day the fetch
+          # did not run publishes Updates alone rather than nothing.
           cp index.html _site/index.html
+          # "if", not "[ -f x ] && cp": the runner is bash -e, and a test that
+          # fails as the left side of && takes the exit status of the whole list
+          # with it, so a missing optional file would fail the publish.
+          if [ -f workability.html ]; then cp workability.html _site/workability.html; fi
+          if [ -f workability-week.csv ]; then
+            cp workability-week.csv _site/workability-week.csv
+          fi
+          # The archive is served as static JSON from the same origin, one file
+          # per hub per date plus the published manifest of hashes. It is
+          # append-only, so this copies the tree rather than naming files.
+          if [ -d archive ]; then
+            mkdir -p _site/archive
+            cp -R archive/. _site/archive/
+          fi
           echo "publishing:"; ls -la _site
           # Nothing else may reach the artifact. generate_site.py, globe.py,
           # world_paths.json and CLAUDE.md are build inputs, not pages.
-          for leak in generate_site.py globe.py world_paths.json CLAUDE.md README.md; do
+          for leak in generate_site.py globe.py workability.py wbgt.py test_wbgt.py \
+                      world_paths.json CLAUDE.md README.md; do
             if [ -e "_site/$leak" ]; then echo "::error::$leak reached the artifact"; exit 1; fi
           done
+          # The archive carries only what the build wrote. Anything else under
+          # it is a mistake, and a published mistake is permanent -- the whole
+          # point of the manifest is that a past file can be shown unchanged.
+          if [ -d _site/archive ]; then
+            bad=$(find _site/archive -type f ! -name '*.json' -print -quit)
+            if [ -n "$bad" ]; then echo "::error::non-JSON file in archive: $bad"; exit 1; fi
+          fi
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

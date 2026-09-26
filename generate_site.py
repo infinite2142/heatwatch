@@ -26,6 +26,8 @@ from datetime import date, timedelta
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import globe  # noqa: E402  (local module, after sys.path is set)
+import wbgt  # noqa: E402
+import workability  # noqa: E402
 
 WORLD = os.path.join(HERE, "world_paths.json")
 NUMRE = re.compile(r"-?\d+(?:\.\d+)?")
@@ -469,36 +471,83 @@ def derive_signals(history, today, backfill=None):
     return out, depth
 
 
-def derive_rules(history):
-    """Heat-at-work rules, read out of the workers sections. 2 = in force,
-    1 = draft or consultation live. Anything the reports have not established is
-    left unmarked rather than guessed."""
+# Subnational rule records belong to a country on the world map. Listed rather
+# than sliced off the prefix so an unrecognised code is a build failure instead of
+# a silently unshaded country.
+JUR_COUNTRY = {"IT": "ITA", "US": "USA", "AU": "AUS", "GB": "GBR", "ES": "ESP",
+               "AT": "AUT", "BE": "BEL", "GR": "GRC", "AE": "ARE", "QA": "QAT",
+               "SA": "SAU", "SG": "SGP", "IN": "IND"}
+
+
+def jur_to_iso3(jur):
+    """The country a rule record shades, or None if it shades none."""
+    jur = (jur or "").strip()
+    if "-" in jur:
+        return JUR_COUNTRY.get(jur.split("-")[0].upper())
+    return jur.upper() if len(jur) == 3 and jur.isalpha() else None
+
+
+RULE_STATUS_TEXT = {
+    "in_force": "In force",
+    "in_force_seasonal_inactive": "In force, season closed",
+    "expired": "Expired",
+    "draft": "Draft",
+    "consultation": "At consultation",
+    "none": "No rule",
+}
+
+
+def rules_from_db(rules, today):
+    """Heat-at-work rule status per country, read from the rules database.
+
+    This replaces derive_rules(), which guessed: it marked a country "In force" if
+    a workers item named it and the prose contained a word like "limit", "ban" or
+    "binding". An EU-level consultation item therefore tagged member states --
+    Finland, Denmark, Sweden, Poland, Romania, Ireland and Norway all showed a
+    rule in force, and Norway is not in the EU -- while Saudi Arabia, Kuwait, Oman
+    and Bahrain showed nothing at all, although all four run midday bans.
+
+    Two states reach the map, because a hairline is not a place for nuance:
+      2 solid  -- in force, in season, and confirmed against a primary source
+      1 dashed -- everything else the database knows about: out of season,
+                  expired, draft, at consultation, or reported but not yet
+                  confirmed
+    The tooltip carries which of those it is, in words.
+
+    A supranational record shades nothing. That is the whole of the A2 bug, and it
+    is one line rather than a heuristic."""
     out = {}
-    for _d, st in history:
-        for it in (st.get("sections") or {}).get("workers", []) or []:
-            text = f"{it.get('title','')} {it.get('body','')} {it.get('status','')}"
-            low = text.lower()
-            isos = countries_in(text)
-            if not isos:
-                continue
-            lvl = 0
-            if any(w in low for w in ("in force", "binding", "enforced", "ban ", "bans ",
-                                      "halted", "stoppage", "limit")):
-                lvl = 2
-            if any(w in low for w in ("consultation", "draft", "proposed", "nprm",
-                                      "under revision", "pending", "planned")):
-                lvl = max(lvl, 1)
-            if not lvl:
-                continue
-            for iso in isos:
-                prev = out.get(iso)
-                if not prev or lvl > prev[0]:
-                    out[iso] = (lvl, it.get("title", ""))
+    for r in rules.values():
+        if r.get("level") == "supranational":
+            continue
+        iso = jur_to_iso3(r.get("jurisdiction"))
+        if not iso:
+            continue
+        status = r.get("status")
+        if status not in RULE_STATUS_TEXT:
+            raise SystemExit(f"rule {r.get('id')} has unknown status {status!r}")
+        if status == "none":
+            continue
+        seasonal_off = (status == "in_force_seasonal_inactive"
+                        or (r.get("season") and not workability.season_active(r, today)))
+        confirmed = workability.is_confirmed(r)
+        if status == "in_force" and confirmed and not seasonal_off:
+            lvl, short = 2, "In force"
+        elif status in ("draft", "consultation"):
+            lvl, short = 1, RULE_STATUS_TEXT[status]
+        elif not confirmed:
+            lvl, short = 1, "Reported, unconfirmed"
+        else:
+            lvl, short = 1, RULE_STATUS_TEXT[status]
+        note = f"{short}: {r.get('title','')}"
+        prev = out.get(iso)
+        if not prev or lvl > prev[0]:
+            out[iso] = [lvl, note, short]
     return out
 
 
 # ---------------------------------------------------------------------------- #
-def head(title,desc):
+def head(title, desc, extra_css=""):
     return f"""<!doctype html><html lang="en" data-theme="light"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}">
@@ -636,6 +685,17 @@ h3{{letter-spacing:-.015em}}
 .tab:hover .ico,.tab[aria-current="true"] .ico{{color:var(--h4)}}
 .tab:hover{{color:var(--ink)}}
 .tab[aria-current="true"]{{color:var(--ink);border-bottom-color:var(--h4)}}
+
+/* ---- view switch: the two halves of the site, in the first sticky bar ---- */
+.viewsw{{display:flex;gap:2px;border:1px solid var(--line-2);border-radius:7px;padding:2px}}
+.viewsw a{{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-decoration:none;
+  padding:5px 11px;border-radius:5px;white-space:nowrap}}
+.viewsw a:hover{{color:var(--ink)}}
+.viewsw a[aria-current="page"]{{background:var(--h4);color:#fff}}
+:root[data-theme="dark"] .viewsw a[aria-current="page"]{{color:#16130f}}
+@media(max-width:560px){{.viewsw a{{padding:5px 8px;font-size:10px}}
+  .brandlink .mininame{{display:none}}}}
 
 .spacer{{flex:1}}
 .ghost{{background:none;border:0;cursor:pointer;padding:6px;color:var(--muted);
@@ -787,6 +847,7 @@ summary{{cursor:pointer}}
 .pc .pro h5{{color:var(--good)}} .pc .con h5{{color:var(--serious)}} .pc .app h5{{color:var(--c3)}}
 .note{{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--muted);margin-top:22px;
   border-top:1px solid var(--line);padding-top:13px;line-height:1.7}}
+{extra_css}
 </style></head><body>
 """
 
@@ -813,13 +874,31 @@ def nav_items(state):
     return out
 
 
-def brandrow():
+VIEWS = [("updates", "Updates", "index.html"), ("workability", "Workability", "workability.html")]
+
+
+def viewswitch(active):
+    """The two halves of the site. A segmented control rather than two more tabs:
+    Updates and Workability are different questions, not two more topics, and the
+    section tabs in the bar below already belong to whichever one you are on."""
+    links = "".join(
+        f'<a href="{href}"' + (' aria-current="page"' if key == active else "")
+        + f'>{esc(label)}</a>' for key, label, href in VIEWS)
+    return f'<nav class="viewsw" aria-label="View">{links}</nav>'
+
+
+def brandrow(active_view="updates", with_switch=True):
     """Brand top-left, theme toggle top-right. Sticky, and NOT wrapped in .wrap --
     a sticky element can only stick inside its parent's box, which is the mistake
-    that kept the nav from sticking the first time."""
+    that kept the nav from sticking the first time.
+
+    The view switch sits here rather than in the tab bar so its height is the
+    brand row's, which is already accounted for in scroll-margin-top."""
+    sw = viewswitch(active_view) if with_switch else ""
     return (f'<span id="top"></span><div class="brandrow" id="brandrow"><div class="brandinner">'
             f'<span class="brandlink">{brandmark()}'
             f'<span class="mininame">HeatWatch</span></span>'
+            f'{sw}'
             f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
             f'and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
             f'</div></div>')
@@ -841,12 +920,13 @@ def topbar(active, page_title, nav):
             f'<span class="tabs">{tabs}</span></div></nav>')
 
 
-def hero(title, sub, kicker, dl):
-    return brandrow() + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=310.0, cy=160.0)}
+def hero(title, sub, kicker, dl, meta=None, active_view="updates"):
+    meta = meta or f"Updated {esc(dl)} \u00b7 rebuilt daily from primary sources"
+    return brandrow(active_view) + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=310.0, cy=160.0)}
 <div class="hero-txt"><div class="eyebrow">{esc(kicker)}</div>
 <h1 class="hero-title">{esc(title)}</h1>
 <p class="hero-sub">{esc(sub)}</p>
-<div class="hero-meta">Updated {esc(dl)} · rebuilt daily from primary sources</div>
+<div class="hero-meta">{meta}</div>
 </div></header></div>"""
 
 
@@ -1057,7 +1137,7 @@ def rule_overlay(rules, geom):
 
     The repeated coordinate text is ~19KB raw and close to free after gzip."""
     out = []
-    for iso, (lvl, _note) in rules.items():
+    for iso, (lvl, _note, _short) in rules.items():
         d = geom.get(iso)
         if not d:
             continue
@@ -1073,8 +1153,9 @@ def legend_html():
                     f'{esc(COUNTLAB[i])}</span>' for i in range(1, 5))
     return (f'<div class="legend"><span>Signals in window</span>{fills}'
             f'<span class="lg"><span class="lgd" style="background:var(--land)"></span>None</span>'
-            f'<span class="lg"><span class="lgo"></span>Heat-at-work rules in force</span>'
-            f'<span class="lg"><span class="lgo dash"></span>Draft / consultation</span></div>')
+            f'<span class="lg"><span class="lgo"></span>Rule in force, confirmed source</span>'
+            f'<span class="lg"><span class="lgo dash"></span>Seasonal, draft or unconfirmed</span>'
+            f'</div>')
 
 
 def table_view(sig, rules, names):
@@ -1085,7 +1166,7 @@ def table_view(sig, rules, names):
         r = rules.get(iso)
         tr += (f'<tr><td class="n">{esc(names.get(iso, iso))}</td><td class="n">{rec["n"]}</td>'
                f'<td>{esc(cats)}</td>'
-               f'<td>{esc("In force" if r and r[0] == 2 else "Draft" if r else "—")}</td></tr>')
+               f'<td>{esc(r[2] if r else "—")}</td></tr>')
     if not tr:
         return ""
     return (f'<details><summary class="ctrllab" style="margin-top:14px">Table view — '
@@ -1302,7 +1383,7 @@ function show(e,iso){if(!tip)return;
    h+='<div class="sig">'+svgFor(CATS[c][1])+'<span>'+clip(r.hit[c],95)+'</span></div>';}
  } else { h+='<div class="none">No signal in this window</div>'; }
  var g=RULES[iso];
- if(g)h+='<div class="rul">'+(g[0]===2?'In force: ':'Draft: ')+clip(g[1],70)+'</div>';
+ if(g)h+='<div class="rul">'+clip(g[1],92)+'</div>';
  tip.innerHTML=h;tip.style.opacity=1;
  if(innerWidth<=700)return;          /* CSS pins it to the bottom on a phone */
  var x=e.clientX+14,y=e.clientY+14;
@@ -1366,7 +1447,8 @@ NAMES = {
  "NCL": "New Caledonia", "NIC": "Nicaragua", "PAN": "Panama",
  "PNG": "Papua New Guinea", "PRI": "Puerto Rico", "PRK": "North Korea",
  "PSE": "Palestine", "RWA": "Rwanda", "SEN": "Senegal",
- "SLB": "Solomon Islands", "SLE": "Sierra Leone", "SLV": "El Salvador",
+ "SGP": "Singapore", "SLB": "Solomon Islands", "SLE": "Sierra Leone",
+ "SLV": "El Salvador",
  "SOL": "Somaliland", "SRB": "Serbia", "SSD": "South Sudan",
  "SUR": "Suriname", "SVK": "Slovakia", "SVN": "Slovenia",
  "SWZ": "Eswatini", "TGO": "Togo", "TJK": "Tajikistan",
@@ -1437,7 +1519,7 @@ def solutions_block(state):
 </section>"""
 
 
-def page(state, sig, depth, rules, nav, dl):
+def page(state, sig, depth, rules, nav, dl, has_workability=True):
     vb, geom = _map_geometry()
     paths = build_map_paths(geom)
     offered = [w for w, days in WINDOWS
@@ -1458,8 +1540,11 @@ def page(state, sig, depth, rules, nav, dl):
         for w in offered)
     sections = "".join(section_block(state, slug, label, key)
                        for slug, label, _t, key in SECTORS)
+    hero_noswitch = (brandrow("updates", with_switch=False)
+                     + hero("HeatWatch", DESC, "Global heat intelligence", dl).split("</div></div>", 1)[1]
+                     if not has_workability else "")
     return head("HeatWatch — global heat intelligence", DESC) + f"""
-{hero("HeatWatch", DESC, "Global heat intelligence", dl)}
+{hero("HeatWatch", DESC, "Global heat intelligence", dl, active_view="updates") if has_workability else hero_noswitch}
 {topbar("top", "", nav)}
 <div class="wrap">
 <section class="card" id="map">
@@ -1498,10 +1583,16 @@ def page(state, sig, depth, rules, nav, dl):
 <script>{JS_COMMON}{js}</script></body></html>"""
 
 
-def check_names(sig):
+def check_names(sig, rules=None):
     """Every ISO3 the map can show must have a name. BHR was missing, so the table
-    printed "BHR" -- a build failure is better than a country code in the page."""
-    seen = {iso for w in sig.values() for iso in w}
+    printed "BHR" -- a build failure is better than a country code in the page.
+
+    `rules` is not optional in practice. The guard originally read the signal map
+    alone, and the rules database then began outlining countries the reports had
+    never named -- Singapore among them, which no state file mentions, so the map
+    tooltip rendered a bare "SGP". A country can now reach the page by TWO routes
+    and both have to be checked, or this guard only ever catches the last bug."""
+    seen = {iso for w in sig.values() for iso in w} | set(rules or {})
     missing = sorted(seen - set(NAMES))
     if missing:
         raise SystemExit(f"ISO3 codes with no name in NAMES: {missing}")
@@ -1533,6 +1624,66 @@ def check_terms(html, denylist_path):
     print("internal-term check: clean")
 
 
+WK_DESC = ("A seven-day forecast of working hours too hot for outdoor work at 18 work hubs, "
+           "against the heat-at-work rule that applies there and what employers must record.")
+
+WK_NAV = [("week", "This week"), ("hubs", "By hub"), ("season", "Season record"),
+          ("method", "Method")]
+
+
+def workability_page(wk, state, dl, issued):
+    """Assembled from the same chrome as the Updates page, because it is the same
+    site: one brand row, one tab bar, one footer pattern."""
+    meta = (f"Issued {esc(issued)} \u00b7 working day "
+            f"{wbgt.WORK_START:02d}:00\u2013{wbgt.WORK_END:02d}:00 local")
+    tabs = "".join(
+        f'<a class="tab" href="#{slug}" data-jump="{slug}">{esc(label)}</a>'
+        for slug, label in WK_NAV)
+    return head("HeatWatch — workable hours", WK_DESC, wk["css"]) + f"""
+{hero("Workable hours", WK_DESC, "Heat, work and the rules", dl, meta=meta,
+      active_view="workability")}
+<nav class="topbar" id="topbar"><div class="topinner"><span class="tabs">{tabs}</span></div></nav>
+<div class="wrap">
+{wk["sections"]}
+<section class="card" id="method">
+  <span class="kicker">How this page is made</span>
+  <h2>Method</h2>
+  {method_html(state)}
+</section>
+</div>
+<script>{JS_COMMON}{wk["js"]}</script></body></html>"""
+
+
+def method_html(state):
+    """The Workability page's own small print, in the footer pattern. Written here
+    rather than taken from the state file: it describes this page's method, and a
+    page that computes its own numbers has to say how."""
+    m = state.get("method") or {}
+    blocks = [
+        ("Forecast", "Hourly forecasts from the Open-Meteo API, licensed CC BY 4.0, stored as "
+                     "issued and never revised afterwards."),
+        ("Heat stress", "WBGT is solved hour by hour after Liljegren et al. (2008) from "
+                        "temperature, humidity, wind, pressure and the direct and diffuse "
+                        "solar components. Shade is the same model with the direct beam "
+                        "removed, not a fixed offset. Limits are the ISO 7243:2017 reference "
+                        "values for the workload and acclimatisation selected."),
+        ("Rules", "Every rule shown comes from a dated record with at least one source. A "
+                  "record that has not been confirmed against a primary source is labelled "
+                  "as such and is not counted as a rule in force. Rule summaries are not "
+                  "legal advice."),
+        ("Archive", "Each day's forecast, computed hours and rule status are written once and "
+                    "listed in a published manifest of SHA-256 hashes, so a past day can be "
+                    "shown to be unchanged."),
+        ("Limits", "The hours are a forecast of heat stress, not an official instruction to "
+                   "stop work, and they are computed for a location rather than a site. "
+                   "Employers keep their own records; this page does not hold them."),
+    ]
+    if m.get("disclosure"):
+        blocks.append(("Disclosure", m["disclosure"]))
+    return ('<footer class="pagefoot">' + "".join(
+        f'<div><h4>{esc(h)}</h4><p>{esc(t)}</p></div>' for h, t in blocks) + "</footer>")
+
+
 def main():
     if len(sys.argv) not in (3, 4):
         raise SystemExit(__doc__)
@@ -1546,18 +1697,44 @@ def main():
     history = load_history(state_path)
     core_dir = os.path.dirname(os.path.dirname(os.path.abspath(state_path)))
     sig, depth = derive_signals(history, today, backfill_from_reports(core_dir))
-    rules = derive_rules(history)
     nav = nav_items(state)
 
-    print(f"named countries: {check_names(sig)}")
-    html = page(state, sig, depth, rules, nav, dl)
-    leftover = [w for w in html.split() if w.startswith("__") and w.endswith("__")]
-    if leftover:
-        raise SystemExit(f"unsubstituted placeholders: {leftover[:5]}")
-    check_terms(html, denylist or os.path.join(core_dir, "publish-denylist.txt"))
-    with open(os.path.join(out_dir, "index.html"), "w") as fh:
-        fh.write(html)
-    print(f"wrote index.html — {len(html):,} bytes")
+    # Rule status now comes from the database, shared with the Workability page, so
+    # the map and the table can no longer disagree about what is in force.
+    rule_db = workability.load_rules(core_dir)
+    rules = rules_from_db(rule_db, today)
+    print(f"rule records: {len(rule_db)} · countries outlined: {len(rules)}")
+
+    wk = workability.render(core_dir, today, state["meta"].get("issued_utc") or dl)
+    if wk:
+        workability.check_rules(wk["hubs"], wk["rules"])
+    else:
+        print("WARNING: no stored forecast for this date -- Workability page SKIPPED")
+
+    print(f"named countries: {check_names(sig, rules)}")
+    pages = {"index.html": page(state, sig, depth, rules, nav, dl, has_workability=bool(wk))}
+    if wk:
+        pages["workability.html"] = workability_page(
+            wk, state, dl, state["meta"].get("issued_utc") or dl)
+
+    denypath = denylist or os.path.join(core_dir, "publish-denylist.txt")
+    for name, html in pages.items():
+        leftover = [w for w in html.split() if w.startswith("__") and w.endswith("__")]
+        if leftover:
+            raise SystemExit(f"{name}: unsubstituted placeholders: {leftover[:5]}")
+        print(f"-- {name}")
+        check_terms(html, denypath)
+        with open(os.path.join(out_dir, name), "w") as fh:
+            fh.write(html)
+        print(f"wrote {name} — {len(html):,} bytes")
+
+    if wk:
+        n = workability.write_csv(out_dir, wk["hubs"], wk["computed"])
+        written, listed = workability.write_archive(
+            out_dir, today.isoformat(), wk["hubs"], wk["computed"], wk["rules"], today,
+            state["meta"].get("issued_utc") or today.isoformat())
+        print(f"wrote workability-week.csv — {n} rows")
+        print(f"archive {today.isoformat()}: {written} new file(s), {listed} in the manifest")
 
     # The per-topic pages are now sections. Remove any left from an earlier build so
     # a stale page cannot keep being served.
