@@ -72,11 +72,12 @@ SECTION_CAT = {"extremes": "heat", "fire": "fire", "workers": "workers", "health
 # The page title IS the tab label. Carrying a longer formal name ("Climate &
 # records") meant the tab and the page heading disagreed on what the page is
 # called, for no gain.
+# Broad to specific: climate, then fire, then who it reaches, then what to do.
 SECTORS = [
     ("climate", "Climate", "Climate", "extremes"),
+    ("fire",    "Fire",    "Fire", "fire"),
     ("health",  "Health",  "Health", "health"),
     ("workers", "Workers", "Workers", "workers"),
-    ("fire",    "Fire",    "Fire", "fire"),
 ]
 
 ICONS = {
@@ -143,6 +144,90 @@ REGION_DEFS = [
       "SWE", "NOR", "FIN", "DNK", "ROU", "UKR", "TUR"]),
     (("global", "world", "copernicus", "planet"), "globe", "Global", None),
 ]
+
+# Map placement is a SEPARATE problem from grouping a headline under a region
+# heading, and conflating them was a real error: REGION_DEFS fans "Brazil" out to
+# every country in South America, so Argentina, Chile, Peru, Colombia, Bolivia and
+# Paraguay each claimed a signal whose text was about Brazil -- and a Sahel item
+# tagged South Africa and Angola. The map said 63 countries when the briefing named
+# about a dozen.
+#
+# So: name a country, tag that country. Fan out only for phrases that genuinely
+# describe a multi-country region, because then the item really is about all of them.
+COUNTRY_ALIASES = {
+    "ESP": ["spain", "spanish"], "PRT": ["portugal", "portuguese"],
+    "FRA": ["france", "french"], "DEU": ["germany", "german"],
+    "ITA": ["italy", "italian"], "GRC": ["greece", "greek"],
+    "GBR": ["united kingdom", "britain", "british", "england", "english",
+            "scotland", "wales", "uk"],
+    "IRL": ["ireland", "irish"], "NLD": ["netherlands", "dutch"],
+    "BEL": ["belgium", "belgian"], "POL": ["poland", "polish"],
+    "SWE": ["sweden", "swedish"], "NOR": ["norway", "norwegian"],
+    "FIN": ["finland", "finnish"], "DNK": ["denmark", "danish"],
+    "ROU": ["romania", "romanian"], "UKR": ["ukraine", "ukrainian"],
+    "TUR": ["turkey", "türkiye", "turkish"], "CYP": ["cyprus", "cypriot"],
+    "MAR": ["morocco", "moroccan"], "DZA": ["algeria", "algerian"],
+    "TUN": ["tunisia", "tunisian"], "LBY": ["libya", "libyan"],
+    "EGY": ["egypt", "egyptian"], "SDN": ["sudan", "sudanese"],
+    "NER": ["niger"], "MLI": ["mali"], "TCD": ["chad"], "NGA": ["nigeria", "nigerian"],
+    "ETH": ["ethiopia", "ethiopian"], "SOM": ["somalia", "somali"],
+    "KEN": ["kenya", "kenyan"], "ZAF": ["south africa", "south african"],
+    "AGO": ["angola"], "COD": ["democratic republic of congo", "dr congo"],
+    "MOZ": ["mozambique"], "ZWE": ["zimbabwe"], "NAM": ["namibia"], "BWA": ["botswana"],
+    "SAU": ["saudi arabia", "saudi"], "ARE": ["united arab emirates", "uae"],
+    "QAT": ["qatar", "qatari"], "OMN": ["oman", "omani"], "KWT": ["kuwait", "kuwaiti"],
+    "BHR": ["bahrain"], "IRQ": ["iraq", "iraqi"], "IRN": ["iran", "iranian"],
+    "JOR": ["jordan"], "SYR": ["syria", "syrian"], "YEM": ["yemen"],
+    "IND": ["india", "indian"], "PAK": ["pakistan", "pakistani"],
+    "BGD": ["bangladesh", "bangladeshi"], "NPL": ["nepal"], "LKA": ["sri lanka"],
+    "CHN": ["china", "chinese"], "JPN": ["japan", "japanese"],
+    "KOR": ["south korea", "korean"], "VNM": ["vietnam", "vietnamese"],
+    "THA": ["thailand", "thai"], "PHL": ["philippines", "filipino"],
+    "IDN": ["indonesia", "indonesian"],
+    "AUS": ["australia", "australian"], "NZL": ["new zealand"],
+    "USA": ["united states", "u.s.", "america", "american", "osha", "california",
+            "texas", "arizona", "florida"],
+    "CAN": ["canada", "canadian"], "MEX": ["mexico", "mexican"],
+    "BRA": ["brazil", "brazilian"], "ARG": ["argentina", "argentine"],
+    "CHL": ["chile", "chilean"], "PER": ["peru", "peruvian"],
+    "COL": ["colombia", "colombian"], "BOL": ["bolivia"], "PRY": ["paraguay"],
+    "RUS": ["russia", "russian"], "KAZ": ["kazakhstan"],
+}
+
+# Phrases that really are about several countries at once.
+REGION_TERMS = {
+    "the gulf": ["SAU", "ARE", "QAT", "OMN", "KWT", "BHR"],
+    "gulf states": ["SAU", "ARE", "QAT", "OMN", "KWT", "BHR"],
+    "gcc": ["SAU", "ARE", "QAT", "OMN", "KWT", "BHR"],
+    "sahel": ["NER", "MLI", "TCD", "SDN", "NGA"],
+    "west africa": ["NER", "MLI", "NGA", "TCD"],
+    "horn of africa": ["ETH", "SOM", "KEN", "SDN"],
+    "mediterranean": ["ESP", "PRT", "FRA", "ITA", "GRC", "TUR", "MAR", "DZA", "TUN"],
+    "southern europe": ["ESP", "PRT", "ITA", "GRC"],
+    "northern europe": ["GBR", "IRL", "DEU", "NLD", "DNK", "SWE", "NOR", "FIN"],
+    "european union": ["ESP", "PRT", "FRA", "DEU", "ITA", "GRC", "POL", "ROU",
+                       "NLD", "BEL", "SWE", "FIN", "DNK", "IRL"],
+    "south asia": ["IND", "PAK", "BGD", "NPL", "LKA"],
+    "southeast asia": ["VNM", "THA", "PHL", "IDN"],
+    "south america": ["BRA", "ARG", "CHL", "PER", "COL", "BOL", "PRY"],
+    "latin america": ["BRA", "ARG", "CHL", "PER", "COL", "MEX"],
+}
+
+
+def countries_in(text):
+    """ISO3s this text actually refers to. A named country tags only itself."""
+    low = " " + re.sub(r"\s+", " ", text.lower()) + " "
+    hits = set()
+    for iso, names in COUNTRY_ALIASES.items():
+        for nm in names:
+            if re.search(r"(?<![a-z])" + re.escape(nm) + r"(?![a-z])", low):
+                hits.add(iso)
+                break
+    for phrase, isos in REGION_TERMS.items():
+        if phrase in low:
+            hits.update(isos)
+    return hits
+
 
 # ---------------------------------------------------------------------------- #
 # Editorial content: slow-changing, reviewed by a human, and deliberately NOT
@@ -337,10 +422,7 @@ def backfill_from_reports(core_dir):
                 continue
             if not cur or not line.strip():
                 continue
-            _k, _l, isos = region_of(line)
-            if not isos:
-                continue
-            for iso in isos:
+            for iso in countries_in(line):
                 per.setdefault(iso, set()).add(cur)
     return out
 
@@ -370,10 +452,7 @@ def derive_signals(history, today, backfill=None):
             oldest = min(oldest, d)
             for cat, it in items_of(st):
                 text = f"{it.get('title','')} {it.get('body','')} {it.get('so_what','')}"
-                _key, _label, isos = region_of(text)
-                if not isos:
-                    continue
-                for iso in isos:
+                for iso in countries_in(text):
                     per.setdefault(iso, {}).setdefault(cat, it.get("title", ""))
         # Then the archive, which only ever adds a category that has no entry
         # yet, and labels it generically -- history contributes counts, not prose.
@@ -399,7 +478,7 @@ def derive_rules(history):
         for it in (st.get("sections") or {}).get("workers", []) or []:
             text = f"{it.get('title','')} {it.get('body','')} {it.get('status','')}"
             low = text.lower()
-            _k, _l, isos = region_of(text)
+            isos = countries_in(text)
             if not isos:
                 continue
             lvl = 0
@@ -425,8 +504,7 @@ def head(title,desc):
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}">
 <link rel="icon" href="{globe.favicon()}">
 <script>/* before paint: no flash, and the choice survives navigation */
-(function(){{try{{var t=localStorage.getItem('hw-theme');
-if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+(function(){{try{{var t=localStorage.getItem('hw-theme')||'light';
 document.documentElement.dataset.theme=t;}}catch(e){{}}}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -484,11 +562,15 @@ h3{{letter-spacing:-.015em}}
    the globe has its own space. */
 @media(max-width:920px){{
   .masthead{{display:flex;flex-direction:column;align-items:flex-start;
-    padding:36px 0 30px;overflow:visible}}
+    padding:18px 0 18px;overflow:visible}}
+  .hero-title{{margin:8px 0 10px}}
+  .hero-meta{{margin-top:11px}}
   .hero-txt{{order:1;max-width:none}}
   .hero-art{{order:2;position:static;top:auto;right:auto;transform:none;
-    width:min(84%,330px);margin:26px auto 0;
+    width:min(74%,290px);margin:14px auto 0;
     -webkit-mask-image:none;mask-image:none}}
+  .card{{padding:32px 0 0;margin-top:30px}}
+  .card:first-of-type{{padding-top:22px}}
 }}
 @media(max-width:920px) and (min-width:620px){{
   .masthead{{flex-direction:row;align-items:center;gap:24px}}
@@ -513,33 +595,30 @@ h3{{letter-spacing:-.015em}}
 
 /* The compressed hero: the mark, the page title and the date stay with you.
    Not just a nav bar -- the hero's identity survives the scroll. */
-.topbar{{position:sticky;top:0;z-index:40;background:var(--bg);border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);padding:0}}
+.topbar{{position:sticky;top:54px;z-index:40;background:var(--bg);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:0}}
 .topinner{{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.2vw,40px);
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-height:56px}}
-.brandrow{{display:flex;align-items:center;justify-content:space-between;
-  gap:12px;padding:18px 0 0}}
+  display:flex;align-items:center;gap:16px;flex-wrap:nowrap;min-height:52px}}
+.brandrow{{position:sticky;top:0;z-index:50;background:var(--bg);height:54px}}
+.brandinner{{width:100%;max-width:1180px;margin:0 auto;height:100%;
+  padding:0 clamp(14px,3.2vw,40px);display:flex;align-items:center;
+  justify-content:space-between;gap:12px}}
 .brandlink{{display:flex;align-items:center;gap:9px}}
 /* Nothing reserved: the tabs start at the left edge. The brand appears in the bar
    only once compact, so the tabs shift on scroll -- which is not the earlier
    problem, where they sat at a different x on every page. */
-.mini{{display:none;align-items:center;gap:9px;flex:none;white-space:nowrap}}
-.topbar.compact .mini{{display:flex}}
 /* both bar items are compact-only: at rest the bar is tabs alone, flush left */
-.topbar .baronly{{display:none}}          /* (0,2,0): must outrank .ghost, which
-                                            is defined later at equal specificity
-                                            and was therefore winning */
-.topbar.compact .baronly{{display:inline-flex}}
 @media(max-width:700px){{
-  .topinner{{flex-wrap:nowrap;gap:11px}}
+  .brandrow{{height:46px}}
+  .topbar{{top:46px}}
+  .topinner{{gap:11px;min-height:46px}}
   .tabs{{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
     -webkit-overflow-scrolling:touch;min-width:0}}
   .tabs::-webkit-scrollbar{{display:none}}
-  .tab{{margin-right:15px;font-size:13px}}
+  /* icons dropped so five tabs fit one row without scrolling on a phone */
+  .tab .ico{{display:none}}
+  .tab{{margin-right:16px;font-size:13px;gap:0}}
   .tab:last-child{{margin-right:2px}}
-  .topbar.compact .mini .mininame{{display:none}}   /* mark stays, wordmark goes */
-  .mini{{gap:0}}
-  .baronly,.topbar.compact .baronly{{flex:none}}
 }}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
@@ -568,6 +647,9 @@ h3{{letter-spacing:-.015em}}
 .mapwrap svg{{width:100%;height:auto;display:block}}
 .cty{{fill:var(--land);stroke:var(--land-line);stroke-width:.4;vector-effect:non-scaling-stroke;
   transition:fill .2s}}
+/* A signalled country is stroked in the PAGE colour, so two filled neighbours
+   are separated by a hairline instead of merging into one shape. */
+.cty.n1,.cty.n2,.cty.n3,.cty.n4{{stroke:var(--bg);stroke-width:1}}
 .cty.n1{{fill:var(--h2)}} .cty.n2{{fill:var(--h3)}} .cty.n3{{fill:var(--h4)}} .cty.n4{{fill:var(--h5)}}
 .cty:hover{{stroke:var(--ink);stroke-width:1.3}}
 .ctrlrow{{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;margin:24px 0 8px}}
@@ -590,6 +672,12 @@ h3{{letter-spacing:-.015em}}
 #tip{{position:fixed;z-index:70;pointer-events:none;opacity:0;transition:opacity .1s;
   background:var(--bg);border:1px solid var(--line-2);border-radius:6px;padding:10px 12px;
   font-size:12.5px;max-width:290px;box-shadow:0 6px 20px rgba(0,0,0,.13)}}
+@media(max-width:700px){{
+  /* Following the pointer puts this off-screen on a phone -- a tap near an edge had
+     nowhere to go. Pinned to the bottom instead, full width. */
+  #tip{{left:10px!important;right:10px!important;top:auto!important;bottom:12px!important;
+    max-width:none;font-size:12px}}
+}}
 #tip b{{display:block;font-size:13.5px;margin-bottom:6px}}
 #tip .sig{{display:flex;gap:7px;align-items:flex-start;padding:3px 0;font-size:12px;
   color:var(--ink-dim)}}
@@ -722,8 +810,10 @@ def nav_items(state):
 
 
 def brandrow():
-    """Brand top-left, theme toggle top-right, on one line above the hero."""
-    return (f'<div class="wrap"><div class="brandrow">'
+    """Brand top-left, theme toggle top-right. Sticky, and NOT wrapped in .wrap --
+    a sticky element can only stick inside its parent's box, which is the mistake
+    that kept the nav from sticking the first time."""
+    return (f'<div class="brandrow" id="brandrow"><div class="brandinner">'
             f'<span class="brandlink">{brandmark()}'
             f'<span class="mininame">HeatWatch</span></span>'
             f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
@@ -745,11 +835,7 @@ def topbar(active, page_title, nav):
     # parent's box, and .wrap is the bar's height plus 90px of padding -- so it
     # unstuck two scroll-lines in.
     return (f'<nav class="topbar" id="topbar"><div class="topinner">'
-            f'<span class="mini" aria-hidden="true">{brandmark()}<span class="mininame">HeatWatch</span></span>'
-            f'<span class="tabs">{tabs}</span><span class="spacer"></span>'
-            f'<button class="ghost baronly" onclick="tog()" aria-label="Switch between '
-            f'light and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
-            f'</div></nav>')
+            f'<span class="tabs">{tabs}</span></div></nav>')
 
 
 def hero(title, sub, kicker, dl):
@@ -1019,11 +1105,26 @@ def band_of(it):
     return b if b in ("critical", "serious", "warning", "good") else ""
 
 
+def short(text, limit=190):
+    """Trim to whole sentences under `limit`. Never mid-sentence: a clipped clause
+    changes what a sourced claim says. The source line sits directly beneath, so a
+    reader who wants the full version knows where to look."""
+    t = " ".join(str(text or "").split())
+    if len(t) <= limit:
+        return t
+    cut = t[:limit]
+    for stop in (". ", "? ", "! "):
+        i = cut.rfind(stop)
+        if i > 60:
+            return cut[:i + 1]
+    i = cut.rfind(" ")
+    return (cut[:i] if i > 60 else cut).rstrip(",;:") + "…"
+
+
 def entry(it, cat, thumb_key=None):
     label, ik = CATS[cat]
     lead = region_thumb(thumb_key) if thumb_key else f'<span class="hlico">{icon(ik, "ico ico-lg")}</span>'
-    body = it.get("body") or ""
-    so = it.get("so_what")
+    body = short(it.get("body") or "")
     # The right-hand cell carries STATUS, never the category. It used to fall back
     # to the category label, which is already the topic label two columns left --
     # so every item without a status printed "Heat & climate" twice on one row.
@@ -1036,7 +1137,6 @@ def entry(it, cat, thumb_key=None):
     return (f'<div class="hl">{lead}<div>'
             f'<div class="hlhead"><h3>{esc(it.get("title", "Untitled"))}</h3></div>'
             f'<p>{esc(body)}</p>'
-            + (f'<p><b>So what:</b> {esc(so)}</p>' if so else "")
             + src_line(it) + extra
             + f'</div><span class="statcell">'
               f'<span class="tlab">{icon(ik, "ico")}{esc(label)}</span>{chip}</span></div>')
@@ -1149,14 +1249,17 @@ function setTF(t){TF=t;paint();}
 var tip=document.getElementById('tip');
 function svgFor(k){return '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" '+
  'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+ICONS[k]+'</svg>';}
+function clip(s,n){s=String(s||'');if(s.length<=n)return s;
+ var c=s.slice(0,n),i=c.lastIndexOf(' ');return (i>30?c.slice(0,i):c)+'\u2026';}
 function show(e,iso){if(!tip)return;
  var r=(SIG[TF]||{})[iso],h='<b>'+(NAMES[iso]||iso)+'</b>';
  if(r){for(var c in CATS){ if(r.hit[c])
-   h+='<div class="sig">'+svgFor(CATS[c][1])+'<span>'+r.hit[c]+'</span></div>';}
+   h+='<div class="sig">'+svgFor(CATS[c][1])+'<span>'+clip(r.hit[c],95)+'</span></div>';}
  } else { h+='<div class="none">No signal in this window</div>'; }
  var g=RULES[iso];
- if(g)h+='<div class="rul">'+(g[0]===2?'Rules in force: ':'Draft: ')+g[1]+'</div>';
+ if(g)h+='<div class="rul">'+(g[0]===2?'In force: ':'Draft: ')+clip(g[1],70)+'</div>';
  tip.innerHTML=h;tip.style.opacity=1;
+ if(innerWidth<=700)return;          /* CSS pins it to the bottom on a phone */
  var x=e.clientX+14,y=e.clientY+14;
  if(x+300>innerWidth)x=e.clientX-300;
  if(y+170>innerHeight)y=Math.max(8,e.clientY-170);
