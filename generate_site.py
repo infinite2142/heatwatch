@@ -1230,23 +1230,37 @@ function tog(){var r=document.documentElement;
  var t=b.offsetTop;
  function f(){b.classList.toggle('compact',window.scrollY>t-1);}
  addEventListener('scroll',f,{passive:true});f();})();
-/* Which tab reads as current follows what is on screen, not whatever was clicked
-   last -- on a single page there is no other way to say where you are. */
+/* Which tab reads as current follows what is on screen.
+   NOT an IntersectionObserver comparing ratios: its callback only carries the
+   sections whose intersection just CHANGED, so a small tick in Fire fired with Fire
+   alone and re-selected it while Health was the section actually on screen. Scrolling
+   one direction flickered between neighbours.
+   This instead asks the only question that has a stable answer: which section's top
+   most recently crossed the line under the sticky bars. Monotonic while scrolling
+   down, so it cannot oscillate. */
 (function(){
  var tabs=[].slice.call(document.querySelectorAll('.tab[data-jump]'));
- if(!tabs.length||!('IntersectionObserver' in window))return;
- var secs=tabs.map(function(a){return document.getElementById(a.dataset.jump);})
-              .filter(Boolean);
+ if(!tabs.length)return;
+ var secs=tabs.map(function(a){return document.getElementById(a.dataset.jump);});
  function mark(id){tabs.forEach(function(a){
    if(a.dataset.jump===id)a.setAttribute('aria-current','true');
    else a.removeAttribute('aria-current');});}
- var io=new IntersectionObserver(function(es){
-   var best=null;
-   es.forEach(function(e){if(e.isIntersecting&&(!best||e.intersectionRatio>best.intersectionRatio))best=e;});
-   if(best)mark(best.target.id);
- },{rootMargin:'-130px 0px -55% 0px',threshold:[0,.25,.5]});
- secs.forEach(function(x){io.observe(x);});
- mark('top');
+ var pending=false;
+ function pick(){
+  pending=false;
+  var line=124, cur=tabs[0].dataset.jump, i;
+  for(i=0;i<secs.length;i++){
+   if(secs[i]&&secs[i].getBoundingClientRect().top<=line)cur=tabs[i].dataset.jump;
+  }
+  /* the last section can be too short to reach the line */
+  if(innerHeight+scrollY>=document.body.scrollHeight-2)cur=tabs[tabs.length-1].dataset.jump;
+  mark(cur);
+ }
+ addEventListener('scroll',function(){
+  if(!pending){pending=true;requestAnimationFrame(pick);}
+ },{passive:true});
+ addEventListener('resize',pick,{passive:true});
+ pick();
 })();
 """
 
