@@ -41,7 +41,7 @@ TOKENS = """
     --h1:#f2b134; --h2:#e8912a; --h3:#dd6b20; --h4:#c2410c; --h5:#9a1c13;
     --c3:#4d7387; --c4:#2b5065;
     --good:#0f9d47; --warning:#c08a10; --serious:#d5622a; --critical:#cf3838;
-    --gut:62px;
+    --gut:62px; --thumb:#c2410c; --thumb-ink:#16130f;
     --land:#e7e0d4; --land-line:rgba(22,19,15,0.20);
   }
   :root[data-theme="dark"]{
@@ -51,6 +51,7 @@ TOKENS = """
     --c3:#7fa3b8; --c4:#a9c4d4;
     --good:#34c06a; --warning:#e0a92c; --serious:#ef7f45; --critical:#ef5350;
     --land:#38302a; --land-line:rgba(244,241,234,0.30);
+    --thumb:#f0a03c; --thumb-ink:#f4f1ea;
   }
 """
 
@@ -501,15 +502,7 @@ h3{{letter-spacing:-.015em}}
 
 /* region thumbnails: the actual coastline, so the eye finds the place before it
    reads the words. Defined once as <symbol>s and referenced, not repeated. */
-.rg{{width:56px;height:41px;display:block;color:var(--h4)}}
-:root[data-theme="dark"] .rg{{color:var(--h1)}}
-:root[data-theme="dark"] .rg polygon{{fill-opacity:.8;stroke-opacity:.9}}
-.rg polygon{{fill:currentColor;fill-opacity:.7;stroke:currentColor;stroke-opacity:.7;
-  stroke-linejoin:round;stroke-linecap:round}}
-.rgrim{{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.1;
-  vector-effect:non-scaling-stroke}}
-.rgland polygon{{fill:var(--ink);fill-opacity:.42;stroke:var(--ink);stroke-opacity:.6;
-  stroke-width:.6;vector-effect:non-scaling-stroke}}
+.rg{{width:56px;height:41px;display:block}}
 
 /* every section ends in the same right-hand status cell, so exposure, confidence,
    maturity and flags all land on one line down the page */
@@ -848,9 +841,14 @@ def region_symbols(used):
             continue
         if isos is None:
             land = globe.land_paths(lon0=20.0, r=17.0, cx=27.2, cy=20.0)
+            land = land.replace(
+                "<polygon ",
+                '<polygon fill="var(--thumb-ink)" fill-opacity="0.45" '
+                'stroke="var(--thumb-ink)" stroke-opacity="0.6" stroke-width="0.6" ')
             out.append(f'<symbol id="rg-{key}" viewBox="0 0 54.3 40">'
-                       f'<circle class="rgrim" cx="27.2" cy="20" r="17"/>'
-                       f'<g class="rgland">{land}</g></symbol>')
+                       f'<circle cx="27.2" cy="20" r="17" fill="none" '
+                       f'stroke="var(--thumb-ink)" stroke-opacity="0.55" stroke-width="0.7"/>'
+                       f'{land}</symbol>')
             continue
         ds = []
         for iso in THUMB_ISOS.get(key, isos):
@@ -877,8 +875,16 @@ def region_symbols(used):
         # into one silhouette, which is what makes a region recognisable at 42px.
         # Dilate by ~1.8 rendered px so surviving shapes fuse into one silhouette
         sw = 1.8 * (w / THUMB_W)
+        # Presentation ATTRIBUTES, not a descendant selector. The polygon lives in
+        # <defs><symbol>, not inside .rg, so `.rg polygon {...}` cannot be relied on
+        # to reach it through the <use> shadow tree -- which is why the dark-theme
+        # fix appeared to do nothing. An attribute on the element always applies, and
+        # custom properties do inherit across the boundary.
         body = "".join(
-            '<polygon points="' + " ".join(f"{q[0]:.1f},{q[1]:.1f}" for q in r) + f'" stroke-width="{sw:.2f}"/>'
+            '<polygon points="' + " ".join(f"{q[0]:.1f},{q[1]:.1f}" for q in r)
+            + f'" fill="var(--thumb)" fill-opacity="0.68" stroke="var(--thumb)"'
+              f' stroke-opacity="0.78" stroke-width="{sw:.2f}"'
+              ' stroke-linejoin="round" stroke-linecap="round"/>'
             for r in keep)
         out.append(f'<symbol id="rg-{key}" viewBox="{x0-m:.1f} {y0-m:.1f} {w+2*m:.1f} {h+2*m:.1f}">'
                    + body + "</symbol>")

@@ -16,7 +16,7 @@ document.documentElement.dataset.theme=t;}catch(e){}})();</script>
     --h1:#f2b134; --h2:#e8912a; --h3:#dd6b20; --h4:#c2410c; --h5:#9a1c13;
     --c3:#4d7387; --c4:#2b5065;
     --good:#0f9d47; --warning:#c08a10; --serious:#d5622a; --critical:#cf3838;
-    --gut:62px;
+    --gut:62px; --thumb:#c2410c; --thumb-ink:#16130f;
     --land:#e7e0d4; --land-line:rgba(22,19,15,0.20);
   }
   :root[data-theme="dark"]{
@@ -26,6 +26,7 @@ document.documentElement.dataset.theme=t;}catch(e){}})();</script>
     --c3:#7fa3b8; --c4:#a9c4d4;
     --good:#34c06a; --warning:#e0a92c; --serious:#ef7f45; --critical:#ef5350;
     --land:#38302a; --land-line:rgba(244,241,234,0.30);
+    --thumb:#f0a03c; --thumb-ink:#f4f1ea;
   }
 
 *{box-sizing:border-box}
@@ -98,15 +99,7 @@ h3{letter-spacing:-.015em}
 
 /* region thumbnails: the actual coastline, so the eye finds the place before it
    reads the words. Defined once as <symbol>s and referenced, not repeated. */
-.rg{width:56px;height:41px;display:block;color:var(--h4)}
-:root[data-theme="dark"] .rg{color:var(--h1)}
-:root[data-theme="dark"] .rg polygon{fill-opacity:.8;stroke-opacity:.9}
-.rg polygon{fill:currentColor;fill-opacity:.7;stroke:currentColor;stroke-opacity:.7;
-  stroke-linejoin:round;stroke-linecap:round}
-.rgrim{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.1;
-  vector-effect:non-scaling-stroke}
-.rgland polygon{fill:var(--ink);fill-opacity:.42;stroke:var(--ink);stroke-opacity:.6;
-  stroke-width:.6;vector-effect:non-scaling-stroke}
+.rg{width:56px;height:41px;display:block}
 
 /* every section ends in the same right-hand status cell, so exposure, confidence,
    maturity and flags all land on one line down the page */
