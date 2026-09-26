@@ -524,14 +524,15 @@ h3{{letter-spacing:-.015em}}
   border-bottom:1px solid var(--line);padding:0}}
 .topinner{{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.2vw,40px);
   display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-height:56px}}
-.brandrow{{display:flex;align-items:center;gap:9px;padding:20px 0 0}}
-/* Reserved slot in the sticky bar: fixed width, empty at rest, brand fades in once
-   compact. Reserved because revealing it inline is exactly what pushed the tabs to
-   a different x last time -- the space is held whether the brand shows or not. */
-.mini{{display:flex;align-items:center;gap:9px;flex:none;white-space:nowrap;
-  width:132px;opacity:0;transition:opacity .18s ease;pointer-events:none}}
-.topbar.compact .mini{{opacity:1;pointer-events:auto}}
-@media(max-width:700px){{.mini{{display:none}}}}
+.brandrow{{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:18px 0 0}}
+.brandlink{{display:flex;align-items:center;gap:9px}}
+/* Nothing reserved: the tabs start at the left edge. The brand appears in the bar
+   only once compact, so the tabs shift on scroll -- which is not the earlier
+   problem, where they sat at a different x on every page. */
+.mini{{display:none;align-items:center;gap:9px;flex:none;white-space:nowrap}}
+.topbar.compact .mini{{display:flex}}
+@media(max-width:700px){{.topbar.compact .mini{{display:none}}}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
 
@@ -718,9 +719,13 @@ def nav_items(state):
 
 
 def brandrow():
-    """Brand at the top-left of the page, on its own row above the hero."""
-    return (f'<div class="wrap"><div class="brandrow">{brandmark()}'
-            f'<span class="mininame">HeatWatch</span></div></div>')
+    """Brand top-left, theme toggle top-right, on one line above the hero."""
+    return (f'<div class="wrap"><div class="brandrow">'
+            f'<span class="brandlink">{brandmark()}'
+            f'<span class="mininame">HeatWatch</span></span>'
+            f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
+            f'and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
+            f'</div></div>')
 
 
 def topbar(active, page_title, nav):
@@ -738,10 +743,7 @@ def topbar(active, page_title, nav):
     # unstuck two scroll-lines in.
     return (f'<nav class="topbar" id="topbar"><div class="topinner">'
             f'<span class="mini" aria-hidden="true">{brandmark()}<span class="mininame">HeatWatch</span></span>'
-            f'<span class="tabs">{tabs}</span><span class="spacer"></span>'
-            f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
-            f'and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
-            f'</div></nav>')
+            f'<span class="tabs">{tabs}</span></div></nav>')
 
 
 def hero(title, sub, kicker, dl):
