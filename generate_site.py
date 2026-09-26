@@ -462,7 +462,7 @@ h3{{letter-spacing:-.015em}}
   background:none;border:1.5px solid currentColor}}
 
 /* ---- hero, and the compressed band it becomes ---- */
-.masthead{{position:relative;overflow:hidden;padding:52px 0 38px}}
+.masthead{{position:relative;overflow:hidden;padding:34px 0 38px}}
 .hero-txt{{position:relative;z-index:2;max-width:620px}}
 .eyebrow{{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;
   text-transform:uppercase;color:var(--muted);font-weight:700}}
@@ -524,7 +524,14 @@ h3{{letter-spacing:-.015em}}
   border-bottom:1px solid var(--line);padding:0}}
 .topinner{{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.2vw,40px);
   display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-height:56px}}
-.mini{{display:flex;align-items:center;gap:9px;flex:none;white-space:nowrap}}
+.brandrow{{display:flex;align-items:center;gap:9px;padding:20px 0 0}}
+/* Reserved slot in the sticky bar: fixed width, empty at rest, brand fades in once
+   compact. Reserved because revealing it inline is exactly what pushed the tabs to
+   a different x last time -- the space is held whether the brand shows or not. */
+.mini{{display:flex;align-items:center;gap:9px;flex:none;white-space:nowrap;
+  width:132px;opacity:0;transition:opacity .18s ease;pointer-events:none}}
+.topbar.compact .mini{{opacity:1;pointer-events:auto}}
+@media(max-width:700px){{.mini{{display:none}}}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
 
@@ -710,6 +717,12 @@ def nav_items(state):
     return out
 
 
+def brandrow():
+    """Brand at the top-left of the page, on its own row above the hero."""
+    return (f'<div class="wrap"><div class="brandrow">{brandmark()}'
+            f'<span class="mininame">HeatWatch</span></div></div>')
+
+
 def topbar(active, page_title, nav):
     tabs = "".join(
         f'<a class="tab" href="{"index.html" if slug == "index" else slug + ".html"}"'
@@ -724,7 +737,7 @@ def topbar(active, page_title, nav):
     # parent's box, and .wrap is the bar's height plus 90px of padding -- so it
     # unstuck two scroll-lines in.
     return (f'<nav class="topbar" id="topbar"><div class="topinner">'
-            f'<span class="mini">{brandmark()}<span class="mininame">HeatWatch</span></span>'
+            f'<span class="mini" aria-hidden="true">{brandmark()}<span class="mininame">HeatWatch</span></span>'
             f'<span class="tabs">{tabs}</span><span class="spacer"></span>'
             f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
             f'and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
@@ -732,7 +745,7 @@ def topbar(active, page_title, nav):
 
 
 def hero(title, sub, kicker, dl):
-    return f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=310.0, cy=160.0)}
+    return brandrow() + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=310.0, cy=160.0)}
 <div class="hero-txt"><div class="eyebrow">{esc(kicker)}</div>
 <h1 class="hero-title">{esc(title)}</h1>
 <p class="hero-sub">{esc(sub)}</p>
