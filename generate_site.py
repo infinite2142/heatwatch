@@ -50,7 +50,7 @@ TOKENS = """
     --h1:#f6c250; --h2:#f0a03c; --h3:#e97b30; --h4:#d9542a; --h5:#c23b2a;
     --c3:#7fa3b8; --c4:#a9c4d4;
     --good:#34c06a; --warning:#e0a92c; --serious:#ef7f45; --critical:#ef5350;
-    --land:#221d19; --land-line:rgba(244,241,234,0.16);
+    --land:#38302a; --land-line:rgba(244,241,234,0.30);
   }
 """
 
@@ -68,10 +68,13 @@ CATS = OrderedDict([
 SECTION_CAT = {"extremes": "heat", "fire": "fire", "workers": "workers", "health": "health"}
 
 # Sector pages, in nav order. Each is (slug, nav label, page title, state key).
+# The page title IS the tab label. Carrying a longer formal name ("Climate &
+# records") meant the tab and the page heading disagreed on what the page is
+# called, for no gain.
 SECTORS = [
-    ("climate", "Climate", "Climate & records", "extremes"),
-    ("health",  "Health",  "Health & mortality", "health"),
-    ("workers", "Workers", "Workers & exposure", "workers"),
+    ("climate", "Climate", "Climate", "extremes"),
+    ("health",  "Health",  "Health", "health"),
+    ("workers", "Workers", "Workers", "workers"),
     ("fire",    "Fire",    "Fire", "fire"),
 ]
 
@@ -107,6 +110,9 @@ ICONS = {
            '<circle cx="25" cy="26" r="3.6"/>',
  "globe":  '<circle cx="20" cy="20" r="15"/><ellipse cx="20" cy="20" rx="6.5" ry="15"/>'
            '<path d="M5.6 15h28.8M5.6 25h28.8"/>',
+ # half-filled disc: the conventional contrast/theme glyph
+ "theme":  '<circle cx="20" cy="20" r="13"/>'
+           '<path d="M20 7a13 13 0 0 0 0 26z" fill="currentColor" stroke="none"/>',
 }
 
 # Region matching: keyword -> (symbol key, ISO3 set). Most specific first, since
@@ -417,6 +423,10 @@ def head(title,desc):
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}">
 <link rel="icon" href="{globe.favicon()}">
+<script>/* before paint: no flash, and the choice survives navigation */
+(function(){{try{{var t=localStorage.getItem('hw-theme');
+if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+document.documentElement.dataset.theme=t;}}catch(e){{}}}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -492,6 +502,8 @@ h3{{letter-spacing:-.015em}}
 /* region thumbnails: the actual coastline, so the eye finds the place before it
    reads the words. Defined once as <symbol>s and referenced, not repeated. */
 .rg{{width:56px;height:41px;display:block;color:var(--h4)}}
+:root[data-theme="dark"] .rg{{color:var(--h1)}}
+:root[data-theme="dark"] .rg polygon{{fill-opacity:.8;stroke-opacity:.9}}
 .rg polygon{{fill:currentColor;fill-opacity:.7;stroke:currentColor;stroke-opacity:.7;
   stroke-linejoin:round;stroke-linecap:round}}
 .rgrim{{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:1.1;
@@ -528,9 +540,11 @@ h3{{letter-spacing:-.015em}}
 .tab[aria-current="true"]{{color:var(--ink);border-bottom-color:var(--h4)}}
 
 .spacer{{flex:1}}
-.ghost{{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;
-  letter-spacing:.08em;color:var(--muted);background:none;border:0;cursor:pointer;padding:6px 2px}}
+.ghost{{background:none;border:0;cursor:pointer;padding:6px;color:var(--muted);
+  display:inline-flex;align-items:center;border-radius:5px;flex:none}}
+.ghost .ico{{width:19px;height:19px}}
 .ghost:hover{{color:var(--ink)}}
+.ghost:focus-visible{{outline:2px solid var(--h4);outline-offset:1px}}
 
 /* ---- map: wider than the text column, because a 936x426 graphic needs it ---- */
 .bleed{{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
@@ -712,7 +726,9 @@ def topbar(active, page_title, nav):
     return (f'<nav class="topbar" id="topbar"><div class="topinner">'
             f'<span class="mini">{brandmark()}<span class="mininame">HeatWatch</span></span>'
             f'<span class="tabs">{tabs}</span><span class="spacer"></span>'
-            f'<button class="ghost" onclick="tog()">Theme</button></div></nav>')
+            f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
+            f'and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
+            f'</div></nav>')
 
 
 def hero(title, sub, kicker, dl):
@@ -1022,7 +1038,9 @@ def footer(state):
 
 JS_COMMON = """
 function tog(){var r=document.documentElement;
- r.dataset.theme=r.dataset.theme==='dark'?'light':'dark';}
+ var t=r.dataset.theme==='dark'?'light':'dark';
+ r.dataset.theme=t;
+ try{localStorage.setItem('hw-theme',t)}catch(e){}}
 (function(){var b=document.getElementById('topbar');if(!b)return;
  var t=b.offsetTop;
  function f(){b.classList.toggle('compact',window.scrollY>t-1);}
@@ -1210,8 +1228,8 @@ def page_solutions(state, nav, dl):
           f'<span class="statcell"><span class="mat {m}">{MATURITY[m]}</span></span></div>'
         for g, t, k, m, d, pr, li, ap in SOLUTIONS)
     disc = ((state.get("method") or {}).get("disclosure") or "")
-    return head("HeatWatch — industry solutions", DESC) + f"""
-{hero("Industry solutions",
+    return head("HeatWatch — Solutions", DESC) + f"""
+{hero("Solutions",
       "What already exists to keep people working safely in heat, where each approach "
       "stops working, and where it is in use today.", "What can be done", dl)}
 {topbar("solutions", "Industry solutions", nav)}
