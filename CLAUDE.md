@@ -15,9 +15,8 @@ build if any of them reaches the artifact. A new page needs its name added there
 
 ## The one rule
 
-**Never hand-edit a generated page** — `index.html`, `climate.html`,
-`health.html`, `workers.html`, `fire.html`, `solutions.html`. They are build
-artifacts that happen to be committed. Every design or content change goes into
+**Never hand-edit `index.html`.** It is a build artifact that happens to be
+committed. Every design or content change goes into
 `generate_site.py`, then you regenerate. A hand-edit is silently destroyed by the
 next daily run.
 
@@ -47,9 +46,15 @@ but a local `python3 -m http.server` is what a browser on another machine can
 reach (bind `0.0.0.0` for that, and send no-cache headers or you will spend an
 hour looking at a stale page).
 
-A sector page is only written when the state carries that section, and the nav is
-built from the same test — so a tab never leads to an empty page. `health.html`
-appears once the run starts producing `sections.health`.
+**One page.** The per-topic pages were merged into sections of `index.html` on
+2026-09-26: at ~19 items across four topics, five pages cost four clicks to read one
+day's work. The nav is anchor links with an IntersectionObserver marking the current
+section, and a topic with no items gets no tab and no section. `section_block()` is
+per-topic, so splitting back into pages if volume triples is a change to `main()`,
+not a rewrite.
+
+Anchors need `scroll-margin-top:118px` to clear the two sticky bars. If either bar's
+height changes, that number has to change with it.
 
 ## The map's time windows are gated on real coverage
 
@@ -82,6 +87,14 @@ coordinates (parameters fitted and validated to sub-degree longitude accuracy)
 and reprojects orthographically. It deliberately uses its own reserved, quieter
 palette — mean OKLab chroma 0.06 against the map ramp's 0.16 — so the loud colour
 stays reserved for data.
+
+## Nothing internal in public strings
+
+The site is public. "Reported in earlier briefings", "the daily report", "the run",
+"the ledger" and "the desk" all name things a reader cannot see — one of them shipped
+65 times in the map payload before it was caught. Dates get a human form
+("Recorded 19 September 2026"), and `prompts/daily.md` carries the same rule for
+anything the run writes into the state file.
 
 ## Public / private split
 

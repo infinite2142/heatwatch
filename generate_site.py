@@ -463,7 +463,7 @@ def derive_signals(history, today, backfill=None):
             for iso, cats in isomap.items():
                 for cat in cats:
                     per.setdefault(iso, {}).setdefault(
-                        cat, f"Reported in earlier briefings ({d.isoformat()})")
+                        cat, f"Recorded {d.strftime('%-d %B %Y')}")
         out[label] = {iso: {"n": min(len(c), 4), "hit": c} for iso, c in per.items()}
         depth[label] = (today - oldest).days + 1
     return out, depth
@@ -511,6 +511,7 @@ document.documentElement.dataset.theme=t;}}catch(e){{}}}})();</script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>{TOKENS}
 *{{box-sizing:border-box}}
+html{{scroll-behavior:smooth}}
 body{{margin:0;background:var(--bg);color:var(--ink);
   font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}}
 .wrap{{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.2vw,40px) 90px}}
@@ -518,7 +519,10 @@ body{{margin:0;background:var(--bg);color:var(--ink);
 /* RESTYLE: accent is for DATA. Structure is ink and hairlines, so a kicker is
    muted type rather than orange -- the colour then means something when it does
    appear (a chip, a map fill, a metric). */
-.card{{border-top:1px solid var(--line);padding:54px 0 0;margin-top:52px}}
+.card{{border-top:1px solid var(--line);padding:54px 0 0;margin-top:52px;
+  scroll-margin-top:118px}}   /* clears both sticky bars */
+.h2ico{{display:inline-flex;vertical-align:-4px;margin-right:10px;color:var(--h4)}}
+.h2ico .ico{{width:26px;height:26px}}
 .card:first-of-type{{border-top:0;margin-top:0;padding-top:36px}}
 .card h2{{font-size:clamp(28px,3.3vw,40px);line-height:1.02;font-weight:700;
   letter-spacing:-.032em;margin:0 0 10px}}
@@ -793,15 +797,15 @@ def brandmark():
     return globe.icon(22)
 
 
-NAV_ICON = {"index": "globe", "climate": "thermo", "health": "pulse",
+NAV_ICON = {"top": "globe", "climate": "thermo", "health": "pulse",
             "workers": "worker", "fire": "flame", "solutions": "sliders"}
 
 
 def nav_items(state):
-    """Only pages the state can actually fill. A tab leading to an empty page is
-    worse than a missing tab."""
+    """Anchors on the single page. A section the state cannot fill gets no tab, so a
+    tab never jumps to an empty heading."""
     secs = (state.get("sections") or {})
-    out = [("index", "Overview")]
+    out = [("top", "Overview")]
     for slug, label, _title, key in SECTORS:
         if secs.get(key):
             out.append((slug, label))
@@ -813,7 +817,7 @@ def brandrow():
     """Brand top-left, theme toggle top-right. Sticky, and NOT wrapped in .wrap --
     a sticky element can only stick inside its parent's box, which is the mistake
     that kept the nav from sticking the first time."""
-    return (f'<div class="brandrow" id="brandrow"><div class="brandinner">'
+    return (f'<span id="top"></span><div class="brandrow" id="brandrow"><div class="brandinner">'
             f'<span class="brandlink">{brandmark()}'
             f'<span class="mininame">HeatWatch</span></span>'
             f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
@@ -823,8 +827,7 @@ def brandrow():
 
 def topbar(active, page_title, nav):
     tabs = "".join(
-        f'<a class="tab" href="{"index.html" if slug == "index" else slug + ".html"}"'
-        + (' aria-current="true"' if slug == active else '')
+        f'<a class="tab" href="#{slug}" data-jump="{slug}"'
         + f'>{icon(NAV_ICON.get(slug, "thermo"), "ico")}{esc(label)}</a>'
         for slug, label in nav)
     # No page title in the bar, on purpose. It varied in length per page, which put
@@ -1227,6 +1230,24 @@ function tog(){var r=document.documentElement;
  var t=b.offsetTop;
  function f(){b.classList.toggle('compact',window.scrollY>t-1);}
  addEventListener('scroll',f,{passive:true});f();})();
+/* Which tab reads as current follows what is on screen, not whatever was clicked
+   last -- on a single page there is no other way to say where you are. */
+(function(){
+ var tabs=[].slice.call(document.querySelectorAll('.tab[data-jump]'));
+ if(!tabs.length||!('IntersectionObserver' in window))return;
+ var secs=tabs.map(function(a){return document.getElementById(a.dataset.jump);})
+              .filter(Boolean);
+ function mark(id){tabs.forEach(function(a){
+   if(a.dataset.jump===id)a.setAttribute('aria-current','true');
+   else a.removeAttribute('aria-current');});}
+ var io=new IntersectionObserver(function(es){
+   var best=null;
+   es.forEach(function(e){if(e.isIntersecting&&(!best||e.intersectionRatio>best.intersectionRatio))best=e;});
+   if(best)mark(best.target.id);
+ },{rootMargin:'-130px 0px -55% 0px',threshold:[0,.25,.5]});
+ secs.forEach(function(x){io.observe(x);});
+ mark('top');
+})();
 """
 
 JS_MAP = """
@@ -1297,113 +1318,43 @@ DESC = ("Where heat is breaking records, who it is reaching, what the rules are 
         "to require, and what can be done about it. Rebuilt daily from primary sources.")
 
 
-def page_home(state, sig, depth, rules, nav, dl):
-    vb, geom = _map_geometry()
-    paths = build_map_paths(geom)
-    offered = [w for w, days in WINDOWS
-               if depth.get(w, 0) >= days * WINDOW_MIN_COVERAGE]
-    if not offered:
-        offered = [WINDOWS[0][0]]
-    default = "1M" if "1M" in offered else offered[-1]
-    wins = "".join(
-        f'<button class="opt" data-tf="{w}" onclick="setTF(\'{w}\')"'
-        + (' aria-pressed="true"' if w == default else '') + f'>{w}</button>'
-        for w in offered)
-    js = (JS_MAP.replace("__SIG__", json.dumps(sig))
-                .replace("__RULES__", json.dumps(rules))
-                .replace("__NAMES__", json.dumps(NAMES))
-                .replace("__CATS__", json.dumps({k: list(v) for k, v in CATS.items()}))
-                .replace("__ICONS__", json.dumps(ICONS))
-                .replace("__DEPTH__", json.dumps(depth))
-                .replace("__DEFAULT_TF__", json.dumps(default)))
-    return head("HeatWatch — global heat intelligence", DESC) + f"""
-{hero("HeatWatch", DESC, "Global heat intelligence", dl)}
-{topbar("index", "", nav)}
-<div class="wrap">
-<section class="card">
-  <span class="kicker">Signal density by country</span>
-  <h2>Global heat signals</h2>
-  <p class="lede">Shading is how many signals a country carries in the window — heat,
-  health, workers, fire — counted flat, with no weighting. Outlined countries have
-  heat-at-work rules, which is the mitigation rather than the hazard, so it is drawn
-  separately. Hover any country for the detail.</p>
-  <div class="ctrlrow">
-    <span class="ctrllab">Window</span>
-    <div class="opts">{wins}</div>
-    <span class="ctrllab" id="tfnote"></span>
-  </div>
-  <div class="bleed"><div class="mapwrap"><svg viewBox="{vb}" role="img"
-    aria-label="World map shaded by the number of heat-related signals per country">
-    <g>{paths}</g><g>{rule_overlay(rules, geom)}</g></svg></div>{legend_html()}</div>
-  {table_view(sig, rules, NAMES)}
-  <p class="srcline">Derived from the dated briefings behind this site, so coverage
-  follows what has been reported rather than the whole world. Every underlying claim
-  is sourced in the entry below it.</p>
-</section>
-
-<section class="card">
-  <span class="kicker">Key numbers</span>
-  <h2>Today</h2>
-  {metrics_html(state)}
-</section>
-
-<section class="card">
-  <span class="kicker">In full</span>
-  <h2>Headlines by region</h2>
-  <p class="lede">The long-form read of the map, grouped by geography and marked by topic.</p>
-  {home_headlines(state)}
-</section>
-{('<section class="card"><span class="kicker">Dated, from primary sources</span>'
-  '<h2>Upcoming deadlines</h2>' + forecast_html(state) + '</section>') if forecast_html(state) else ''}
-{footer(state)}
-</div>
-<div id="tip"></div>
-<script>{JS_COMMON}{js}</script></body></html>"""
-
-
-def page_sector(state, slug, title, key, nav, dl):
+def section_block(state, slug, label, key):
+    """One topic as a section of the single page. These used to be separate pages;
+    at 19 items across four topics the tabs cost four clicks to read one day's work.
+    The renderers are unchanged, so splitting back out later is a config change
+    rather than a rewrite."""
     items = (state.get("sections") or {}).get(key) or []
-    hls = "".join(entry(it, SECTION_CAT[key]) for it in items)
-    occ = occupations_html(key)
-    fc = forecast_html(state) if key == "workers" else ""
+    if not items:
+        return ""
     lede = {
-        "extremes": "Records, anomalies and the operational read on each one.",
-        "workers":  "Who is exposed, where, and what the rules are about to require. Heat "
-                    "is an occupational hazard before it is a climate statistic.",
-        "fire":     "Fire weather and burned area, and what it means for the people sent "
-                    "to work in it.",
-        "health":   "Excess mortality and heat-attributable illness, with the surveillance "
-                    "gaps stated rather than smoothed over.",
+        "extremes": "Records, anomalies, and what the heat did.",
+        "fire":     "Fire weather and burned area, and who is sent to work in it.",
+        "health":   "Excess mortality and heat-attributable illness, with the "
+                    "surveillance gaps stated rather than smoothed over.",
+        "workers":  "Who is exposed, where, and what the rules are about to require.",
     }.get(key, "")
-    return head(f"HeatWatch — {title}", DESC) + f"""
-{hero(title, lede, "Sector detail", dl)}
-{topbar(slug, title, nav)}
-<div class="wrap">
-<section class="card">
-  <span class="kicker">Current</span>
-  <h2>Headlines — {esc(title.split(" ")[0].lower())}</h2>
-  <p class="lede">Only this topic. The other sectors carry their own.</p>
-  {hls}
-</section>
-{('<section class="card"><span class="kicker">Dated, from primary sources</span>'
-  '<h2>Upcoming deadlines</h2>'
-  '<p class="lede">Each one dated, so a slipped deadline stays visible rather than '
-  'quietly forgotten.</p>' + fc + '</section>') if fc else ''}
-{('<section class="card"><span class="kicker">Where the exposure sits</span>'
-  '<h2>By occupation</h2><p class="lede">Each group faces a different version of the '
-  'same hazard, so each needs a different control. Exposure is a judgement, not a '
-  'measurement.</p>' + occ + '</section>') if occ else ''}
-{footer(state)}
-</div>
-<div id="tip"></div>
-<script>{JS_COMMON}</script></body></html>"""
+    src = {
+        "extremes": "Copernicus C3S · AEMET · Met Office / UKHSA · national services",
+        "fire":     "EFFIS · national fire services",
+        "health":   "EuroMomo · ISCIII/MoMo · UKHSA · national agencies",
+        "workers":  "EU-OSHA · ETUC · ETUI · ILO · OSHA · national labour ministries",
+    }.get(key, "")
+    ico = icon(CATS[SECTION_CAT[key]][1], "ico ico-lg")
+    return f"""
+<section class="card" id="{slug}">
+  <span class="kicker">{esc(label)}</span>
+  <h2><span class="h2ico">{ico}</span>{esc(label)}</h2>
+  <p class="lede">{esc(lede)}</p>
+  {"".join(entry(it, SECTION_CAT[key]) for it in items)}
+  <p class="srcline">Sources — {esc(src)}</p>
+</section>"""
 
 
-def page_solutions(state, nav, dl):
+def solutions_block(state):
     sol = "".join(
         f'<div class="soln">{icon(g, "ico ico-lg")}<div>'
         f'<div class="solnhead"><h3>{esc(t)}</h3><span class="tlab">{esc(k)}</span></div>'
-        f'<p class="lede" style="font-size:14.5px">{esc(d)}</p><div class="pc">'
+        f'<p class="lede" style="font-size:14px">{esc(d)}</p><div class="pc">'
         f'<div class="pro"><h5>Works because</h5><ul>'
         + "".join(f"<li>{esc(x)}</li>" for x in pr)
         + f'</ul></div><div class="con"><h5>Limits</h5><ul>'
@@ -1413,26 +1364,76 @@ def page_solutions(state, nav, dl):
         + f'</ul></div></div></div>'
           f'<span class="statcell"><span class="mat {m}">{MATURITY[m]}</span></span></div>'
         for g, t, k, m, d, pr, li, ap in SOLUTIONS)
-    disc = ((state.get("method") or {}).get("disclosure") or "")
-    return head("HeatWatch — Solutions", DESC) + f"""
-{hero("Solutions",
-      "What already exists to keep people working safely in heat, where each approach "
-      "stops working, and where it is in use today.", "What can be done", dl)}
-{topbar("solutions", "Industry solutions", nav)}
-<div class="wrap">
-<section class="card">
-  <span class="kicker">By approach</span>
-  <h2>Ways to stay cool at work</h2>
-  <p class="lede">Grouped by approach, not by vendor — no products, no ranking, no
-  league table. Maturity is lab → pilot → commercial.</p>
+    return f"""
+<section class="card" id="solutions">
+  <span class="kicker">What can be done</span>
+  <h2><span class="h2ico">{icon("sliders", "ico ico-lg")}</span>Solutions</h2>
+  <p class="lede">What exists to keep people working safely in heat, where each
+  approach stops working, and where it is in use. Grouped by approach, not by vendor
+  — no products, no ranking. Maturity is lab → pilot → commercial.</p>
   {sol}
-  <p class="note">Every approach here has a real limit and it is stated, including the
-  category HeatWatch's publisher sells into.<br>{esc(disc)}</p>
+</section>"""
+
+
+def page(state, sig, depth, rules, nav, dl):
+    vb, geom = _map_geometry()
+    paths = build_map_paths(geom)
+    offered = [w for w, days in WINDOWS
+               if depth.get(w, 0) >= days * WINDOW_MIN_COVERAGE]
+    if not offered:
+        offered = [WINDOWS[0][0]]
+    default = "1M" if "1M" in offered else offered[-1]
+    js = (JS_MAP.replace("__SIG__", json.dumps(sig))
+                .replace("__RULES__", json.dumps(rules))
+                .replace("__NAMES__", json.dumps(NAMES))
+                .replace("__CATS__", json.dumps({k: list(v) for k, v in CATS.items()}))
+                .replace("__ICONS__", json.dumps(ICONS))
+                .replace("__DEPTH__", json.dumps(depth))
+                .replace("__DEFAULT_TF__", json.dumps(default)))
+    wins = "".join(
+        f'<button class="opt" data-tf="{w}" onclick="setTF(\'{w}\')"'
+        + (' aria-pressed="true"' if w == default else '') + f'>{w}</button>'
+        for w in offered)
+    sections = "".join(section_block(state, slug, label, key)
+                       for slug, label, _t, key in SECTORS)
+    return head("HeatWatch — global heat intelligence", DESC) + f"""
+{hero("HeatWatch", DESC, "Global heat intelligence", dl)}
+{topbar("top", "", nav)}
+<div class="wrap">
+<section class="card" id="map">
+  <span class="kicker">Signal density by country</span>
+  <h2>Global heat signals</h2>
+  <p class="lede">Shading is how many signals a country carries in the window — heat,
+  health, workers, fire — counted flat, with no weighting. Outlined countries have
+  heat-at-work rules, the mitigation rather than the hazard, so it is drawn
+  separately. Hover or tap a country for detail.</p>
+  <div class="ctrlrow">
+    <span class="ctrllab">Window</span>
+    <div class="opts">{wins}</div>
+    <span class="ctrllab" id="tfnote"></span>
+  </div>
+  <div class="bleed"><div class="mapwrap"><svg viewBox="{vb}" role="img"
+    aria-label="World map shaded by the number of heat-related signals per country">
+    <g>{paths}</g><g>{rule_overlay(rules, geom)}</g></svg></div>{legend_html()}</div>
+  {table_view(sig, rules, NAMES)}
+  <p class="srcline">Built from dated primary-source records, so coverage reflects
+  what has been reported rather than the whole world. Each entry below carries its
+  own sources.</p>
 </section>
+
+<section class="card" id="numbers">
+  <span class="kicker">Key numbers</span>
+  <h2>Today</h2>
+  {metrics_html(state)}
+</section>
+{sections}
+{('<section class="card" id="ahead"><span class="kicker">Dated, from primary sources</span>'
+  '<h2>Upcoming deadlines</h2>' + forecast_html(state) + '</section>') if forecast_html(state) else ''}
+{solutions_block(state)}
 {footer(state)}
 </div>
 <div id="tip"></div>
-<script>{JS_COMMON}</script></body></html>"""
+<script>{JS_COMMON}{js}</script></body></html>"""
 
 
 def main():
@@ -1446,24 +1447,26 @@ def main():
     dl = today.strftime("%-d %B %Y")
     history = load_history(state_path)
     core_dir = os.path.dirname(os.path.dirname(os.path.abspath(state_path)))
-    backfill = backfill_from_reports(core_dir)
-    sig, depth = derive_signals(history, today, backfill)
+    sig, depth = derive_signals(history, today, backfill_from_reports(core_dir))
     rules = derive_rules(history)
     nav = nav_items(state)
 
-    pages = {"index.html": page_home(state, sig, depth, rules, nav, dl)}
-    for slug, _label, title, key in SECTORS:
-        if (state.get("sections") or {}).get(key):
-            pages[f"{slug}.html"] = page_sector(state, slug, title, key, nav, dl)
-    pages["solutions.html"] = page_solutions(state, nav, dl)
+    html = page(state, sig, depth, rules, nav, dl)
+    leftover = [w for w in html.split() if w.startswith("__") and w.endswith("__")]
+    if leftover:
+        raise SystemExit(f"unsubstituted placeholders: {leftover[:5]}")
+    with open(os.path.join(out_dir, "index.html"), "w") as fh:
+        fh.write(html)
+    print(f"wrote index.html — {len(html):,} bytes")
 
-    for fn, html in pages.items():
-        leftover = [w for w in html.split() if w.startswith("__") and w.endswith("__")]
-        if leftover:
-            raise SystemExit(f"{fn}: unsubstituted placeholders: {leftover[:5]}")
-        with open(os.path.join(out_dir, fn), "w") as fh:
-            fh.write(html)
-        print(f"wrote {fn} — {len(html):,} bytes")
+    # The per-topic pages are now sections. Remove any left from an earlier build so
+    # a stale page cannot keep being served.
+    for old in ("climate.html", "fire.html", "health.html", "workers.html",
+                "solutions.html"):
+        q = os.path.join(out_dir, old)
+        if os.path.exists(q):
+            os.remove(q)
+            print(f"removed {old} (now a section of index.html)")
     print(f"report_date {state['meta']['report_date']} · {len(history)} state files · "
           f"{len(sig.get('1M', {}))} countries in the 1M window")
 
