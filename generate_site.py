@@ -530,11 +530,21 @@ h3{{letter-spacing:-.015em}}
                                             is defined later at equal specificity
                                             and was therefore winning */
 .topbar.compact .baronly{{display:inline-flex}}
-@media(max-width:700px){{.topbar.compact .mini{{display:none}}}}
+@media(max-width:700px){{
+  .topinner{{flex-wrap:nowrap;gap:11px}}
+  .tabs{{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+    -webkit-overflow-scrolling:touch;min-width:0}}
+  .tabs::-webkit-scrollbar{{display:none}}
+  .tab{{margin-right:15px;font-size:13px}}
+  .tab:last-child{{margin-right:2px}}
+  .topbar.compact .mini .mininame{{display:none}}   /* mark stays, wordmark goes */
+  .mini{{gap:0}}
+  .baronly,.topbar.compact .baronly{{flex:none}}
+}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
 
-.tabs{{display:flex;flex-wrap:wrap}}
+.tabs{{display:flex;flex-wrap:wrap;min-width:0}}
 .tab{{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;
   letter-spacing:.07em;color:var(--ink-dim);background:none;border:0;
   border-bottom:2px solid transparent;padding:9px 3px;margin-right:20px;cursor:pointer;
