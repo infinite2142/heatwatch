@@ -209,19 +209,26 @@ summary{cursor:pointer}
    foot of the page. A panel of metadata pinned beside the reading column was not
    earning its place on screen. */
 .srcline{margin-top:16px;padding-top:11px;border-top:1px solid var(--line)}
-.pagefoot{border-top:1px solid var(--line-2);margin-top:56px;padding-top:26px;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px}
-.pagefoot h4{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:700}
+.pagefoot{border-top:1px solid var(--line-2);margin-top:52px;padding-top:22px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:24px}
+.pagefoot h4{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:700}
 /* Footer copy is apparatus -- method, cadence, limits, disclosure -- not body
    text. Setting it in the muted tone alongside the source lines means a reader
    can tell at a glance what is reporting and what is small print. */
-.pagefoot p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.7}
+.pagefoot p{margin:0;font-size:11px;color:var(--muted);line-height:1.6}
 
 /* ---- metrics ---- */
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
-  gap:1px;background:var(--line);margin-top:24px}
-.metric{background:var(--bg);padding:17px 19px 16px}
+/* The hairlines used to come from painting the CONTAINER var(--line) and letting
+   each cell paint over it, with a 1px gap. With five cells in an auto-fit grid the
+   last row is almost never full, and every unfilled slot showed that container
+   colour as a grey box -- at 390px the grid is two columns, so a phone always had
+   one. Rules now belong to the cells, so empty grid area paints nothing at all.
+   Horizontal only: vertical rules would need the same per-cell trick and the page
+   already separates blocks with a single rule and space. */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));
+  column-gap:26px;margin-top:24px;border-top:1px solid var(--line)}
+.metric{padding:17px 0 16px;border-bottom:1px solid var(--line)}
 .metric .mv{font-size:38px;font-weight:700;letter-spacing:-.035em;line-height:1;color:var(--h4)}
 .metric .mk{font-size:13.5px;color:var(--ink-dim);margin-top:6px}
 .metric .ms{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--muted);
@@ -264,8 +271,8 @@ summary{cursor:pointer}
 .pc ul{margin:0;padding-left:15px;font-size:13.5px;color:var(--ink-dim)}
 .pc li{margin:3px 0}
 .pc .pro h5{color:var(--good)} .pc .con h5{color:var(--serious)} .pc .app h5{color:var(--c3)}
-.note{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-top:24px;
-  border-top:1px solid var(--line);padding-top:14px;line-height:1.75}
+.note{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--muted);margin-top:22px;
+  border-top:1px solid var(--line);padding-top:13px;line-height:1.7}
 </style></head><body>
 
 <div class="wrap"><header class="masthead"><svg class="hero-art" viewBox="0 0 600 320" role="img"

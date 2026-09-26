@@ -16,9 +16,13 @@ build if any of them reaches the artifact. A new page needs its name added there
 ## The one rule
 
 **Never hand-edit a generated page** — `index.html`, `climate.html`,
-`health.html`, `workers.html`, `fire.html`, `solutions.html`. It is a build artifact that happens to be
-committed. Every design or content change goes into `generate_site.py`, then you
-regenerate. A hand-edit is silently destroyed by the next daily run.
+`health.html`, `workers.html`, `fire.html`, `solutions.html`. They are build
+artifacts that happen to be committed. Every design or content change goes into
+`generate_site.py`, then you regenerate. A hand-edit is silently destroyed by the
+next daily run.
+
+Leaving this repo dirty overnight has the same effect in reverse: the runner does
+`git add -A`, so uncommitted work is swept into a commit labelled "daily update".
 
 ## The two repos
 
@@ -81,8 +85,8 @@ stays reserved for data.
 
 ## Public / private split
 
-The daily run produces both surfaces. Only *heat events*, *extremes*, *fire* and
-*regulation* go public. Competition, the uniqueness claim, funding, the investor
+The daily run produces both surfaces. Only *heat events*, *extremes*, *health*,
+*fire* and *heat-at-work regulation* go public. Competition, the uniqueness claim, funding, the investor
 pipeline and the signal ledger are desk-only and live in `heatwatch-core/desk`,
 which deploys to its own Worker behind Cloudflare Access. They are never in this
 repo's deploy bundle — that separation is the point, not a convenience.
