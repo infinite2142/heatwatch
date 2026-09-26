@@ -67,7 +67,26 @@ h3{letter-spacing:-.015em}
   pointer-events:none;z-index:1;
   -webkit-mask-image:linear-gradient(90deg,transparent 1%,#000 38%);
   mask-image:linear-gradient(90deg,transparent 1%,#000 38%)}
-@media(max-width:920px){.hero-art{display:none}}
+/* The globe used to be hidden below 920px. It was absolutely positioned behind
+   the hero text, so on a narrow screen it either covered the words or had to go --
+   and going meant a phone never saw the illustration at all, in either
+   orientation. Reflow instead of hide: below 620px it stacks under the text;
+   between 620 and 920 (landscape phones, small tablets) it sits beside it. The
+   left-edge mask exists only to protect overlapping text, so it comes off once
+   the globe has its own space. */
+@media(max-width:920px){
+  .masthead{display:flex;flex-direction:column;align-items:flex-start;
+    padding:36px 0 30px;overflow:visible}
+  .hero-txt{order:1;max-width:none}
+  .hero-art{order:2;position:static;top:auto;right:auto;transform:none;
+    width:min(84%,330px);margin:26px auto 0;
+    -webkit-mask-image:none;mask-image:none}
+}
+@media(max-width:920px) and (min-width:620px){
+  .masthead{flex-direction:row;align-items:center;gap:24px}
+  .hero-txt{flex:1 1 58%;min-width:0}
+  .hero-art{width:min(40%,300px);margin:0;flex:none}
+}
 .cyc{animation:cyc 14s ease-in-out infinite;opacity:0}
 @keyframes cyc{0%,100%{opacity:0}50%{opacity:.5}}
 @media(prefers-reduced-motion:reduce){.cyc{animation:none;opacity:.22}}
