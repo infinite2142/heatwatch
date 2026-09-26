@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """HeatWatch public site generator.
 
-    python3 generate_site.py <state.json> <out_dir>
+    python3 generate_site.py <state.json> <out_dir> [denylist.txt]
 
 Writes index.html plus one page per sector that the state actually carries.
 Scans the directory of <state.json> for sibling state files to build the map's
@@ -36,7 +36,7 @@ NUMRE = re.compile(r"-?\d+(?:\.\d+)?")
 # the loud colour stays reserved for data.
 TOKENS = """
   :root{
-    --bg:#f7f4ee; --ink:#16130f; --ink-dim:#4c463d; --muted:#7d766a;
+    --bg:#f7f4ee; --ink:#16130f; --ink-dim:#4c463d; --muted:#6b6458;
     --line:rgba(22,19,15,0.13); --line-2:rgba(22,19,15,0.26);
     --h1:#f2b134; --h2:#e8912a; --h3:#dd6b20; --h4:#c2410c; --h5:#9a1c13;
     --c3:#4d7387; --c4:#2b5065;
@@ -540,7 +540,7 @@ h3{{letter-spacing:-.015em}}
 .chip.critical{{color:var(--critical)}} .chip.serious{{color:var(--serious)}}
 .chip.warning{{color:var(--warning)}} .chip.good{{color:var(--good)}}
 /* a status with no asserted band gets no colour -- the dot becomes a hairline
-   marker rather than implying a severity the run never stated */
+   marker rather than implying a severity that was never stated */
 .chip:not(.critical):not(.serious):not(.warning):not(.good)::before{{
   background:none;border:1.5px solid currentColor}}
 
@@ -1108,20 +1108,30 @@ def band_of(it):
     return b if b in ("critical", "serious", "warning", "good") else ""
 
 
-def short(text, limit=190):
-    """Trim to whole sentences under `limit`. Never mid-sentence: a clipped clause
-    changes what a sourced claim says. The source line sits directly beneath, so a
-    reader who wants the full version knows where to look."""
+def short(text, limit=200):
+    """Whole sentences only, and never an ellipsis.
+
+    The previous version fell back to a word-boundary cut plus "…" when a body had
+    no sentence break inside the limit -- which is the thing that makes a card
+    useless: a clause stopping mid-thought with nothing to click. Now it takes
+    complete sentences up to roughly `limit` and, if even the first sentence is
+    longer than that, shows that sentence whole. A slightly long card beats an
+    amputated one.
+
+    The real fix is upstream: prompts/daily.md asks for a two-to-three line summary
+    in `body`, with the detail staying in the report."""
     t = " ".join(str(text or "").split())
+    if not t:
+        return ""
     if len(t) <= limit:
         return t
-    cut = t[:limit]
-    for stop in (". ", "? ", "! "):
-        i = cut.rfind(stop)
-        if i > 60:
-            return cut[:i + 1]
-    i = cut.rfind(" ")
-    return (cut[:i] if i > 60 else cut).rstrip(",;:") + "…"
+    out = ""
+    for part in re.findall(r"[^.!?]+[.!?]*", t):
+        cand = (out + part).strip()
+        if out and len(cand) > limit:
+            break
+        out = cand
+    return out or t
 
 
 def entry(it, cat, thumb_key=None):
@@ -1326,6 +1336,44 @@ NAMES = {
  "IRL": "Ireland", "UKR": "Ukraine", "FIN": "Finland", "NOR": "Norway", "SWE": "Sweden",
  "DNK": "Denmark", "SYR": "Syria", "JOR": "Jordan", "YEM": "Yemen", "AGO": "Angola",
  "COD": "DR Congo", "NZL": "New Zealand",
+
+ # Completed so the table can never print a bare ISO3 code: BHR was missing and
+ # the page showed "BHR". check_names() now fails the build if any code the map
+ # can display has no name here.
+ "AFG": "Afghanistan", "ALB": "Albania", "ARM": "Armenia",
+ "ATF": "French Southern Territories", "AUT": "Austria", "AZE": "Azerbaijan",
+ "BDI": "Burundi", "BEN": "Benin", "BFA": "Burkina Faso",
+ "BGR": "Bulgaria", "BHR": "Bahrain", "BHS": "Bahamas",
+ "BIH": "Bosnia and Herzegovina", "BLR": "Belarus", "BLZ": "Belize",
+ "BRN": "Brunei", "BTN": "Bhutan", "CAF": "Central African Republic",
+ "CHE": "Switzerland", "CIV": "Côte d'Ivoire", "CMR": "Cameroon",
+ "COG": "Republic of the Congo", "CRI": "Costa Rica", "CUB": "Cuba",
+ "CYN": "Northern Cyprus", "CZE": "Czechia", "DJI": "Djibouti",
+ "DOM": "Dominican Republic", "ECU": "Ecuador", "ERI": "Eritrea",
+ "ESH": "Western Sahara", "EST": "Estonia", "FJI": "Fiji",
+ "FLK": "Falkland Islands", "GAB": "Gabon", "GEO": "Georgia",
+ "GHA": "Ghana", "GIN": "Guinea", "GMB": "Gambia",
+ "GNB": "Guinea-Bissau", "GNQ": "Equatorial Guinea", "GRL": "Greenland",
+ "GTM": "Guatemala", "GUY": "Guyana", "HND": "Honduras",
+ "HRV": "Croatia", "HTI": "Haiti", "ISL": "Iceland",
+ "ISR": "Israel", "JAM": "Jamaica", "KGZ": "Kyrgyzstan",
+ "KHM": "Cambodia", "KOS": "Kosovo", "LAO": "Laos",
+ "LBN": "Lebanon", "LBR": "Liberia", "LSO": "Lesotho",
+ "LTU": "Lithuania", "LUX": "Luxembourg", "LVA": "Latvia",
+ "MDA": "Moldova", "MDG": "Madagascar", "MKD": "North Macedonia",
+ "MMR": "Myanmar", "MNE": "Montenegro", "MNG": "Mongolia",
+ "MRT": "Mauritania", "MWI": "Malawi", "MYS": "Malaysia",
+ "NCL": "New Caledonia", "NIC": "Nicaragua", "PAN": "Panama",
+ "PNG": "Papua New Guinea", "PRI": "Puerto Rico", "PRK": "North Korea",
+ "PSE": "Palestine", "RWA": "Rwanda", "SEN": "Senegal",
+ "SLB": "Solomon Islands", "SLE": "Sierra Leone", "SLV": "El Salvador",
+ "SOL": "Somaliland", "SRB": "Serbia", "SSD": "South Sudan",
+ "SUR": "Suriname", "SVK": "Slovakia", "SVN": "Slovenia",
+ "SWZ": "Eswatini", "TGO": "Togo", "TJK": "Tajikistan",
+ "TKM": "Turkmenistan", "TLS": "Timor-Leste", "TTO": "Trinidad and Tobago",
+ "TWN": "Taiwan", "TZA": "Tanzania", "UGA": "Uganda",
+ "URY": "Uruguay", "UZB": "Uzbekistan", "VEN": "Venezuela",
+ "VUT": "Vanuatu", "ZMB": "Zambia",
 }
 
 DESC = ("Where heat is breaking records, who it is reaching, what the rules are about "
@@ -1450,10 +1498,46 @@ def page(state, sig, depth, rules, nav, dl):
 <script>{JS_COMMON}{js}</script></body></html>"""
 
 
+def check_names(sig):
+    """Every ISO3 the map can show must have a name. BHR was missing, so the table
+    printed "BHR" -- a build failure is better than a country code in the page."""
+    seen = {iso for w in sig.values() for iso in w}
+    missing = sorted(seen - set(NAMES))
+    if missing:
+        raise SystemExit(f"ISO3 codes with no name in NAMES: {missing}")
+    return len(seen)
+
+
+def check_terms(html, denylist_path):
+    """Fail the build if an internal term reached the page, comments included.
+
+    The list lives in heatwatch-core: inside this public file it would publish the
+    terms it exists to suppress. Missing list = loud warning, not a silent pass."""
+    if not denylist_path or not os.path.exists(denylist_path):
+        print(f"WARNING: no denylist at {denylist_path} -- internal-term check SKIPPED")
+        return
+    low = html.lower()
+    hits = []
+    for raw in open(denylist_path, encoding="utf-8"):
+        t = raw.split("#", 1)[0].strip()
+        if not t:
+            continue
+        if t.startswith("phrase:"):
+            needle = t[7:].strip().lower()
+            if needle and needle in low:
+                hits.append(t)
+        elif re.search(r"(?<![a-z])" + re.escape(t.lower()) + r"(?![a-z])", low):
+            hits.append(t)
+    if hits:
+        raise SystemExit(f"INTERNAL TERMS IN PUBLISHED PAGE: {sorted(set(hits))}")
+    print("internal-term check: clean")
+
+
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in (3, 4):
         raise SystemExit(__doc__)
     state_path, out_dir = sys.argv[1], sys.argv[2]
+    denylist = sys.argv[3] if len(sys.argv) == 4 else None
     state = json.load(open(state_path))
     os.makedirs(out_dir, exist_ok=True)
 
@@ -1465,10 +1549,12 @@ def main():
     rules = derive_rules(history)
     nav = nav_items(state)
 
+    print(f"named countries: {check_names(sig)}")
     html = page(state, sig, depth, rules, nav, dl)
     leftover = [w for w in html.split() if w.startswith("__") and w.endswith("__")]
     if leftover:
         raise SystemExit(f"unsubstituted placeholders: {leftover[:5]}")
+    check_terms(html, denylist or os.path.join(core_dir, "publish-denylist.txt"))
     with open(os.path.join(out_dir, "index.html"), "w") as fh:
         fh.write(html)
     print(f"wrote index.html — {len(html):,} bytes")
