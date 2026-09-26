@@ -123,13 +123,14 @@ h3{letter-spacing:-.015em}
 .mini{display:none;align-items:center;gap:9px;flex:none;white-space:nowrap}
 .topbar.compact .mini{display:flex}
 /* both bar items are compact-only: at rest the bar is tabs alone, flush left */
-.baronly{display:none}
+.topbar .baronly{display:none}          /* (0,2,0): must outrank .ghost, which
+                                            is defined later at equal specificity
+                                            and was therefore winning */
 .topbar.compact .baronly{display:inline-flex}
 @media(max-width:700px){.topbar.compact .mini{display:none}}
 .brandmark{width:22px;height:22px;flex:none}
 .mininame{font-size:15px;font-weight:700;letter-spacing:-.022em}
 
-.minidate{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--muted)}
 .tabs{display:flex;flex-wrap:wrap}
 .tab{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;
   letter-spacing:.07em;color:var(--ink-dim);background:none;border:0;
@@ -156,10 +157,6 @@ h3{letter-spacing:-.015em}
   transition:fill .2s}
 .cty.n1{fill:var(--h2)} .cty.n2{fill:var(--h3)} .cty.n3{fill:var(--h4)} .cty.n4{fill:var(--h5)}
 .cty:hover{stroke:var(--ink);stroke-width:1.3}
-.reg{fill:none;stroke:var(--c4);vector-effect:non-scaling-stroke;pointer-events:none}
-.reg.r2{stroke-width:1.9}
-.reg.r1{stroke-width:1.6;stroke-dasharray:3 2.5}
-:root[data-theme="dark"] .reg{stroke:var(--c4)}
 .ctrlrow{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;margin:24px 0 8px}
 .ctrllab{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;
   letter-spacing:.11em;color:var(--muted)}

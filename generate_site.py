@@ -526,13 +526,14 @@ h3{{letter-spacing:-.015em}}
 .mini{{display:none;align-items:center;gap:9px;flex:none;white-space:nowrap}}
 .topbar.compact .mini{{display:flex}}
 /* both bar items are compact-only: at rest the bar is tabs alone, flush left */
-.baronly{{display:none}}
+.topbar .baronly{{display:none}}          /* (0,2,0): must outrank .ghost, which
+                                            is defined later at equal specificity
+                                            and was therefore winning */
 .topbar.compact .baronly{{display:inline-flex}}
 @media(max-width:700px){{.topbar.compact .mini{{display:none}}}}
 .brandmark{{width:22px;height:22px;flex:none}}
 .mininame{{font-size:15px;font-weight:700;letter-spacing:-.022em}}
 
-.minidate{{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--muted)}}
 .tabs{{display:flex;flex-wrap:wrap}}
 .tab{{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;
   letter-spacing:.07em;color:var(--ink-dim);background:none;border:0;
@@ -559,10 +560,6 @@ h3{{letter-spacing:-.015em}}
   transition:fill .2s}}
 .cty.n1{{fill:var(--h2)}} .cty.n2{{fill:var(--h3)}} .cty.n3{{fill:var(--h4)}} .cty.n4{{fill:var(--h5)}}
 .cty:hover{{stroke:var(--ink);stroke-width:1.3}}
-.reg{{fill:none;stroke:var(--c4);vector-effect:non-scaling-stroke;pointer-events:none}}
-.reg.r2{{stroke-width:1.9}}
-.reg.r1{{stroke-width:1.6;stroke-dasharray:3 2.5}}
-:root[data-theme="dark"] .reg{{stroke:var(--c4)}}
 .ctrlrow{{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;margin:24px 0 8px}}
 .ctrllab{{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;
   letter-spacing:.11em;color:var(--muted)}}
@@ -902,25 +899,73 @@ def region_thumb(key):
     return f'<svg class="rg" aria-hidden="true"><use href="#rg-{key}"/></svg>'
 
 
-def build_map_paths():
-    W = json.load(open(WORLD))["countries"]
-    paths = []
-    for iso, rec in W.items():
-        d = rec.get("d") if isinstance(rec, dict) else rec
-        if d:
-            paths.append(f'<path class="cty" data-iso="{iso}" d="{d}"/>')
-    return json.load(open(WORLD))["viewBox"], "".join(paths)
+# The map is drawn ~1100px wide from a 936-unit viewBox, so roughly 1.18 px per
+# unit -- anything closer than ~0.85 units is sub-pixel detail nobody can see. The
+# raw geometry was 9,901 vertices and 143KB, over half the page.
+MAP_TOL = 0.7
 
 
-def rule_overlay(rules):
-    W = json.load(open(WORLD))["countries"]
+def _thin(d, tol):
+    """Thin a country's path below display resolution, without ever losing the
+    country: a shape that thins away entirely keeps its largest original ring, so
+    every data-iso hover target survives."""
+    rings, biggest = [], None
+    for ch in d.split("M"):
+        c = ch.strip().rstrip("Zz").strip()
+        if not c:
+            continue
+        nums = [float(v) for v in NUMRE.findall(c)]
+        pts = list(zip(nums[0::2], nums[1::2]))
+        if len(pts) < 3:
+            continue
+        if biggest is None or len(pts) > len(biggest):
+            biggest = pts
+        keep = []
+        for q in pts:
+            if keep:
+                dx, dy = q[0] - keep[-1][0], q[1] - keep[-1][1]
+                if dx * dx + dy * dy < tol * tol:
+                    continue
+            keep.append(q)
+        if len(keep) >= 3:
+            rings.append(keep)
+    if not rings and biggest:
+        rings = [biggest[:3]]
+    return "".join("M" + " ".join(f"{x:.1f},{y:.1f}" for x, y in r) + "Z" for r in rings)
+
+
+def _map_geometry():
+    W = json.load(open(WORLD))
+    return W["viewBox"], {iso: _thin(rec.get("d") if isinstance(rec, dict) else rec, MAP_TOL)
+                          for iso, rec in W["countries"].items()
+                          if (rec.get("d") if isinstance(rec, dict) else rec)}
+
+
+def build_map_paths(geom):
+    return "".join(f'<path class="cty" data-iso="{iso}" d="{d}"/>'
+                   for iso, d in geom.items())
+
+
+def rule_overlay(rules, geom):
+    """Duplicated geometry, deliberately.
+
+    A <use href="#c-ISO"> would halve this, but it clones a <path class="cty">, and
+    the clone still matches .cty in the original tree -- so it keeps
+    fill:var(--land) and repaints the country instead of outlining it. Same
+    shadow-tree resolution that made the thumbnails invisible. Paint is set with
+    presentation attributes here for the same reason: nothing depends on a selector
+    reaching somewhere it might not.
+
+    The repeated coordinate text is ~19KB raw and close to free after gzip."""
     out = []
     for iso, (lvl, _note) in rules.items():
-        rec = W.get(iso)
-        if not rec:
+        d = geom.get(iso)
+        if not d:
             continue
-        d = rec.get("d") if isinstance(rec, dict) else rec
-        out.append(f'<path class="reg r{lvl}" d="{d}"/>')
+        dash = ' stroke-dasharray="3 2.5"' if lvl == 1 else ""
+        out.append(f'<path d="{d}" fill="none" stroke="var(--c4)" '
+                   f'stroke-width="{1.9 if lvl == 2 else 1.6}"{dash} '
+                   f'vector-effect="non-scaling-stroke" pointer-events="none"/>')
     return "".join(out)
 
 
@@ -1140,7 +1185,8 @@ DESC = ("Where heat is breaking records, who it is reaching, what the rules are 
 
 
 def page_home(state, sig, depth, rules, nav, dl):
-    vb, paths = build_map_paths()
+    vb, geom = _map_geometry()
+    paths = build_map_paths(geom)
     offered = [w for w, days in WINDOWS
                if depth.get(w, 0) >= days * WINDOW_MIN_COVERAGE]
     if not offered:
@@ -1175,7 +1221,7 @@ def page_home(state, sig, depth, rules, nav, dl):
   </div>
   <div class="bleed"><div class="mapwrap"><svg viewBox="{vb}" role="img"
     aria-label="World map shaded by the number of heat-related signals per country">
-    <g>{paths}</g><g>{rule_overlay(rules)}</g></svg></div>{legend_html()}</div>
+    <g>{paths}</g><g>{rule_overlay(rules, geom)}</g></svg></div>{legend_html()}</div>
   {table_view(sig, rules, NAMES)}
   <p class="srcline">Derived from the dated briefings behind this site, so coverage
   follows what has been reported rather than the whole world. Every underlying claim
