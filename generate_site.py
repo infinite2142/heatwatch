@@ -91,11 +91,11 @@ ICONS = {
            '<path d="M7.5 33.5c0-7.2 5.6-11.5 12.5-11.5s12.5 4.3 12.5 11.5"/>',
  # A flame, not a teardrop. The old one was the droplet path with a different
  # name -- same symmetric point, same round bowl, same inner crescent -- so Fire
- # and Water were the same glyph. This one has a single tongue curling in from
- # the left and a leaning tip, which is the part that reads as fire at 17px.
- "flame":  '<path d="M13.2 22.4a4.6 4.6 0 0 0 4.6-4.6c0-2.6-1.2-3.8-2.1-5.7-2-4.1-.2-7.6 '
-           '4.4-10.6.4 4.8 3.2 8.6 6.6 11.4 3.5 2.9 5.3 6.3 5.3 10a12 12 0 1 1-24 0c0-2.2 '
-           '1-4.4 2.3-5.8a4.6 4.6 0 0 0 2.9 5.3z"/>',
+ # and Water were the same glyph. What separates this one is the notch on the
+ # left where a second tongue licks up, breaking the symmetry a drop depends on.
+ "flame":  '<path d="M21 4c.5 6 8 9.5 8 17a9 9 0 0 1-18 0c0-3.2 1.4-5.4 3-7.3.3 2 1.2 3.3 '
+           '2.4 4C15.6 12.6 18 9 21 4z"/>'
+           '<path d="M20 33a5 5 0 0 1-3.4-7.6c.5 2 1.7 3 3.2 3.4"/>',
  "rule":   '<path d="M11 6h13l6 6v22H11z"/><path d="M24 6v6h6"/><path d="M16 21h10M16 26h10"/>',
  # a beacon: lamp on a base, throwing light. The old one was a dome with a stalk.
  "beacon": '<path d="M12 31.5h16"/><path d="M15 31.5V21a5 5 0 0 1 10 0v10.5"/>'
