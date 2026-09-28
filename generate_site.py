@@ -470,6 +470,14 @@ def backfill_from_reports(core_dir):
     return out
 
 
+# A coverage note is a short public line the daily run writes for a country it
+# counted but did not give a full item to. It exists so the map can say what was
+# recorded instead of only when -- see "A country's tooltip" in CLAUDE.md.
+COVERAGE_CAT = {"extremes": "heat", "heat": "heat", "fire": "fire",
+                "workers": "workers", "health": "health",
+                "regulation": "reg", "reg": "reg"}
+
+
 def sentence_about(iso, body):
     """The first complete sentence of a body that names this country.
 
@@ -528,10 +536,10 @@ def derive_signals(history, today, backfill=None):
                 for iso in countries_in(text, regions_text=subject):
                     slot = per.setdefault(iso, {})
                     rank = slot.get(cat, (-1,))[0]
-                    if rank >= 2:
+                    if rank >= 3:
                         continue            # already has a headline that names it
                     if iso in titled:
-                        slot[cat] = (2, "headline", title)
+                        slot[cat] = (3, "headline", title)
                         continue
                     if rank >= 1:
                         continue
@@ -540,6 +548,21 @@ def derive_signals(history, today, backfill=None):
                         slot[cat] = (1, "mention", said)
                     elif rank < 0:
                         slot[cat] = (0, "stamp", stamp)
+
+            # coverage notes: a line written FOR a country the run counted but did
+            # not give an item to. Ranked above a borrowed sentence and below the
+            # country's own headline.
+            for cov in (st.get("coverage") or []):
+                cat = COVERAGE_CAT.get(str(cov.get("category", "")).strip().lower())
+                note = " ".join(str(cov.get("note", "")).split())
+                where = str(cov.get("country", ""))
+                if not cat or not note:
+                    continue
+                for iso in countries_in(where, regions_text=where):
+                    slot = per.setdefault(iso, {})
+                    if slot.get(cat, (-1,))[0] >= 2:
+                        continue
+                    slot[cat] = (2, "note", note)
         # Then the archive, which only ever adds a category that has no entry
         # yet, and labels it generically -- history contributes counts, not prose.
         for d, isomap in backfill.items():
@@ -1725,7 +1748,7 @@ def check_tooltips(sig):
             # a shape change here is a blank tooltip, which only a hover reveals
             for cat, v in rec["hit"].items():
                 if not (isinstance(v, list) and len(v) == 2
-                        and v[0] in ("headline", "mention", "stamp")):
+                        and v[0] in ("headline", "note", "mention", "stamp")):
                     raise SystemExit(f"tooltip payload shape broken at {iso}/{cat}: {v!r}")
             for cat, (kind, title) in rec["hit"].items():
                 if kind != "headline":
@@ -1751,6 +1774,44 @@ def check_chars(html, name):
     if bad:
         raise SystemExit(f"{name}: control characters in the page: {bad} "
                          f"-- a backslash escape was eaten by Python, not passed to CSS")
+
+
+def check_headlines(history, today, days=31):
+    """Warn where a regional headline carries more countries than its evidence.
+
+    "The Mediterranean loaded both hazards this season" reached seven countries
+    through the region phrase in its title, while its body named none of them --
+    the evidence was a flash-flood sequence in Valencia and Murcia. As a regional
+    read that is fair; as Morocco's heat headline it is not, and a reader hovering
+    Morocco sees only the title.
+
+    A warning, not a failure: the fix is to write a title that stands alone or to
+    give the country a coverage note, and neither is something a build can do."""
+    cutoff = today - timedelta(days=days)
+    flagged = []
+    for d, st in history:
+        if d < cutoff:
+            continue
+        for _cat, it in items_of(st):
+            title = it.get("title", "") or ""
+            broad = countries_in(title, regions_text=title)
+            named = countries_in(title, regions_text="")
+            region_only = broad - named
+            if len(region_only) < 3:
+                continue
+            body_named = countries_in(it.get("body", "") or "", regions_text="")
+            if body_named & region_only:
+                continue
+            flagged.append((d, title, len(region_only)))
+    if flagged:
+        # Not all of these are wrong. An EU consultation legitimately reaches every
+        # member state and names none of them. This is a review list: check each
+        # title reads fairly as the headline for every country it lands on.
+        print(f"headline reach — {len(flagged)} headline(s) carrying 3+ countries via a "
+              f"region phrase, with no country named in the body. Review:")
+        for d, t, n in flagged[:6]:
+            print(f"    {d} reaches {n:2d}: {t!r}")
+    return len(flagged)
 
 
 def check_terms(html, denylist_path):
@@ -1869,6 +1930,7 @@ def main():
 
     print(f"named countries: {check_names(sig, rules)}")
     check_tooltips(sig)
+    check_headlines(history, today)
     pages = {"index.html": page(state, sig, depth, rules, nav, dl, has_workability=bool(wk))}
     if wk:
         pages["workability.html"] = workability_page(

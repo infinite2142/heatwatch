@@ -179,16 +179,33 @@ archive uses: a signal existed, nothing more is asserted.
 payload ships as `hit[cat] = [kind, text]`:
 
 - `headline` — the item's title, where that title names this country
+- `note` — a line the run wrote **for** this country in `state.coverage`, for a
+  country the report names without giving it a section item. This is the fix for a
+  bare date and the reason `coverage` exists; see `prompts/daily.md`
 - `mention` — the first complete sentence of the body that names this country, used
   when the title is about somewhere else. `sentence_about()` matches the country's
   own aliases only (`regions_text=""`), so a sentence about "the Gulf" is never
   offered as a sentence about Saudi Arabia
 - `stamp` — a date alone, with a footnote in the tooltip saying what that means
 
-A `stamp` is not laziness: those come from `backfill_from_reports()`, which keeps the
-date and category and deliberately **no prose**, because the archived reports also
-contain desk-only sections and a mis-parsed heading would walk private text onto a
-public page. The category label is the most that can honestly be said there.
+A `stamp` is the last resort, not laziness: those come from
+`backfill_from_reports()`, which keeps the date and category and deliberately **no
+prose**, because the archived reports also contain desk-only sections and a
+mis-parsed heading would walk private text onto a public page. The line that gave
+Saudi Arabia its 15 September stamp contains the word "beachhead", which is on the
+denylist — that is the rule earning its keep. A `coverage` note is how a country
+gets real text instead, and as those accumulate the stamps should drain.
+
+## A title is read on its own
+
+The map tooltip shows a section item's **title and nothing else**. "The
+Mediterranean loaded both hazards this season" landed on seven countries, and
+nothing in it says which hazards or what loaded means — the body that explained it
+was not on screen. A region word in a title also fans the headline to every member,
+so a Spanish flood sequence became Morocco's heat headline. `check_headlines()`
+prints a review list of titles carrying three or more countries that way. It warns
+rather than fails: an EU consultation legitimately reaches fourteen member states
+and names none of them, so this is a judgement the writer has to make.
 
 `check_tooltips()` also asserts the `[kind, text]` shape. A shape change is a blank
 tooltip, and a blank tooltip is only visible to someone who hovers.
