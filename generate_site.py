@@ -510,6 +510,18 @@ def derive_signals(history, today, backfill=None):
     honest failure mode -- the alternative is inventing values for countries
     nobody looked at."""
     backfill = backfill or {}
+    # The state file is authoritative for any date it covers. The report backfill
+    # fills the pre-history only -- the weeks before state files existed, which is
+    # the job it was added for.
+    #
+    # It used to fill every date, and that is why a bare "Recorded 26 September
+    # 2026" never drained away: on a date the state file already covered, the
+    # report would add countries the state file had no item for, and a count with
+    # no text is all a report can safely give. Restricting it means a country
+    # reaches the map only through something public and written -- a section item
+    # or a coverage note -- so the gap shows up as a missing country in the build
+    # log rather than as a content-free line on the page.
+    state_dates = {d for d, _ in history}
     out, depth = {}, {}
     for label, days in WINDOWS:
         cutoff = today - timedelta(days=days)
@@ -566,7 +578,7 @@ def derive_signals(history, today, backfill=None):
         # Then the archive, which only ever adds a category that has no entry
         # yet, and labels it generically -- history contributes counts, not prose.
         for d, isomap in backfill.items():
-            if d < cutoff or d > today:
+            if d < cutoff or d > today or d in state_dates:
                 continue
             oldest = min(oldest, d)
             for iso, cats in isomap.items():
@@ -1814,6 +1826,52 @@ def check_headlines(history, today, days=31):
     return len(flagged)
 
 
+def report_coverage_gaps(history, backfill, today, days=7):
+    """Countries the report named that the state file gave nothing to.
+
+    Each one is a country that used to reach the map as a bare date and now does
+    not reach it at all. That is the intended trade -- but it is only honest if
+    the gap is visible, so the run prints it and the next day's coverage notes
+    can close it."""
+    state_dates = {d for d, _ in history}
+    gaps = {}
+    for d, st in history:
+        if (today - d).days >= days or d not in backfill:
+            continue
+        have = set()
+        for cat, it in items_of(st):
+            subject = f"{it.get('title','')} {it.get('body','')}"
+            for iso in countries_in(f"{subject} {it.get('so_what','')}", regions_text=subject):
+                have.add((iso, cat))
+        for cov in (st.get("coverage") or []):
+            cat = COVERAGE_CAT.get(str(cov.get("category", "")).strip().lower())
+            where = str(cov.get("country", ""))
+            if cat:
+                for iso in countries_in(where, regions_text=where):
+                    have.add((iso, cat))
+        for iso, cats in backfill[d].items():
+            for cat in cats:
+                if (iso, cat) not in have:
+                    gaps.setdefault(d, set()).add((iso, cat))
+    if gaps:
+        total = sum(len(v) for v in gaps.values())
+        # Most of these are SUPPOSED to be gaps. The 28-September report named 25
+        # countries in one line reading "Gulf, South Asia, East Asia, sub-Saharan
+        # Africa, South America -- quiet. No new observed heat event surfaced in
+        # India, Bangladesh, China ...". Those countries were being shaded on the
+        # map for the fact that nothing happened in them. A note is owed only where
+        # something was actually recorded.
+        print(f"coverage gaps — {total} country/category pair(s) named in the last "
+              f"{days} reports with no item and no coverage note. A country named "
+              f"only to say it was quiet belongs here; write a note only where "
+              f"something was recorded:")
+        for d in sorted(gaps, reverse=True)[:3]:
+            names = sorted({NAMES.get(i, i) for i, _c in gaps[d]})
+            print(f"    {d}: {', '.join(names[:10])}"
+                  + (f" +{len(names)-10} more" if len(names) > 10 else ""))
+    return sum(len(v) for v in gaps.values())
+
+
 def check_terms(html, denylist_path):
     """Fail the build if an internal term reached the page, comments included.
 
@@ -1931,6 +1989,7 @@ def main():
     print(f"named countries: {check_names(sig, rules)}")
     check_tooltips(sig)
     check_headlines(history, today)
+    report_coverage_gaps(history, backfill_from_reports(core_dir), today)
     pages = {"index.html": page(state, sig, depth, rules, nav, dl, has_workability=bool(wk))}
     if wk:
         pages["workability.html"] = workability_page(

@@ -193,8 +193,27 @@ A `stamp` is the last resort, not laziness: those come from
 prose**, because the archived reports also contain desk-only sections and a
 mis-parsed heading would walk private text onto a public page. The line that gave
 Saudi Arabia its 15 September stamp contains the word "beachhead", which is on the
-denylist — that is the rule earning its keep. A `coverage` note is how a country
-gets real text instead, and as those accumulate the stamps should drain.
+denylist — that is the rule earning its keep.
+
+## The state file is authoritative for any date it covers
+
+The report backfill fills the **pre-history only** — the weeks before state files
+existed. It used to fill every date, and that is why bare dated lines never drained:
+on a date the state file already covered, the report added countries the state file
+had no item for, and a count with no text is all a report can safely give.
+
+It was also shading countries for nothing happening. One line in the 28 September
+report read "Gulf, South Asia, East Asia, sub-Saharan Africa, South America —
+quiet. No new observed heat event surfaced in India, Bangladesh, China, Japan …" and
+put twenty-five countries on the map on the strength of it. Argentina, Bolivia,
+Chile, China, Colombia, Mexico, Peru, Paraguay and South Africa were shaded in the
+1M window because the report said they were quiet. "Quiet" is the absence of a
+signal, not a signal.
+
+So a country now reaches the map only through something public and written: a
+section item, or a `coverage` note. `report_coverage_gaps()` prints the countries
+counted from recent reports with neither. **Read that as a list to triage, not a
+list to fill** — a country named only to say it was quiet belongs in it.
 
 ## A title is read on its own
 
