@@ -113,6 +113,21 @@ The hero globe is centred at `cx=300` in a 600-wide viewBox. It was 310, which i
 invisible on desktop — the art is masked and positioned against the right edge —
 and 5px right of centre the moment a phone centres the box instead.
 
+**Three numbers move together when the globe is resized**, and the build only
+catches one of them:
+
+- `r` and `cy` — `build()` derives the viewBox height from `cy` and refuses to
+  render when `r > cy - 2`, so clipped poles fail loudly rather than shipping.
+- `.masthead{min-height}` at `min-width:921px` — the art is absolutely positioned,
+  so it contributes nothing to the band's height, and `overflow:hidden` then cuts
+  its poles off as soon as it is taller than the text beside it. Nothing checks
+  this one. On-screen art height is `min(50%,520px) * vb_h/600`; at r=177.6 that is
+  333px, hence a 342px floor.
+
+The width stays 600 whatever the size: the element's on-screen scale is
+`width/600`, so holding it fixed makes `r` the only thing that changes how big the
+globe renders.
+
 The static SVG stays in the page and is what a reader gets with JavaScript off or
 `prefers-reduced-motion: reduce` set — the script replaces the land only once it has
 decided to animate. It throttles to 20fps, and pauses when the tab is hidden or the

@@ -720,6 +720,13 @@ h3{{letter-spacing:-.015em}}
 
 /* ---- hero, and the compressed band it becomes ---- */
 .masthead{{position:relative;overflow:hidden;padding:34px 0 38px}}
+/* The globe is absolutely positioned, so it adds nothing to the masthead's
+   height -- and overflow:hidden then cuts its poles off the moment the art is
+   taller than the text beside it. overflow cannot be clipped on one axis only
+   (hiding either forces the other), and the hidden axis is earning its keep on
+   the right, where the art overhangs by 20px. So the band gets a floor instead.
+   If r changes, this changes with it: art height = min(50%,520px) * vb_h/600. */
+@media(min-width:921px){{.masthead{{min-height:342px}}}}
 .hero-txt{{position:relative;z-index:2;max-width:620px}}
 .eyebrow{{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;
   text-transform:uppercase;color:var(--muted);font-weight:700}}
@@ -1071,7 +1078,7 @@ def topbar(active, page_title, nav):
 
 def hero(title, sub, kicker, dl, meta=None, active_view="updates"):
     meta = meta or f"Updated {esc(dl)} \u00b7 rebuilt daily from primary sources"
-    return brandrow(active_view) + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=300.0, cy=160.0)}
+    return brandrow(active_view) + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=177.6, cx=300.0, cy=192.0)}
 <div class="hero-txt"><div class="eyebrow">{esc(kicker)}</div>
 <h1 class="hero-title">{esc(title)}</h1>
 <p class="hero-sub">{esc(sub)}</p>

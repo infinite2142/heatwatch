@@ -227,7 +227,15 @@ def build(lon0=20.0, r=150.0, cx=300.0, cy=160.0):
         f'<polygon points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in run)}" '
         f'fill="{field(lat)}" fill-opacity=".52"/>' for run, lat in land)
 
-    return f"""<svg class="hero-art" viewBox="0 0 600 320" role="img"
+    # The viewBox height follows cy, so the disc is always vertically centred and
+    # the poles cannot be clipped by a viewBox someone forgot to grow. Width stays
+    # 600: the element's on-screen scale is width/600, so holding it fixed means r
+    # is the only thing that changes the rendered size.
+    vb_h = 2 * cy
+    if r > cy - 2:
+        raise SystemExit(f"globe: r={r} does not fit a viewBox of height {vb_h} "
+                         f"(needs cy >= r + 2)")
+    return f"""<svg class="hero-art" viewBox="0 0 600 {vb_h:.0f}" role="img"
  aria-label="Illustration: a globe centred on Africa and Europe, shaded with a climate anomaly gradient from cool at the poles through the hot subtropical belt">
 <defs>
   {grad('gA', False)}
