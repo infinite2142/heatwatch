@@ -175,6 +175,24 @@ archive uses: a signal existed, nothing more is asserted.
 `NOT_THE_COUNTRY` rewrites proper nouns that merely contain a country name, so
 "New Mexico" is a US state and "New South Wales" is in Australia.
 
+**Every tooltip line names its category**, and carries one of three kinds, which the
+payload ships as `hit[cat] = [kind, text]`:
+
+- `headline` — the item's title, where that title names this country
+- `mention` — the first complete sentence of the body that names this country, used
+  when the title is about somewhere else. `sentence_about()` matches the country's
+  own aliases only (`regions_text=""`), so a sentence about "the Gulf" is never
+  offered as a sentence about Saudi Arabia
+- `stamp` — a date alone, with a footnote in the tooltip saying what that means
+
+A `stamp` is not laziness: those come from `backfill_from_reports()`, which keeps the
+date and category and deliberately **no prose**, because the archived reports also
+contain desk-only sections and a mis-parsed heading would walk private text onto a
+public page. The category label is the most that can honestly be said there.
+
+`check_tooltips()` also asserts the `[kind, text]` shape. A shape change is a blank
+tooltip, and a blank tooltip is only visible to someone who hovers.
+
 ## Write the character, not the CSS escape
 
 A CSS rule inside a Python string is a **Python string literal first**, and Python

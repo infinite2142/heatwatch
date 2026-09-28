@@ -470,6 +470,25 @@ def backfill_from_reports(core_dir):
     return out
 
 
+def sentence_about(iso, body):
+    """The first complete sentence of a body that names this country.
+
+    Used when an item covers several countries and its title names another one:
+    "Brazil and Indonesia enter their hot season" also carries a projection for
+    Vietnam, and the sentence that carries it is a far better answer to "what was
+    recorded here" than the date.
+
+    Only the country's OWN aliases count -- regions_text is empty on purpose, so a
+    sentence about "the Gulf" is not offered as a sentence about Saudi Arabia.
+    That is the fan-out this file spent a fix getting rid of."""
+    for part in re.findall(r"[^.!?]+[.!?]+", body or ""):
+        if iso in countries_in(part, regions_text=""):
+            out = " ".join(part.split())
+            if 30 <= len(out) <= 240:
+                return out
+    return None
+
+
 def derive_signals(history, today, backfill=None):
     """Per-window, per-country signal counts, derived from the real reports.
 
@@ -508,13 +527,19 @@ def derive_signals(history, today, backfill=None):
                 stamp = f"Recorded {d.strftime('%-d %B %Y')}"
                 for iso in countries_in(text, regions_text=subject):
                     slot = per.setdefault(iso, {})
-                    cur = slot.get(cat)
-                    if cur and cur[0]:
+                    rank = slot.get(cat, (-1,))[0]
+                    if rank >= 2:
                         continue            # already has a headline that names it
                     if iso in titled:
-                        slot[cat] = (True, title)
-                    elif cur is None:
-                        slot[cat] = (False, stamp)
+                        slot[cat] = (2, "headline", title)
+                        continue
+                    if rank >= 1:
+                        continue
+                    said = sentence_about(iso, it.get("body", ""))
+                    if said:
+                        slot[cat] = (1, "mention", said)
+                    elif rank < 0:
+                        slot[cat] = (0, "stamp", stamp)
         # Then the archive, which only ever adds a category that has no entry
         # yet, and labels it generically -- history contributes counts, not prose.
         for d, isomap in backfill.items():
@@ -524,8 +549,12 @@ def derive_signals(history, today, backfill=None):
             for iso, cats in isomap.items():
                 for cat in cats:
                     per.setdefault(iso, {}).setdefault(
-                        cat, (False, f"Recorded {d.strftime('%-d %B %Y')}"))
-        out[label] = {iso: {"n": min(len(c), 4), "hit": {k: v[1] for k, v in c.items()}}
+                        cat, (0, "stamp", f"Recorded {d.strftime('%-d %B %Y')}"))
+        # hit: category -> [kind, text]. The kind drives how the tooltip frames it,
+        # because "a headline about this country" and "a line that mentions it" are
+        # different claims and the reader is entitled to know which one they have.
+        out[label] = {iso: {"n": min(len(c), 4),
+                            "hit": {k: [v[1], v[2]] for k, v in c.items()}}
                       for iso, c in per.items()}
         depth[label] = (today - oldest).days + 1
     return out, depth
@@ -801,7 +830,7 @@ h3{{letter-spacing:-.015em}}
 .lgo.dash{{border-top-style:dashed}}
 #tip{{position:fixed;z-index:70;pointer-events:none;opacity:0;transition:opacity .1s;
   background:var(--bg);border:1px solid var(--line-2);border-radius:6px;padding:10px 12px;
-  font-size:12.5px;max-width:290px;box-shadow:0 6px 20px rgba(0,0,0,.13)}}
+  font-size:12.5px;max-width:330px;box-shadow:0 6px 20px rgba(0,0,0,.13)}}
 @media(max-width:700px){{
   /* Following the pointer puts this off-screen on a phone -- a tap near an edge had
      nowhere to go. Pinned to the bottom instead, full width. */
@@ -809,11 +838,16 @@ h3{{letter-spacing:-.015em}}
     max-width:none;font-size:12px}}
 }}
 #tip b{{display:block;font-size:13.5px;margin-bottom:6px}}
-#tip .sig{{display:flex;gap:7px;align-items:flex-start;padding:3px 0;font-size:12px;
-  color:var(--ink-dim)}}
+#tip .sig{{display:flex;gap:8px;align-items:flex-start;padding:5px 0;font-size:12.5px;
+  color:var(--ink-dim);line-height:1.45}}
+#tip .sig b{{display:block;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:2px}}
+#tip .sig + .sig{{border-top:1px solid var(--line)}}
 #tip .sig svg{{width:15px;height:15px;flex:none;margin-top:2px;color:var(--muted)}}
 #tip .rul{{margin-top:7px;padding-top:7px;border-top:1px solid var(--line);font-size:11.5px;
   color:var(--c3)}}
+#tip .foot{{margin-top:8px;padding-top:7px;border-top:1px solid var(--line);
+  font-family:'Space Mono',monospace;font-size:9.5px;line-height:1.55;color:var(--muted)}}
 #tip .none{{color:var(--muted);font-size:12px}}
 table.tv{{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}}
 table.tv th,table.tv td{{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}}
@@ -1444,12 +1478,16 @@ function svgFor(k){return '<svg viewBox="0 0 40 40" fill="none" stroke="currentC
 function clip(s,n){s=String(s||'');if(s.length<=n)return s;
  var c=s.slice(0,n),i=c.lastIndexOf(' ');return (i>30?c.slice(0,i):c)+'\u2026';}
 function show(e,iso){if(!tip)return;
- var r=(SIG[TF]||{})[iso],h='<b>'+(NAMES[iso]||iso)+'</b>';
- if(r){for(var c in CATS){ if(r.hit[c])
-   h+='<div class="sig">'+svgFor(CATS[c][1])+'<span>'+clip(r.hit[c],95)+'</span></div>';}
+ var r=(SIG[TF]||{})[iso],h='<b>'+(NAMES[iso]||iso)+'</b>',dated=false;
+ if(r){for(var c in CATS){ if(r.hit[c]){
+   if(r.hit[c][0]==='stamp')dated=true;
+   h+='<div class="sig">'+svgFor(CATS[c][1])+'<span><b>'+CATS[c][0]+'</b>'
+   +clip(r.hit[c][1],200)+'</span></div>';}}
  } else { h+='<div class="none">No signal in this window</div>'; }
  var g=RULES[iso];
  if(g)h+='<div class="rul">'+clip(g[1],92)+'</div>';
+ if(dated)h+='<div class="foot">A dated line is a counted signal \u2014 no headline was '
+  +'written about this country that day.</div>';
  tip.innerHTML=h;tip.style.opacity=1;
  if(innerWidth<=700)return;          /* CSS pins it to the bottom on a phone */
  var x=e.clientX+14,y=e.clientY+14;
@@ -1624,7 +1662,8 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
   <p class="lede">Shading is how many signals a country carries in the window — heat,
   health, workers, fire — counted flat, with no weighting. Outlined countries have
   heat-at-work rules, the mitigation rather than the hazard, so it is drawn
-  separately. Hover or tap a country for detail.</p>
+  separately. Hover or tap a country for detail: each line names the category, with
+  the headline where one was written about that country.</p>
   <div class="ctrlrow">
     <span class="ctrllab">Window</span>
     <div class="opts">{wins}</div>
@@ -1682,8 +1721,14 @@ def check_tooltips(sig):
     bad = []
     for window, per in sig.items():
         for iso, rec in per.items():
-            for cat, title in rec["hit"].items():
-                if title.startswith("Recorded "):
+            # the tooltip JS reads hit[cat] as [kind, text] and branches on kind;
+            # a shape change here is a blank tooltip, which only a hover reveals
+            for cat, v in rec["hit"].items():
+                if not (isinstance(v, list) and len(v) == 2
+                        and v[0] in ("headline", "mention", "stamp")):
+                    raise SystemExit(f"tooltip payload shape broken at {iso}/{cat}: {v!r}")
+            for cat, (kind, title) in rec["hit"].items():
+                if kind != "headline":
                     continue
                 named = countries_in(title, regions_text=title)
                 if named and iso not in named:
