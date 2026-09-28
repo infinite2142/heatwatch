@@ -155,6 +155,71 @@ hub with no record or a record with no source, and prints the rest as a review q
 
 A `supranational` record shades nothing on the map. That is the whole of the old bug.
 
+## A country's tooltip may only carry its own headline
+
+Two rules, both enforced by `check_tooltips()` at build time.
+
+**Region phrases are matched in the title and body only, never in `so_what`.** A
+country name tags one country; a region phrase tags every member, so it has six
+times the blast radius — and the So what line is exactly where a writer reaches for
+an analogy. One item read "England's heat-health alert season ends on 30 September"
+and closed with "the same instrument design as the Gulf's calendar ban". That
+clause put an England headline in the tooltip of all six Gulf states.
+
+**A headline is only shown under a country it names.** An item can legitimately
+cover several countries — "Brazil and Indonesia enter their hot season" also carries
+projections for Vietnam, Thailand and the Philippines — and hanging its title under
+Vietnam reads as a claim about Brazil. Those fall back to the dated label the
+archive uses: a signal existed, nothing more is asserted.
+
+`NOT_THE_COUNTRY` rewrites proper nouns that merely contain a country name, so
+"New Mexico" is a US state and "New South Wales" is in Australia.
+
+## Write the character, not the CSS escape
+
+A CSS rule inside a Python string is a **Python string literal first**, and Python
+reads `\221` and `\00` as OCTAL. `content:"\2212 "` shipped a minus sign that
+rendered as `2`; `content:"\00a0\203a"` shipped a row affordance that rendered as
+`Doha�a0 a`. Both were invisible in the source and obvious on the page.
+
+Put the literal character in the source. `check_chars()` fails the build on any C0
+or C1 control character in the output, which is what a swallowed escape leaves
+behind.
+
+## No one-sided borders
+
+A box gets a border on all four sides or none. The accent-bar-on-the-left pattern is
+out — emphasis comes from the heading colour and the surface. Section separators and
+table row rules are not box borders and stay.
+
+## The forecast window is fixed, and one day wider than it looks
+
+Every hub renders the same seven dates: the report date plus six. A hub with no
+forecast for one of them gets `None`, drawn as a dash, never a zero.
+
+Taking each hub's own first seven days made the table ragged. The fetch runs 05:30
+UK, which is the previous evening in Chicago, so Open-Meteo's seven **local** days
+for a western hub start a day early and stop a day short of the window — Houston and
+Fresno rendered six cells against a seven-column header, shifting every later cell
+one column left and leaving the row rule short of the table edge. `FORECAST_DAYS` is
+8 for that reason; the eighth day is the offset, not spare data.
+
+## The filter bar's sticky scope
+
+The controls are sticky on desktop only, and their parent is `.filterscope`, which
+wraps the key numbers **and** the table. A sticky element only sticks while its own
+parent is on screen, so leaving them inside the "This week" section would unstick
+them at the moment the table they filter came into view. On a phone they are static:
+four control groups wrap to five rows there, which is most of the screen.
+
+## Hub detail is a modal
+
+A native `<dialog>`, not a panel under the table. Inline, it opened below eighteen
+rows: on a laptop the click produced no visible change, because the thing that
+appeared was two screens down. `<dialog>` brings Esc, a focus trap and an inert
+background without hand-rolling any of it; the row carries `aria-haspopup="dialog"`
+and a `›` so it reads as something that opens.
+
 ## Theme starts light, and that is a decision
 
 Spec A12 asks for `prefers-color-scheme` as the default. **The owner asked for

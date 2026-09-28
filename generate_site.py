@@ -216,17 +216,58 @@ REGION_TERMS = {
 }
 
 
-def countries_in(text):
-    """ISO3s this text actually refers to. A named country tags only itself."""
-    low = " " + re.sub(r"\s+", " ", text.lower()) + " "
+# Proper nouns that CONTAIN a country name and do not mean that country. Each is
+# rewritten before matching, so "New Mexico" is a US state rather than Mexico and
+# "New South Wales" is in Australia rather than Wales. The replacement is the
+# country the phrase actually belongs to, or nothing where it belongs to no
+# country at all. This list is the cheapest possible fix for a false tag that is
+# invisible on the page and wrong in the tooltip.
+NOT_THE_COUNTRY = [
+    ("new mexico", "united states"),
+    ("new england", "united states"),
+    ("gulf of mexico", ""),
+    ("british columbia", "canada"),
+    ("new south wales", "australia"),
+    ("northern ireland", "united kingdom"),
+    ("sea of japan", ""),
+    ("south china sea", ""),
+    ("east china sea", ""),
+    ("indian ocean", ""),
+]
+
+
+def countries_in(text, regions_text=None):
+    """ISO3s this text actually refers to. A named country tags only itself.
+
+    `regions_text` limits where a REGION phrase may match; it defaults to the
+    whole text.
+
+    The two are separated because their blast radius differs by a factor of six.
+    A country name tags one country and is nearly always the subject. A region
+    phrase tags every member, and the "So what" line is exactly where a writer
+    reaches for an analogy -- one item read "England's heat-health alert season
+    ends on 30 September", with a So what closing "the same instrument design as
+    the Gulf's calendar ban". That single clause put an England headline into the
+    tooltip of all six Gulf states.
+
+    So region phrases are matched against the title and body only: the item's
+    substantive text, not the commentary on it."""
+    def norm(t):
+        t = " " + re.sub(r"\s+", " ", (t or "").lower()) + " "
+        for phrase, repl in NOT_THE_COUNTRY:
+            if phrase in t:
+                t = t.replace(phrase, repl or " ")
+        return t
+    low = norm(text)
     hits = set()
     for iso, names in COUNTRY_ALIASES.items():
         for nm in names:
             if re.search(r"(?<![a-z])" + re.escape(nm) + r"(?![a-z])", low):
                 hits.add(iso)
                 break
+    rlow = low if regions_text is None else norm(regions_text)
     for phrase, isos in REGION_TERMS.items():
-        if phrase in low:
+        if phrase in rlow:
             hits.update(isos)
     return hits
 
@@ -448,14 +489,32 @@ def derive_signals(history, today, backfill=None):
         per = {}
         oldest = today
         # State files first: they carry real titles, which the tooltip shows.
+        #
+        # A country only gets a HEADLINE when that headline names it. An item can
+        # legitimately cover several countries -- "Brazil and Indonesia enter
+        # their hot season" also carries projections for Vietnam, Thailand and
+        # the Philippines -- and hanging its title under Vietnam reads as a claim
+        # about Brazil. Those fall back to the same dated label the archive uses:
+        # a signal existed, and nothing more is asserted.
         for d, st in history:
             if d < cutoff:
                 continue
             oldest = min(oldest, d)
             for cat, it in items_of(st):
-                text = f"{it.get('title','')} {it.get('body','')} {it.get('so_what','')}"
-                for iso in countries_in(text):
-                    per.setdefault(iso, {}).setdefault(cat, it.get("title", ""))
+                title = it.get("title", "")
+                subject = f"{title} {it.get('body','')}"
+                text = f"{subject} {it.get('so_what','')}"
+                titled = countries_in(title, regions_text=title)
+                stamp = f"Recorded {d.strftime('%-d %B %Y')}"
+                for iso in countries_in(text, regions_text=subject):
+                    slot = per.setdefault(iso, {})
+                    cur = slot.get(cat)
+                    if cur and cur[0]:
+                        continue            # already has a headline that names it
+                    if iso in titled:
+                        slot[cat] = (True, title)
+                    elif cur is None:
+                        slot[cat] = (False, stamp)
         # Then the archive, which only ever adds a category that has no entry
         # yet, and labels it generically -- history contributes counts, not prose.
         for d, isomap in backfill.items():
@@ -465,8 +524,9 @@ def derive_signals(history, today, backfill=None):
             for iso, cats in isomap.items():
                 for cat in cats:
                     per.setdefault(iso, {}).setdefault(
-                        cat, f"Recorded {d.strftime('%-d %B %Y')}")
-        out[label] = {iso: {"n": min(len(c), 4), "hit": c} for iso, c in per.items()}
+                        cat, (False, f"Recorded {d.strftime('%-d %B %Y')}"))
+        out[label] = {iso: {"n": min(len(c), 4), "hit": {k: v[1] for k, v in c.items()}}
+                      for iso, c in per.items()}
         depth[label] = (today - oldest).days + 1
     return out, depth
 
@@ -570,14 +630,10 @@ body{{margin:0;background:var(--bg);color:var(--ink);
    appear (a chip, a map fill, a metric). */
 .card{{border-top:1px solid var(--line);padding:54px 0 0;margin-top:52px;
   scroll-margin-top:118px}}   /* clears both sticky bars */
-.h2ico{{display:inline-flex;vertical-align:-4px;margin-right:10px;color:var(--h4)}}
-.h2ico .ico{{width:26px;height:26px}}
 .card:first-of-type{{border-top:0;margin-top:0;padding-top:36px}}
 .card h2{{font-size:clamp(28px,3.3vw,40px);line-height:1.02;font-weight:700;
   letter-spacing:-.032em;margin:0 0 10px}}
-.kicker{{display:block;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
-  color:var(--muted);letter-spacing:.19em;text-transform:uppercase;margin-bottom:12px}}
-.lede{{font-size:16px;color:var(--ink-dim);max-width:68ch;margin:0}}
+.lede{{font-size:16px;color:var(--ink-dim);margin:0}}
 h3{{letter-spacing:-.015em}}
 .ico{{width:20px;height:20px;flex:none;color:var(--muted)}}
 .ico-lg{{width:30px;height:30px;flex:none;color:var(--h4)}}
@@ -654,8 +710,9 @@ h3{{letter-spacing:-.015em}}
   display:flex;align-items:center;gap:16px;flex-wrap:nowrap;min-height:52px}}
 .brandrow{{position:sticky;top:0;z-index:50;background:var(--bg);height:54px}}
 .brandinner{{width:100%;max-width:1180px;margin:0 auto;height:100%;
-  padding:0 clamp(14px,3.2vw,40px);display:flex;align-items:center;
-  justify-content:space-between;gap:12px}}
+  padding:0 clamp(14px,3.2vw,40px);display:grid;align-items:center;
+  grid-template-columns:1fr auto 1fr;gap:12px}}
+.brandinner > :last-child{{justify-self:end}}
 .brandlink{{display:flex;align-items:center;gap:9px}}
 /* Nothing reserved: the tabs start at the left edge. The brand appears in the bar
    only once compact, so the tabs shift on scroll -- which is not the earlier
@@ -715,7 +772,16 @@ h3{{letter-spacing:-.015em}}
    are separated by a hairline instead of merging into one shape. */
 .cty.n1,.cty.n2,.cty.n3,.cty.n4{{stroke:var(--bg);stroke-width:1}}
 .cty.n1{{fill:var(--h2)}} .cty.n2{{fill:var(--h3)}} .cty.n3{{fill:var(--h4)}} .cty.n4{{fill:var(--h5)}}
-.cty:hover{{stroke:var(--ink);stroke-width:1.3}}
+.cty{{cursor:pointer}}
+/* The hover outline is a SEPARATE path drawn last, not a :hover stroke on the
+   country itself. SVG has no z-index: a sibling drawn later always paints over
+   an earlier one, so stroking the hovered country left its border half-hidden
+   under whichever neighbours came after it in the file -- and completely hidden
+   where the rule overlay sits on top. One path, above both groups, always whole. */
+#hl{{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;pointer-events:none;opacity:0;
+  transition:opacity .08s}}
+#hl.on{{opacity:1}}
 .ctrlrow{{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;margin:24px 0 8px}}
 .ctrllab{{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;
   letter-spacing:.11em;color:var(--muted)}}
@@ -766,7 +832,7 @@ summary{{cursor:pointer}}
 .geo + .hl{{border-top:0}}
 .hlico{{color:var(--h4);margin-top:2px}}
 .hlhead h3{{font-size:17px;margin:0;font-weight:600}}
-.hl p{{margin:6px 0 0;font-size:14px;color:var(--ink-dim);max-width:78ch}}
+.hl p{{margin:6px 0 0;font-size:14px;color:var(--ink-dim)}}
 .tlab{{font-family:'Space Mono',monospace;font-size:9.5px;text-transform:uppercase;
   letter-spacing:.08em;color:var(--muted);display:inline-flex;align-items:center;gap:5px}}
 .tlab .ico{{width:14px;height:14px}}
@@ -825,7 +891,7 @@ summary{{cursor:pointer}}
 .expo{{display:inline-flex;gap:3px;align-items:center}}
 .expo i{{width:9px;height:9px;border-radius:2px;background:var(--line-2);display:block}}
 .expo i.on{{background:var(--h4)}}
-.sub p{{font-size:14.5px;color:var(--ink-dim);margin:9px 0 0;max-width:80ch}}
+.sub p{{font-size:14.5px;color:var(--ink-dim);margin:9px 0 0}}
 .sub ul{{margin:9px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink-dim)}}
 
 /* ---- solutions ---- */
@@ -1390,12 +1456,21 @@ function show(e,iso){if(!tip)return;
  if(x+300>innerWidth)x=e.clientX-300;
  if(y+170>innerHeight)y=Math.max(8,e.clientY-170);
  tip.style.left=x+'px';tip.style.top=y+'px';}
+var hl=document.getElementById('hl');
+function lift(p){if(!hl)return;
+ hl.setAttribute('d',p.getAttribute('d'));hl.classList.add('on');}
+function drop(){if(hl)hl.classList.remove('on');}
 document.addEventListener('mouseover',function(e){
- var p=e.target.closest('.cty');if(p)show(e,p.dataset.iso);});
+ var p=e.target.closest('.cty');if(p){show(e,p.dataset.iso);lift(p);}});
 document.addEventListener('mousemove',function(e){
  var p=e.target.closest('.cty');if(p)show(e,p.dataset.iso);});
 document.addEventListener('mouseout',function(e){
- if(e.target.closest('.cty')&&tip)tip.style.opacity=0;});
+ if(e.target.closest('.cty')){if(tip)tip.style.opacity=0;drop();}});
+/* touch: a tap should outline the country it selected, and the next tap
+   elsewhere should clear it */
+document.addEventListener('click',function(e){
+ var p=e.target.closest('.cty');
+ if(p){show(e,p.dataset.iso);lift(p);}else{if(tip)tip.style.opacity=0;drop();}});
 paint();
 """
 
@@ -1483,11 +1558,9 @@ def section_block(state, slug, label, key):
         "health":   "EuroMomo · ISCIII/MoMo · UKHSA · national agencies",
         "workers":  "EU-OSHA · ETUC · ETUI · ILO · OSHA · national labour ministries",
     }.get(key, "")
-    ico = icon(CATS[SECTION_CAT[key]][1], "ico ico-lg")
     return f"""
 <section class="card" id="{slug}">
-  <span class="kicker">{esc(label)}</span>
-  <h2><span class="h2ico">{ico}</span>{esc(label)}</h2>
+  <h2>{esc(label)}</h2>
   <p class="lede">{esc(lede)}</p>
   {"".join(entry(it, SECTION_CAT[key]) for it in items)}
   <p class="srcline">Sources — {esc(src)}</p>
@@ -1510,8 +1583,7 @@ def solutions_block(state):
         for g, t, k, m, d, pr, li, ap in SOLUTIONS)
     return f"""
 <section class="card" id="solutions">
-  <span class="kicker">What can be done</span>
-  <h2><span class="h2ico">{icon("sliders", "ico ico-lg")}</span>Solutions</h2>
+  <h2>Solutions</h2>
   <p class="lede">What exists to keep people working safely in heat, where each
   approach stops working, and where it is in use. Grouped by approach, not by vendor
   — no products, no ranking. Maturity is lab → pilot → commercial.</p>
@@ -1548,7 +1620,6 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
 {topbar("top", "", nav)}
 <div class="wrap">
 <section class="card" id="map">
-  <span class="kicker">Signal density by country</span>
   <h2>Global heat signals</h2>
   <p class="lede">Shading is how many signals a country carries in the window — heat,
   health, workers, fire — counted flat, with no weighting. Outlined countries have
@@ -1561,7 +1632,8 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
   </div>
   <div class="bleed"><div class="mapwrap"><svg viewBox="{vb}" role="img"
     aria-label="World map shaded by the number of heat-related signals per country">
-    <g>{paths}</g><g>{rule_overlay(rules, geom)}</g></svg></div>{legend_html()}</div>
+    <g>{paths}</g><g>{rule_overlay(rules, geom)}</g>
+    <path id="hl"/></svg></div>{legend_html()}</div>
   {table_view(sig, rules, NAMES)}
   <p class="srcline">Built from dated primary-source records, so coverage reflects
   what has been reported rather than the whole world. Each entry below carries its
@@ -1569,12 +1641,11 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
 </section>
 
 <section class="card" id="numbers">
-  <span class="kicker">Key numbers</span>
   <h2>Today</h2>
   {metrics_html(state)}
 </section>
 {sections}
-{('<section class="card" id="ahead"><span class="kicker">Dated, from primary sources</span>'
+{('<section class="card" id="ahead">'
   '<h2>Upcoming deadlines</h2>' + forecast_html(state) + '</section>') if forecast_html(state) else ''}
 {solutions_block(state)}
 {footer(state)}
@@ -1597,6 +1668,44 @@ def check_names(sig, rules=None):
     if missing:
         raise SystemExit(f"ISO3 codes with no name in NAMES: {missing}")
     return len(seen)
+
+
+def check_tooltips(sig):
+    """No country may be captioned with another country's headline.
+
+    The map tooltip is the one place a reader is told what a shaded country
+    signalled, and it used to show whatever item tagged that country -- so Saudi
+    Arabia carried "England's heat-health alert season ends on 30 September",
+    because the England item's So what compared it to the Gulf's calendar ban.
+    derive_signals() now only assigns a headline that names the country, but the
+    rule is cheap to check and expensive to notice by eye across 46 countries."""
+    bad = []
+    for window, per in sig.items():
+        for iso, rec in per.items():
+            for cat, title in rec["hit"].items():
+                if title.startswith("Recorded "):
+                    continue
+                named = countries_in(title, regions_text=title)
+                if named and iso not in named:
+                    bad.append(f"{window} {iso}/{cat}: {title!r} names {sorted(named)}")
+    if bad:
+        raise SystemExit("TOOLTIP NAMES THE WRONG COUNTRY:\n  " + "\n  ".join(bad[:8]))
+    print(f"tooltip check: clean across {len(sig)} windows")
+
+
+def check_chars(html, name):
+    """No stray control characters in the page.
+
+    CSS escapes like content:"\\2212 " are a PYTHON string literal before they are
+    CSS, and Python reads \\221 and \\00 as OCTAL. Two rules shipped that way -- a
+    minus sign that rendered as "2", and a row affordance that rendered as
+    "Doha\ufffda0 a". Both were invisible in the source and obvious on the page.
+    Write the character, not the escape, and let this catch the next one."""
+    bad = sorted({hex(ord(c)) for c in html
+                  if (ord(c) < 32 and c not in "\n\t\r") or 0x7f <= ord(c) <= 0x9f})
+    if bad:
+        raise SystemExit(f"{name}: control characters in the page: {bad} "
+                         f"-- a backslash escape was eaten by Python, not passed to CSS")
 
 
 def check_terms(html, denylist_path):
@@ -1646,7 +1755,6 @@ def workability_page(wk, state, dl, issued):
 <div class="wrap">
 {wk["sections"]}
 <section class="card" id="method">
-  <span class="kicker">How this page is made</span>
   <h2>Method</h2>
   {method_html(state)}
 </section>
@@ -1715,6 +1823,7 @@ def main():
         print("WARNING: no stored forecast for this date -- Workability page SKIPPED")
 
     print(f"named countries: {check_names(sig, rules)}")
+    check_tooltips(sig)
     pages = {"index.html": page(state, sig, depth, rules, nav, dl, has_workability=bool(wk))}
     if wk:
         pages["workability.html"] = workability_page(
@@ -1726,6 +1835,7 @@ def main():
         if leftover:
             raise SystemExit(f"{name}: unsubstituted placeholders: {leftover[:5]}")
         print(f"-- {name}")
+        check_chars(html, name)
         check_terms(html, denypath)
         with open(os.path.join(out_dir, name), "w") as fh:
             fh.write(html)

@@ -262,18 +262,29 @@ def compute_hub(hub, fc_hub, today):
                           solar, direct, cza)
             slot[setting].append(w)
 
-    days = sorted(d for d in per_day if d >= today)[:7]
-    peaks = {s: [round(max(per_day[d][s]), 1) if per_day[d][s] else None for d in days]
-             for s in ("sun", "shade")}
+    # The window is FIXED at the report date plus six, the same seven dates for
+    # every hub, and a day a hub has no forecast for is None rather than absent.
+    #
+    # Taking each hub's own first seven days made the table ragged: the fetch runs
+    # 05:30 UK, which is the previous evening in Chicago, so Open-Meteo's seven
+    # local days for a western hub start a day earlier and end a day short of the
+    # window. Houston and Fresno rendered six cells against a seven-column header,
+    # which shifted every later cell in the row one column left and left the row
+    # rule hanging short of the table edge.
+    window = [today + timedelta(days=i) for i in range(7)]
+    peaks = {s: [round(max(per_day[d][s]), 1) if per_day.get(d, {}).get(s) else None
+                 for d in window] for s in ("sun", "shade")}
     hours = {}
     for workload, setting, acc in COMBOS:
         limit = wbgt.limit_for(workload, acc)
         hours[combo_key(workload, setting, acc)] = [
-            sum(1 for w in per_day[d][setting] if w is not None and w > limit) for d in days]
-    return {"days": [d.isoformat() for d in days], "hours": hours, "peaks": peaks,
+            (sum(1 for w in per_day[d][setting] if w is not None and w > limit)
+             if d in per_day else None) for d in window]
+    return {"days": [d.isoformat() for d in window], "hours": hours, "peaks": peaks,
+            "missing": [d.isoformat() for d in window if d not in per_day],
             "hourly": {s: {d.isoformat(): [None if w is None else round(w, 2)
                                            for w in per_day[d][s]]
-                           for d in days} for s in ("sun", "shade")}}
+                           for d in window if d in per_day} for s in ("sun", "shade")}}
 
 
 def so_what(hub, computed, rules, today):
@@ -281,13 +292,15 @@ def so_what(hub, computed, rules, today):
     record. It may not state a rule, date or threshold that is not in a record --
     which is why this is a function and not a prompt."""
     key = combo_key("heavy", "sun", True)
-    hrs = computed["hours"][key]
+    hrs = [h for h in computed["hours"][key] if h is not None]
     total = sum(hrs)
     limit = wbgt.limit_for("heavy", True)
     if total == 0:
         return (f"No hour this week is forecast above WBGT {limit:g} C for heavy work at "
                 f"{hub['name']}.")
-    worst = max(range(len(hrs)), key=lambda i: hrs[i])
+    full = computed["hours"][key]
+    worst = max((i for i, h in enumerate(full) if h is not None),
+                key=lambda i: full[i])
     d = date.fromisoformat(computed["days"][worst])
     cov, reasons = coverage(hub, rules, today, limit)
     why = (reasons[0] if reasons else DEFAULT_REASON[cov]).rstrip(".")
@@ -371,9 +384,10 @@ def write_csv(out_dir, hubs, computed):
             limit = wbgt.limit_for(workload, acc)
             for i, day in enumerate(c["days"]):
                 peak = c["peaks"][setting][i]
+                hrs = c["hours"][key][i]
                 rows.append(f'{hub["id"]},"{hub["name"]}",{hub["admin"]},{day},{workload},'
                             f'{setting},{"acclimatised" if acc else "new-to-heat"},'
-                            f'{limit:g},{c["hours"][key][i]},'
+                            f'{limit:g},{"" if hrs is None else hrs},'
                             f'{"" if peak is None else peak}')
     path = os.path.join(out_dir, "workability-week.csv")
     with open(path, "w") as fh:
@@ -403,7 +417,7 @@ CSS = """
 .wbgtx[open] > summary::before{content:"− "}
 .wbgtx > summary:hover{color:var(--ink)}
 .wbgtx > summary:focus-visible{outline:2px solid var(--h4);outline-offset:3px}
-.wxbody{padding-top:14px;max-width:74ch}
+.wxbody{padding-top:14px}
 .wxbody p{font-size:14px;color:var(--ink-dim);margin:0 0 11px}
 .wxbar{display:flex;gap:2px;height:30px;margin:18px 0 12px;max-width:560px}
 .wxseg{display:block;height:100%}
@@ -445,6 +459,27 @@ CSS = """
   margin-top:16px;padding-top:13px;border-top:1px solid var(--line)}
 .limitline b{color:var(--h4)}
 
+/* ---- the filter bar --------------------------------------------------------
+   Sticky on desktop only. Its scope is .filterscope, which wraps the tiles AND
+   the table: a sticky element only sticks while its own parent is on screen, so
+   leaving the controls inside the "This week" section would have unstuck them at
+   the exact moment the table they filter came into view.
+   Not sticky on a phone -- four control groups wrap to five rows there, which is
+   most of the screen, and the table is one card per hub anyway. */
+.ctlbar{padding:4px 0 0}
+.ctlinner{padding-bottom:10px}
+@media(min-width:761px){
+  .ctlbar{position:sticky;top:106px;z-index:30;background:var(--bg);
+    border-bottom:1px solid var(--line-2);margin-bottom:8px}
+  .ctlbar .wkctl{margin-top:14px;padding-top:0;border-top:0}
+  .ctlbar .limitline{margin-top:10px;padding-top:9px}
+  /* the heading below must clear both bars AND this one when jumped to */
+  .ctlcard{scroll-margin-top:232px}
+}
+.ctlcard{border-top:0;margin-top:0;padding-top:26px}
+@media(min-width:761px){
+}
+
 /* ---- the hub table ---- */
 .wkwrap{margin-top:8px;overflow-x:auto}
 table.wk{width:100%;border-collapse:collapse;font-size:13.5px;min-width:840px}
@@ -460,8 +495,12 @@ table.wk thead th{font-family:'Space Mono',monospace;font-size:9.5px;text-transf
   letter-spacing:.08em;color:var(--muted);font-weight:700;border-bottom:1px solid var(--line-2);
   background:var(--bg)}
 table.wk tbody tr{cursor:pointer}
-table.wk tbody tr:hover{background:rgba(194,65,12,.055)}
-table.wk tbody tr[aria-expanded="true"]{background:rgba(194,65,12,.085)}
+table.wk tbody tr:hover,table.wk tbody tr:focus-visible{background:rgba(194,65,12,.055)}
+table.wk tbody tr:focus-visible{outline:2px solid var(--h4);outline-offset:-2px}
+/* an affordance that the row opens something, rather than a row that happens to
+   be clickable and gives no sign of it */
+.hubname::after{content:" ›";color:var(--h4);font-weight:700}
+table.wk tbody tr:hover .hubname::after{opacity:1}
 .hubname{display:block;font-weight:600;font-size:14.5px}
 .hubsec{display:block;font-family:'Space Mono',monospace;font-size:9.5px;color:var(--muted);
   text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
@@ -469,6 +508,8 @@ table.wk tbody tr[aria-expanded="true"]{background:rgba(194,65,12,.085)}
 .cellv{display:block;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
   border-radius:4px;padding:7px 0;color:var(--ink)}
 .b0{background:var(--land);color:var(--muted)}
+/* a day the forecast does not cover: visibly nothing, not a zero */
+.nod{background:none;color:var(--muted);opacity:.5}
 .b1{background:var(--h1)} .b2{background:var(--h2)} .b3{background:var(--h3)}
 .b4{background:var(--h4);color:#fff} .b5{background:var(--h5);color:#fff}
 :root[data-theme="dark"] .b1,:root[data-theme="dark"] .b2,:root[data-theme="dark"] .b3{color:#16130f}
@@ -506,28 +547,48 @@ table.wk tbody tr[aria-expanded="true"]{background:rgba(194,65,12,.085)}
 .dls{margin-top:14px;font-family:'Space Mono',monospace;font-size:11px}
 .dls a{color:var(--c3)}
 
-/* ---- selected hub ---- */
-.hubpanel{border:1px solid var(--line-2);border-radius:9px;padding:22px;margin-top:20px;
-  scroll-margin-top:118px}   /* clears both sticky bars, same as .card */
-.hubpanel h3{margin:0 0 4px;font-size:21px;font-weight:600}
+/* ---- selected hub, as a modal ---- */
+.hubdlg{border:1px solid var(--line-2);border-radius:10px;padding:0;
+  width:min(760px,calc(100vw - 32px));max-height:min(86vh,900px);
+  background:var(--bg);color:var(--ink);overflow:hidden}
+.hubdlg::backdrop{background:rgba(22,19,15,.44)}
+:root[data-theme="dark"] .hubdlg::backdrop{background:rgba(0,0,0,.62)}
+.hubdlgbody{padding:24px 26px 28px;overflow-y:auto;max-height:inherit}
+.hubclose{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;
+  padding:10px 12px 0;margin:0;background:var(--bg)}
+.hubclose button{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:none;
+  border:1px solid var(--line-2);border-radius:20px;padding:5px 12px;cursor:pointer}
+.hubclose button:hover{color:var(--ink);border-color:var(--ink-dim)}
+.hubclose button:focus-visible{outline:2px solid var(--h4);outline-offset:2px}
+@media(max-width:620px){
+  .hubdlg{width:100vw;max-width:100vw;max-height:100vh;height:100vh;border-radius:0;border:0}
+  .hubdlgbody{padding:18px 16px 28px}
+}
+.hubdlg h3{margin:0 0 4px;font-size:21px;font-weight:600}
 .hubmeta{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;
   letter-spacing:.08em;color:var(--muted)}
-.sowhat{font-size:14.5px;color:var(--ink-dim);margin:14px 0 0;max-width:76ch}
+.sowhat{font-size:14.5px;color:var(--ink-dim);margin:14px 0 0}
 .barwrap{margin:18px 0 6px}
 .barwrap svg{width:100%;height:auto;display:block;max-width:560px}
 .rulebox{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}
 .rulebox h4{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);margin:0 0 7px;font-weight:700}
-.rulebox p{margin:0 0 10px;font-size:13.5px;color:var(--ink-dim);max-width:76ch}
+.rulebox p{margin:0 0 10px;font-size:13.5px;color:var(--ink-dim)}
 .rulebox ul{margin:0 0 10px;padding-left:17px;font-size:13.5px;color:var(--ink-dim)}
 .rulebox li{margin:3px 0}
 .rulegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;
   margin-top:12px}
-.recbox{border:1px solid var(--line-2);border-left:3px solid var(--h4);border-radius:7px;
+/* No one-sided borders. A box gets a border on all four sides or none; the
+   accent-bar-on-the-left pattern is out everywhere in this project. Emphasis
+   comes from the heading colour and the surface instead. */
+.recbox{border:1px solid var(--line-2);border-radius:7px;
   padding:14px 16px;margin-top:16px}
 .recbox h4{color:var(--h4)}
-.unconf{border-left:3px solid var(--warning);padding-left:13px;margin-top:12px}
+.unconf{border:1px solid var(--warning);border-radius:7px;padding:11px 14px;margin-top:12px}
 .unconf p{font-size:12.5px;color:var(--muted);margin:0}
+.unconf h4{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--warning);margin:0 0 5px;font-weight:700}
 .srcs{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--muted);line-height:1.65}
 .srcs a{color:var(--c3)}
 
@@ -655,27 +716,37 @@ def rule_detail_html(rule, today):
                      'record was created.</p>')
 
     if not is_confirmed(rule):
-        parts.append('<div class="unconf"><p>This record has not yet been confirmed against a '
-                     'primary source. It is shown for information and is not counted as a rule '
-                     'in force anywhere on this page.</p></div>')
+        parts.append('<div class="unconf"><h4>Not confirmed</h4><p>This record has not yet '
+                     'been confirmed against a primary source. It is shown for information and '
+                     'is not counted as a rule in force anywhere on this page.</p></div>')
     parts.append("</div>")
     return "".join(parts)
 
 
-def hub_panels(hubs, rules, today):
+def hub_dialogs(hubs, rules, today):
+    """The hub detail as a modal, not an expanding panel under the table.
+
+    Inline, it opened below eighteen rows of table: on a laptop the click
+    produced no visible change at all, because the thing that appeared was two
+    screens down. A native <dialog> puts it in front of the reader, and brings
+    Esc, a focus trap and inert background with it rather than hand-rolled."""
     out = []
     for hub in hubs:
         blocks = "".join(rule_detail_html(rules[rid], today)
                          for rid in hub.get("rule_ids") or [] if rid in rules)
+        elev = (" · " + str(int(hub["elevation_m"])) + " m"
+                if hub.get("elevation_m") is not None else "")
         out.append(
-            f'<div class="hubpanel" id="hp-{esc(hub["id"])}" hidden>'
-            f'<h3>{esc(hub["name"])}</h3>'
-            f'<div class="hubmeta">{esc(hub["admin"])} · {esc(hub["sectors"])}'
-            f'{" · " + str(int(hub["elevation_m"])) + " m" if hub.get("elevation_m") is not None else ""}'
-            f'</div>'
+            f'<dialog class="hubdlg" id="hd-{esc(hub["id"])}" '
+            f'aria-labelledby="hdt-{esc(hub["id"])}">'
+            f'<form method="dialog" class="hubclose">'
+            f'<button aria-label="Close">Close &times;</button></form>'
+            f'<div class="hubdlgbody">'
+            f'<h3 id="hdt-{esc(hub["id"])}">{esc(hub["name"])}</h3>'
+            f'<div class="hubmeta">{esc(hub["admin"])} · {esc(hub["sectors"])}{elev}</div>'
             f'<p class="sowhat" data-sowhat></p>'
             f'<div class="barwrap" data-bars></div>'
-            f'{blocks}</div>')
+            f'{blocks}</div></dialog>')
     return "".join(out)
 
 
@@ -726,19 +797,22 @@ def season_record_html(rules, today):
 def row_html(hub, comp, rules, today, workload, setting, acc, days_meta):
     key = combo_key(workload, setting, acc)
     hrs = comp["hours"][key]
-    total = sum(hrs)
+    total = sum(h for h in hrs if h is not None)
     limit = wbgt.limit_for(workload, acc)
     cov, reasons = coverage(hub, rules, today, limit)
     rule = primary_rule(hub, rules)
-    cells = "".join(f'<td class="dayc"><span class="cellv {band_for(n)}">{n}</span></td>'
-                    for n in hrs)
+
+    def cell(n):
+        if n is None:
+            return '<span class="cellv nod" title="No forecast for this day">&ndash;</span>'
+        return f'<span class="cellv {band_for(n)}">{n}</span>'
+    cells = "".join(f'<td class="dayc">{cell(n)}</td>' for n in hrs)
     week = '<td class="week">' + "".join(
-        f'<span class="d"><span class="dl">{esc(dl)}</span>'
-        f'<span class="cellv {band_for(n)}">{n}</span></span>'
+        f'<span class="d"><span class="dl">{esc(dl)}</span>{cell(n)}</span>'
         for n, (dl, _short, _full) in zip(hrs, days_meta)) + "</td>"
     rs = esc(first_sentence(rule.get("summary_en"))) if rule else "No record"
     return (f'<tr data-hub="{esc(hub["id"])}" data-tags="{esc(" ".join(hub.get("region_tags") or []))}" '
-            f'tabindex="0" role="button" aria-expanded="false">'
+            f'tabindex="0" role="button" aria-haspopup="dialog">'
             f'<td><span class="hubname">{esc(hub["name"])}</span>'
             f'<span class="hubsec">{esc(hub["sectors"])}</span></td>'
             f'{cells}{week}'
@@ -760,7 +834,8 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function vis(){return WK.hubs.filter(function(h){
   return ST.region==='all'||h.tags.indexOf(ST.region)>=0;});}
-function sum(a){var t=0;for(var i=0;i<a.length;i++)t+=a[i];return t;}
+/* a day with no forecast is null, not 0 -- it must not pull a total down */
+function sum(a){var t=0;for(var i=0;i<a.length;i++)if(a[i]!==null)t+=a[i];return t;}
 
 function row(h){
   var hrs=h.h[K()],tot=sum(hrs),c=h.cov[K()],state=c[0],reason=WK.reasons[c[1]];
@@ -768,12 +843,14 @@ function row(h){
   var bnd={covered:'good',partial:'warning',gap:'critical'}[state];
   var cells='',week='';
   for(var i=0;i<hrs.length;i++){
-    cells+='<td class="dayc"><span class="cellv '+band(hrs[i])+'">'+hrs[i]+'</span></td>';
-    week+='<span class="d"><span class="dl">'+WK.days[i][0]+'</span><span class="cellv '
-      +band(hrs[i])+'">'+hrs[i]+'</span></span>';
+    var cv=hrs[i]===null
+      ? '<span class="cellv nod" title="No forecast for this day">\u2013</span>'
+      : '<span class="cellv '+band(hrs[i])+'">'+hrs[i]+'</span>';
+    cells+='<td class="dayc">'+cv+'</td>';
+    week+='<span class="d"><span class="dl">'+WK.days[i][0]+'</span>'+cv+'</span>';
   }
   return '<tr data-hub="'+h.id+'" data-tags="'+h.tags.join(' ')+'" tabindex="0" role="button" '
-    +'aria-expanded="false"><td><span class="hubname">'+esc(h.name)+'</span>'
+    +'aria-haspopup="dialog"><td><span class="hubname">'+esc(h.name)+'</span>'
     +'<span class="hubsec">'+esc(h.sec)+'</span></td>'+cells
     +'<td class="week">'+week+'</td>'
     +'<td class="totc"><span class="tot">'+tot+'</span></td>'
@@ -836,7 +913,10 @@ function sowhat(h){
   var names={light:'light',moderate:'moderate',heavy:'heavy'};
   if(!tot)return 'No working hour this week is forecast above WBGT '+L+'°C for '
     +names[ST.workload]+' work in the '+ST.setting+' at '+h.name+'.';
-  var wi=0;for(var i=1;i<hrs.length;i++)if(hrs[i]>hrs[wi])wi=i;
+  var wi=-1;for(var i=0;i<hrs.length;i++){
+    if(hrs[i]===null)continue;
+    if(wi<0||hrs[i]>hrs[wi])wi=i;}
+  if(wi<0)return 'No forecast for '+h.name+' this week.';
   var why=WK.reasons[h.cov[K()][1]].replace(/\.$/,'');
   var tail=st==='covered'?'A rule in force covers those hours.'
     :st==='partial'?'Cover is partial \u2014 '+why+'.'
@@ -847,18 +927,27 @@ function sowhat(h){
 }
 
 var SEL=null;
-function select(id){
-  document.querySelectorAll('.hubpanel').forEach(function(p){p.hidden=true;});
-  document.querySelectorAll('#wkbody tr').forEach(function(t){
-    t.setAttribute('aria-expanded',t.dataset.hub===id?'true':'false');});
-  SEL=id;
+function fill(id){
   var h=WK.hubs.filter(function(x){return x.id===id;})[0];
-  var panel=document.getElementById('hp-'+id);
-  if(!h||!panel)return;
-  panel.hidden=false;
-  var b=panel.querySelector('[data-bars]');if(b)b.innerHTML=draw(h);
-  var s=panel.querySelector('[data-sowhat]');if(s)s.textContent=sowhat(h);
+  var d=document.getElementById('hd-'+id);
+  if(!h||!d)return null;
+  var b=d.querySelector('[data-bars]');if(b)b.innerHTML=draw(h);
+  var s=d.querySelector('[data-sowhat]');if(s)s.textContent=sowhat(h);
+  return d;
 }
+function select(id){
+  var d=fill(id);if(!d)return;
+  SEL=id;
+  if(!d.open&&d.showModal)d.showModal();
+}
+/* a click on the dialog element itself is a click on its backdrop: the body is a
+   child, so anything inside it never reaches here */
+document.addEventListener('click',function(e){
+  if(e.target.classList&&e.target.classList.contains('hubdlg'))e.target.close();
+});
+document.querySelectorAll('.hubdlg').forEach(function(d){
+  d.addEventListener('close',function(){SEL=null;});
+});
 
 function render(){
   var hs=vis().slice().sort(function(a,b){return sum(b.h[K()])-sum(a.h[K()]);});
@@ -873,8 +962,11 @@ function render(){
   document.querySelectorAll('[data-ctl]').forEach(function(b){
     b.setAttribute('aria-pressed',String(ST[b.dataset.ctl]===
       (b.dataset.ctl==='acc'?Number(b.dataset.val):b.dataset.val)));});
-  if(SEL&&hs.some(function(h){return h.id===SEL;}))select(SEL);
-  else{document.querySelectorAll('.hubpanel').forEach(function(p){p.hidden=true;});SEL=null;}
+  /* keep an open dialog in step with the controls behind it */
+  if(SEL){
+    if(hs.some(function(h){return h.id===SEL;}))fill(SEL);
+    else{var d=document.getElementById('hd-'+SEL);if(d&&d.open)d.close();SEL=null;}
+  }
 }
 
 document.addEventListener('click',function(e){
@@ -948,7 +1040,7 @@ unsafe.</p>
 produces more heat, and a worker not yet used to heat has less room before it
 becomes dangerous, so ISO 7243 sets six of them \u2014 from 30&deg;C for light work
 by an acclimatised worker down to 22&deg;C for heavy work by someone new to it. The
-Workload and Workers controls above switch between the six.</p>
+Workload and Workers controls switch between the six.</p>
 <p><b>What this is not.</b> These hours are computed from a public weather forecast
 for each hub's location. They are not a reading taken on your site, where shade,
 surfaces, enclosure and the work itself all move the number, and they are not an
@@ -974,8 +1066,7 @@ def controls_html():
         + '</div>'
         '<p class="limitline">Limit: <b id="limitv">WBGT 26&deg;C</b>'
         '<span id="limitrest"> &middot; ISO 7243, heavy work, acclimatised, in the sun</span>'
-        '</p>'
-        + wbgt_explainer())
+        '</p>')
 
 
 def key_numbers_html():
@@ -1058,7 +1149,8 @@ def render(core_dir, today, issued):
 
     # Server-rendered initial state, so the page works with JavaScript off and so
     # the internal-term check sees real rows rather than a script tag.
-    order = sorted(hubs, key=lambda h: -sum(computed[h["id"]]["hours"][combo_key("heavy", "sun", True)]))
+    order = sorted(hubs, key=lambda h: -sum(
+        x for x in computed[h["id"]]["hours"][combo_key("heavy", "sun", True)] if x is not None))
     rows = "".join(row_html(h, computed[h["id"]], rules, today, "heavy", "sun", True, days_meta)
                    for h in order)
     heads = "".join(f'<th class="dayc" scope="col" title="{esc(full)}">{esc(i)}<br>'
@@ -1070,14 +1162,14 @@ def render(core_dir, today, issued):
         for _lo, _hi, cls, lab in BANDS)
 
     sections = f"""
+<div class="filterscope">
 <section class="card" id="week">
-  <span class="kicker">Seven-day forecast</span>
   <h2>Working hours too hot for outdoor work</h2>
   <p class="lede">Hours in the working day when the forecast wet-bulb globe temperature is
   above the ISO 7243 limit for the work being done, at {len(hubs)} work hubs — set against
   the rule that applies there and whether it covers those hours.</p>
   {key_numbers_html()}
-  {controls_html()}
+  {wbgt_explainer()}
   <p class="srcline">Working day {wbgt.WORK_START:02d}:00–{wbgt.WORK_END:02d}:00 local.
   WBGT computed hour by hour after Liljegren et al. (2008) from Open-Meteo forecast data
   (CC BY 4.0); limits from ISO 7243:2017. Shade recomputes the model with the direct beam
@@ -1085,8 +1177,9 @@ def render(core_dir, today, issued):
   dated rule records and is kept separate for that reason.</p>
 </section>
 
-<section class="card" id="hubs">
-  <span class="kicker">Ranked by hours above the limit</span>
+<div class="ctlbar"><div class="ctlinner">{controls_html()}</div></div>
+
+<section class="card ctlcard" id="hubs">
   <h2>By hub</h2>
   <p class="lede">Select a hub for its daily peaks, the rule in full, and what an employer
   there has to keep.</p>
@@ -1097,11 +1190,11 @@ def render(core_dir, today, issued):
   <div class="wklegend"><span>Hours above the limit</span>{legend}</div>
   <p class="dls"><a href="workability-week.csv" download>Download this week (CSV)</a>
    · <a href="archive/manifest/{today.isoformat()}.json">Archive manifest for today</a></p>
-  {hub_panels(hubs, rules, today)}
+  {hub_dialogs(hubs, rules, today)}
 </section>
+</div>
 
 <section class="card" id="season">
-  <span class="kicker">Italy, 2026</span>
   <h2>Season record</h2>
   <p class="lede">The regional ordinances that ran this year, and the window each covered.</p>
   {season_record_html(rules, today)}
