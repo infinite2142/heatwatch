@@ -135,6 +135,60 @@ def land_paths(lon0=20.0, r=17.0, cx=27.2, cy=20.0, min_step=1.15, min_area=1.6)
         for run, _lat in _land(lon0, r, cx, cy, min_step, min_area))
 
 
+# Latitude bands for the animated globe. The land's fill is field(mean latitude),
+# and latitude does not change when the globe spins -- so the rings can be grouped
+# into a handful of bands once, and the browser then updates one <path> per band
+# rather than a hundred <polygon> elements a frame.
+BANDS = list(range(-75, 90, 15))
+
+
+def _band(lat):
+    i = min(range(len(BANDS)), key=lambda k: abs(BANDS[k] - lat))
+    return i
+
+
+def land_lonlat(step=1.8, min_span=4.0):
+    """Every coastline ring in lon/lat, decimated, grouped by latitude band.
+
+    This is what the browser spins. Shipping coordinates rather than pre-rendered
+    frames is the whole trick: one frame of projected geometry is 35KB, so a
+    24-frame animation would be most of a megabyte, while the source coordinates
+    are 20KB once and the projection is eight lines of arithmetic.
+
+    Tenths of a degree, as integers -- "123" is shorter than "12.3" over 2000
+    points, and a tenth of a degree is a quarter of a pixel at hero size."""
+    W = json.load(open(WORLD_JSON))
+    out = [[] for _ in BANDS]
+    for rec in W["countries"].values():
+        d = rec.get("d") if isinstance(rec, dict) else rec
+        if not d:
+            continue
+        for ring in rings(d):
+            pts, last = [], None
+            for x, y in ring:
+                lon, lat = to_lonlat(x, y)
+                if last is not None:
+                    dlon = abs(lon - last[0])
+                    dlon = min(dlon, 360 - dlon)
+                    if max(dlon * math.cos(math.radians(lat)),
+                           abs(lat - last[1])) < step:
+                        continue
+                pts.append((lon, lat))
+                last = (lon, lat)
+            if len(pts) < 4:
+                continue
+            lons = [q[0] for q in pts]
+            lats = [q[1] for q in pts]
+            if max(max(lons) - min(lons), max(lats) - min(lats)) < min_span:
+                continue
+            flat = []
+            for lon, lat in pts:
+                flat.append(int(round(lon * 10)))
+                flat.append(int(round(lat * 10)))
+            out[_band(sum(lats) / len(lats))].append(flat)
+    return {"bands": [field(b) for b in BANDS], "rings": out}
+
+
 def build(lon0=20.0, r=150.0, cx=300.0, cy=160.0):
     """Equatorial orthographic view. With lat0=0 every parallel projects to a
     straight horizontal line, so the anomaly field is one vertical gradient --
@@ -154,8 +208,8 @@ def build(lon0=20.0, r=150.0, cx=300.0, cy=160.0):
         f'x2="{cx+r*math.cos(math.radians(l)):.1f}" y2="{cy-r*math.sin(math.radians(l)):.1f}"/>'
         for l in range(-60, 90, 30))
     merids = "".join(
-        f'<ellipse cx="{cx}" cy="{cy}" rx="{abs(r*math.sin(math.radians(m))):.1f}" ry="{r}"/>'
-        for m in (-60, -30, 0, 30, 60))
+        f'<ellipse cx="{cx}" cy="{cy}" rx="{abs(r*math.sin(math.radians(m - lon0))):.1f}" '
+        f'ry="{r}"/>' for m in range(0, 180, 30))
     polys = "".join(
         f'<polygon points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in run)}" '
         f'fill="{field(lat)}" fill-opacity=".52"/>' for run, lat in land)
@@ -178,8 +232,9 @@ def build(lon0=20.0, r=150.0, cx=300.0, cy=160.0):
   <circle cx="{cx}" cy="{cy}" r="{r}" fill="url(#gA)"/>
   <circle class="cyc" cx="{cx}" cy="{cy}" r="{r}" fill="url(#gB)"/>
   <g class="grat" fill="none" stroke="#000" stroke-opacity=".13" stroke-width=".7">
-    {paras}{merids}</g>
-  <g class="land" stroke="#3a2a18" stroke-opacity=".34" stroke-width=".5">{polys}</g>
+    {paras}<g id="gl-mer">{merids}</g></g>
+  <g class="land" id="gl-land" stroke="#3a2a18" stroke-opacity=".34" stroke-width=".5"
+     data-cx="{cx}" data-cy="{cy}" data-r="{r}" data-lon0="{lon0}">{polys}</g>
   <circle cx="{cx}" cy="{cy}" r="{r}" fill="url(#limb)"/>
   <circle cx="{cx}" cy="{cy}" r="{r}" fill="url(#spec)"/>
 </g>

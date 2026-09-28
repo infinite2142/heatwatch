@@ -89,8 +89,13 @@ ICONS = {
  # and a head-and-shoulders figure is unmistakable
  "worker": '<circle cx="20" cy="12.5" r="5.5"/>'
            '<path d="M7.5 33.5c0-7.2 5.6-11.5 12.5-11.5s12.5 4.3 12.5 11.5"/>',
- "flame":  '<path d="M20 5c7 9 10 13 10 18a10 10 0 0 1-20 0c0-5 3-9 10-18z"/>'
-           '<path d="M20 30a5 5 0 0 1-3-8"/>',
+ # A flame, not a teardrop. The old one was the droplet path with a different
+ # name -- same symmetric point, same round bowl, same inner crescent -- so Fire
+ # and Water were the same glyph. This one has a single tongue curling in from
+ # the left and a leaning tip, which is the part that reads as fire at 17px.
+ "flame":  '<path d="M13.2 22.4a4.6 4.6 0 0 0 4.6-4.6c0-2.6-1.2-3.8-2.1-5.7-2-4.1-.2-7.6 '
+           '4.4-10.6.4 4.8 3.2 8.6 6.6 11.4 3.5 2.9 5.3 6.3 5.3 10a12 12 0 1 1-24 0c0-2.2 '
+           '1-4.4 2.3-5.8a4.6 4.6 0 0 0 2.9 5.3z"/>',
  "rule":   '<path d="M11 6h13l6 6v22H11z"/><path d="M24 6v6h6"/><path d="M16 21h10M16 26h10"/>',
  # a beacon: lamp on a base, throwing light. The old one was a dome with a stalk.
  "beacon": '<path d="M12 31.5h16"/><path d="M15 31.5V21a5 5 0 0 1 10 0v10.5"/>'
@@ -750,8 +755,11 @@ h3{{letter-spacing:-.015em}}
   .hero-txt{{flex:1 1 58%;min-width:0}}
   .hero-art{{width:min(40%,300px);margin:0;flex:none}}
 }}
-.cyc{{animation:cyc 14s ease-in-out infinite;opacity:0}}
-@keyframes cyc{{0%,100%{{opacity:0}}50%{{opacity:.5}}}}
+/* the anomaly field breathing: the warm gradient fades over the cool one and
+   back. Two periods that do not divide into each other, so the globe never
+   settles into an obvious loop. */
+.cyc{{animation:cyc 19s ease-in-out infinite;opacity:0}}
+@keyframes cyc{{0%,100%{{opacity:.06}}38%{{opacity:.34}}67%{{opacity:.58}}}}
 @media(prefers-reduced-motion:reduce){{.cyc{{animation:none;opacity:.22}}}}
 :root[data-theme="dark"] .grat line,:root[data-theme="dark"] .grat ellipse{{stroke:#fff}}
 
@@ -967,7 +975,13 @@ summary{{cursor:pointer}}
 .soln{{display:grid;grid-template-columns:var(--gut) 1fr auto;gap:16px;border-top:1px solid var(--line);
   padding:23px 0}}
 @media(max-width:700px){{.soln,.sub,.hl,.fr{{grid-template-columns:var(--gut) 1fr}}
-  .statcell{{grid-column:2;align-items:flex-start;text-align:left;margin-top:8px}}}}
+  /* Category left, status right, on one line. Stacked, they ate two rows at the
+     foot of every item and read as two unrelated labels. */
+  .statcell{{grid-column:2;flex-direction:row;justify-content:space-between;
+    align-items:baseline;gap:14px;width:100%;text-align:left;margin-top:10px;
+    padding-top:9px;border-top:1px solid var(--line)}}
+  .statcell .chip{{max-width:none;text-align:right;flex:0 1 auto}}
+  .statcell .tlab{{flex:0 0 auto}}}}
 .solnhead{{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin-bottom:3px}}
 .solnhead h3{{margin:0;font-size:18.5px;font-weight:600}}
 .mat{{font-family:'Space Mono',monospace;font-size:9.5px;text-transform:uppercase;
@@ -1490,6 +1504,94 @@ function tog(){var r=document.documentElement;
 })();
 """
 
+JS_GLOBE = r"""
+/* The hero globe turns. Coordinates are shipped, not frames: one frame of
+   projected geometry is 35KB, so a pre-rendered rotation would be most of a
+   megabyte, while the source coastline is 17KB once and the projection is eight
+   lines of arithmetic.
+
+   The projection is equatorial orthographic, which is why this is cheap -- every
+   parallel is a horizontal line and the anomaly gradient is vertical, so neither
+   changes as it spins. Only the land and the meridians are redrawn. */
+(function(){
+ var g=document.getElementById('gl-land');
+ if(!g||!document.createElementNS)return;
+ if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ var G=__GLOBE__,NS='http://www.w3.org/2000/svg',D=Math.PI/180;
+ var cx=+g.dataset.cx,cy=+g.dataset.cy,r=+g.dataset.r,lon0=+g.dataset.lon0;
+ var mer=document.getElementById('gl-mer');
+ /* one <path> per latitude band, built once. The land's colour comes from mean
+    latitude, and latitude does not change when the globe turns, so a band's fill
+    is fixed and only its geometry moves -- 11 attribute writes a frame instead of
+    rebuilding 138 polygons. */
+ var paths=[],mers=[],i,k,e;
+ while(g.firstChild)g.removeChild(g.firstChild);
+ for(i=0;i<G.b.length;i++){
+  e=document.createElementNS(NS,'path');
+  e.setAttribute('fill',G.b[i]);e.setAttribute('fill-opacity','.52');
+  g.appendChild(e);paths.push(e);
+ }
+ if(mer){
+  while(mer.firstChild)mer.removeChild(mer.firstChild);
+  for(k=0;k<6;k++){
+   e=document.createElementNS(NS,'ellipse');
+   e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('ry',r);
+   mer.appendChild(e);mers.push(e);
+  }
+ }
+ function draw(l0){
+  for(var b=0;b<G.r.length;b++){
+   var d='',rs=G.r[b];
+   for(var i=0;i<rs.length;i++){
+    var a=rs[i],open=false;
+    for(var j=0;j<a.length;j+=2){
+     var dl=(a[j]/10-l0)*D;
+     while(dl>Math.PI)dl-=2*Math.PI;
+     while(dl<-Math.PI)dl+=2*Math.PI;
+     if(Math.cos(dl)<0){open=false;continue;}   /* behind the limb */
+     var la=a[j+1]/10*D;
+     d+=(open?'L':'M')+(cx+r*Math.cos(la)*Math.sin(dl)).toFixed(1)
+       +' '+(cy-r*Math.sin(la)).toFixed(1);
+     open=true;
+    }
+   }
+   paths[b].setAttribute('d',d);
+  }
+  for(var m=0;m<mers.length;m++)
+   mers[m].setAttribute('rx',Math.abs(r*Math.sin((m*30-l0)*D)).toFixed(1));
+ }
+ var DEG_PER_SEC=3.2,last=0,prev=null;      /* a turn every ~112 seconds */
+ function onscreen(){
+  var q=g.ownerSVGElement.getBoundingClientRect();
+  return q.bottom>0&&q.top<innerHeight;
+ }
+ function tick(ts){
+  requestAnimationFrame(tick);
+  if(ts-last<50)return;                      /* ~20fps is plenty for 3 deg/s */
+  if(document.hidden||!onscreen()){prev=ts;last=ts;return;}
+  if(prev===null)prev=ts;
+  lon0=(lon0+DEG_PER_SEC*(ts-prev)/1000)%360;
+  prev=ts;last=ts;
+  draw(lon0);
+ }
+ requestAnimationFrame(tick);
+})();
+"""
+
+_GLOBE_CACHE = {}
+
+
+def globe_js():
+    """The coastline payload plus the spin loop. Memoised: both pages carry the
+    hero, and re-reading world_paths.json per page is a second of build time for
+    an identical result."""
+    if "js" not in _GLOBE_CACHE:
+        d = globe.land_lonlat()
+        _GLOBE_CACHE["js"] = JS_GLOBE.replace("__GLOBE__", json.dumps(
+            {"b": d["bands"], "r": d["rings"]}, separators=(",", ":")))
+    return _GLOBE_CACHE["js"]
+
+
 JS_MAP = """
 var SIG=__SIG__,RULES=__RULES__,NAMES=__NAMES__,CATS=__CATS__,ICONS=__ICONS__,DEPTH=__DEPTH__;
 var TF=__DEFAULT_TF__;
@@ -1607,7 +1709,7 @@ NAMES = {
 }
 
 DESC = ("Where heat is breaking records, who it is reaching, what the rules are about "
-        "to require, and what can be done about it. Rebuilt daily from primary sources.")
+        "to require, and what can be done about it.")
 
 
 def section_block(state, slug, label, key):
@@ -1725,7 +1827,7 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
 {footer(state)}
 </div>
 <div id="tip"></div>
-<script>{JS_COMMON}{js}</script></body></html>"""
+<script>{JS_COMMON}{js}{globe_js()}</script></body></html>"""
 
 
 def check_names(sig, rules=None):
@@ -1923,7 +2025,7 @@ def workability_page(wk, state, dl, issued):
   {method_html(state)}
 </section>
 </div>
-<script>{JS_COMMON}{wk["js"]}</script></body></html>"""
+<script>{JS_COMMON}{wk["js"]}{globe_js()}</script></body></html>"""
 
 
 def method_html(state):

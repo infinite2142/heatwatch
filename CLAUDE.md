@@ -84,6 +84,27 @@ longitude accuracy) and reprojects orthographically. It uses its own reserved,
 quieter palette — mean OKLab chroma 0.06 against the map ramp's 0.16 — so the loud
 colour stays reserved for data.
 
+## The globe spins on coordinates, not frames
+
+`globe.land_lonlat()` ships the coastline as lon/lat in tenths of a degree, and the
+browser projects it each frame. That is the whole reason this is affordable: one
+frame of projected geometry is 35KB, so a pre-rendered rotation would be most of a
+megabyte, while the source coordinates are 17KB once (7KB gzipped) and the
+projection is eight lines of arithmetic.
+
+It is cheap for a second reason. The view is equatorial orthographic, so every
+parallel is a horizontal line and the anomaly field is one vertical gradient —
+neither changes as it turns. Only the land and the meridians are redrawn.
+
+Land is grouped into latitude bands and drawn as one `<path>` per band. A band's
+fill comes from its mean latitude, which rotation does not change, so a frame is
+eleven attribute writes rather than 138 rebuilt polygons.
+
+The static SVG stays in the page and is what a reader gets with JavaScript off or
+`prefers-reduced-motion: reduce` set — the script replaces the land only once it has
+decided to animate. It throttles to 20fps, and pauses when the tab is hidden or the
+globe is scrolled out of view.
+
 ## SVG `<use>` and `<symbol>`
 
 Styles do **not** reliably reach inside a `<use>` shadow tree: a descendant selector
