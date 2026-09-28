@@ -100,6 +100,19 @@ Land is grouped into latitude bands and drawn as one `<path>` per band. A band's
 fill comes from its mean latitude, which rotation does not change, so a frame is
 eleven attribute writes rather than 138 rebuilt polygons.
 
+**Meridians are the near half only, one arc per longitude.** Drawn as full
+ellipses they showed the far side as well, and at 30° spacing the set of
+`|sin(M − lon0)|` values repeats every 30° — so the whole graticule returned to an
+identical configuration nine seconds into every rotation. It pulsed in place while
+the continents travelled, which reads as a second, static set of meridians. A half
+arc belongs to one longitude, enters at one limb and leaves at the other, so it
+turns with the land. `rx` collapsing to zero at the centre is correct: that
+meridian is edge-on, and SVG draws a zero-radius arc as the straight line it is.
+
+The hero globe is centred at `cx=300` in a 600-wide viewBox. It was 310, which is
+invisible on desktop — the art is masked and positioned against the right edge —
+and 5px right of centre the moment a phone centres the box instead.
+
 The static SVG stays in the page and is what a reader gets with JavaScript off or
 `prefers-reduced-motion: reduce` set — the script replaces the land only once it has
 decided to animate. It throttles to 20fps, and pauses when the tab is hidden or the

@@ -207,9 +207,22 @@ def build(lon0=20.0, r=150.0, cx=300.0, cy=160.0):
         f'<line x1="{cx-r*math.cos(math.radians(l)):.1f}" y1="{cy-r*math.sin(math.radians(l)):.1f}" '
         f'x2="{cx+r*math.cos(math.radians(l)):.1f}" y2="{cy-r*math.sin(math.radians(l)):.1f}"/>'
         for l in range(-60, 90, 30))
-    merids = "".join(
-        f'<ellipse cx="{cx}" cy="{cy}" rx="{abs(r*math.sin(math.radians(m - lon0))):.1f}" '
-        f'ry="{r}"/>' for m in range(0, 180, 30))
+    # Meridians are the NEAR HALF only, one arc per longitude, pole to pole.
+    #
+    # Drawn as full ellipses they showed the far side too, and -- worse -- at 30
+    # degree spacing the set of |sin(M - lon0)| values repeats every 30 degrees,
+    # so the whole graticule returned to an identical configuration nine seconds
+    # into every rotation. It pulsed in place while the continents travelled,
+    # which read as a second static set of meridians. A half arc belongs to one
+    # longitude, enters at one limb and leaves at the other, so it turns with the
+    # land. rx collapsing to 0 at the centre is right: that meridian is edge-on,
+    # and SVG draws a zero-radius arc as the straight line it should be.
+    def meridian(m):
+        a = math.radians(m - lon0)
+        return (f'<path d="M{cx:.1f} {cy - r:.1f}A{abs(r * math.sin(a)):.1f} {r:.1f} '
+                f'0 0 {1 if math.sin(a) > 0 else 0} {cx:.1f} {cy + r:.1f}"/>')
+    merids = "".join(meridian(m) for m in range(0, 360, 30)
+                     if math.cos(math.radians(m - lon0)) > 0.03)
     polys = "".join(
         f'<polygon points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in run)}" '
         f'fill="{field(lat)}" fill-opacity=".52"/>' for run, lat in land)

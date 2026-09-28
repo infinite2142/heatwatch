@@ -1071,7 +1071,7 @@ def topbar(active, page_title, nav):
 
 def hero(title, sub, kicker, dl, meta=None, active_view="updates"):
     meta = meta or f"Updated {esc(dl)} \u00b7 rebuilt daily from primary sources"
-    return brandrow(active_view) + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=310.0, cy=160.0)}
+    return brandrow(active_view) + f"""<div class="wrap"><header class="masthead">{globe.build(lon0=20.0, r=148.0, cx=300.0, cy=160.0)}
 <div class="hero-txt"><div class="eyebrow">{esc(kicker)}</div>
 <h1 class="hero-title">{esc(title)}</h1>
 <p class="hero-sub">{esc(sub)}</p>
@@ -1531,11 +1531,12 @@ JS_GLOBE = r"""
   e.setAttribute('fill',G.b[i]);e.setAttribute('fill-opacity','.52');
   g.appendChild(e);paths.push(e);
  }
+ /* one arc per longitude, near half only -- see globe.py meridian() for why an
+    ellipse per meridian pulsed in place instead of turning */
  if(mer){
   while(mer.firstChild)mer.removeChild(mer.firstChild);
-  for(k=0;k<6;k++){
-   e=document.createElementNS(NS,'ellipse');
-   e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('ry',r);
+  for(k=0;k<12;k++){
+   e=document.createElementNS(NS,'path');
    mer.appendChild(e);mers.push(e);
   }
  }
@@ -1557,8 +1558,12 @@ JS_GLOBE = r"""
    }
    paths[b].setAttribute('d',d);
   }
-  for(var m=0;m<mers.length;m++)
-   mers[m].setAttribute('rx',Math.abs(r*Math.sin((m*30-l0)*D)).toFixed(1));
+  for(var m=0;m<mers.length;m++){
+   var a=(m*30-l0)*D,si=Math.sin(a);
+   mers[m].setAttribute('d', Math.cos(a)<=0.03 ? '' :
+    'M'+cx+' '+(cy-r)+'A'+Math.abs(r*si).toFixed(1)+' '+r+' 0 0 '+(si>0?1:0)
+    +' '+cx+' '+(cy+r));
+  }
  }
  var DEG_PER_SEC=3.2,last=0,prev=null;      /* a turn every ~112 seconds */
  function onscreen(){
