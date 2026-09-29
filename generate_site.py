@@ -792,7 +792,10 @@ h3{{letter-spacing:-.015em}}
   padding:0 clamp(14px,3.2vw,40px);display:grid;align-items:center;
   grid-template-columns:1fr auto 1fr;gap:12px}}
 .brandinner > :last-child{{justify-self:end}}
-.brandlink{{display:flex;align-items:center;gap:9px}}
+.brandlink{{display:flex;align-items:center;gap:9px;color:inherit;text-decoration:none;
+  border-radius:5px}}
+.brandlink:hover .mininame{{color:var(--h4)}}
+.brandlink:focus-visible{{outline:2px solid var(--h4);outline-offset:3px}}
 /* Nothing reserved: the tabs start at the left edge. The brand appears in the bar
    only once compact, so the tabs shift on scroll -- which is not the earlier
    problem, where they sat at a different x on every page. */
@@ -1014,7 +1017,7 @@ def brandmark():
     return globe.icon(22)
 
 
-NAV_ICON = {"top": "globe", "climate": "thermo", "health": "pulse",
+NAV_ICON = {"map": "globe", "climate": "thermo", "health": "pulse",
             "workers": "worker", "fire": "flame", "solutions": "sliders"}
 
 
@@ -1022,7 +1025,10 @@ def nav_items(state):
     """Anchors on the single page. A section the state cannot fill gets no tab, so a
     tab never jumps to an empty heading."""
     secs = (state.get("sections") or {})
-    out = [("top", "Overview")]
+    # Overview goes to the map, not to document top. The brand mark is what
+    # takes you back to the hero -- a nav tab that scrolls to y=0 does nothing
+    # visible when you are already near the top, which is most of the time.
+    out = [("map", "Overview")]
     for slug, label, _title, key in SECTORS:
         if secs.get(key):
             out.append((slug, label))
@@ -1052,8 +1058,8 @@ def brandrow(active_view="updates", with_switch=True):
     brand row's, which is already accounted for in scroll-margin-top."""
     sw = viewswitch(active_view) if with_switch else ""
     return (f'<span id="top"></span><div class="brandrow" id="brandrow"><div class="brandinner">'
-            f'<span class="brandlink">{brandmark()}'
-            f'<span class="mininame">HeatWatch</span></span>'
+            f'<a class="brandlink" href="#top" aria-label="HeatWatch, back to the top">'
+            f'{brandmark()}<span class="mininame">HeatWatch</span></a>'
             f'{sw}'
             f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
             f'and dark theme" title="Switch theme">{icon("theme", "ico")}</button>'
@@ -1495,7 +1501,12 @@ function tog(){var r=document.documentElement;
  var pending=false;
  function pick(){
   pending=false;
-  var line=124, cur=tabs[0].dataset.jump, i;
+  /* The line a section's top must cross to count as current. 124 is the two
+     sticky bars plus a little; a page with a THIRD sticky element (the
+     Workability filter bar) sets this higher, or clicking a tab leaves the
+     marker on the previous section -- the section it jumped to starts below the
+     chrome, so it never crosses a line drawn above it. */
+  var line=window.__navLine||124, cur=tabs[0].dataset.jump, i;
   for(i=0;i<secs.length;i++){
    if(secs[i]&&secs[i].getBoundingClientRect().top<=line)cur=tabs[i].dataset.jump;
   }

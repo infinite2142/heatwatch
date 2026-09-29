@@ -39,6 +39,17 @@ Do not use an IntersectionObserver for the current-section marker. Its callback 
 carries the sections whose intersection changed, so neighbouring sections flicker
 while scrolling one direction. The position test is deterministic.
 
+The marker's threshold is `window.__navLine`, defaulting to 124 — the two sticky
+bars plus a little. **A page with a third sticky element has to raise it**, or the
+section a tab jumps to starts below the chrome and never crosses a line drawn above
+it, so the marker stays on the previous section. Workability sets it from the filter
+bar's measured height.
+
+Overview points at `#map`, not at document top; the brand mark is the link home. A
+nav tab that scrolls to y=0 does nothing visible when you are already near the top,
+which is most of the time — which is why it read as broken on desktop and not on a
+phone, where the taller hero made the same scroll obvious.
+
 ## The map's time windows are gated on real coverage
 
 `WINDOWS` declares 1W / 1M / 3M / 1Y, but a window is only offered when history
@@ -307,13 +318,19 @@ Fresno rendered six cells against a seven-column header, shifting every later ce
 one column left and leaving the row rule short of the table edge. `FORECAST_DAYS` is
 8 for that reason; the eighth day is the offset, not spare data.
 
-## The filter bar's sticky scope
+## The filter bar's sticky scope and its height
 
 The controls are sticky on desktop only, and their parent is `.filterscope`, which
 wraps the key numbers **and** the table. A sticky element only sticks while its own
 parent is on screen, so leaving them inside the "This week" section would unstick
 them at the moment the table they filter came into view. On a phone they are static:
 four control groups wrap to five rows there, which is most of the screen.
+
+Its height is **not a constant** — the control groups wrap as the window narrows, so
+it runs from 162px at 1440 to 259px at 780. Two things depend on it and neither can
+be a fixed number: `.ctlcard`'s `scroll-margin-top` (a fixed 232px put the By hub
+heading 10px behind the bar's own bottom border) and `window.__navLine`. JS measures
+the bar into `--ctlbar-h` and sets both.
 
 ## Hub detail is a modal
 

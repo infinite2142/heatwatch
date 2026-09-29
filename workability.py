@@ -473,8 +473,13 @@ CSS = """
     border-bottom:1px solid var(--line-2);margin-bottom:8px}
   .ctlbar .wkctl{margin-top:14px;padding-top:0;border-top:0}
   .ctlbar .limitline{margin-top:10px;padding-top:9px}
-  /* the heading below must clear both bars AND this one when jumped to */
-  .ctlcard{scroll-margin-top:232px}
+  /* The heading below must clear both sticky bars AND this one when jumped to.
+     The bar's height is not a constant: the four control groups wrap as the
+     window narrows, so it runs from 162px at 1440 to 259px at 780, and any fixed
+     number here is wrong at most widths -- 232px put the heading 10px behind the
+     bar's own bottom border. JS measures it into --ctlbar-h; the fallback is the
+     widest case, which errs toward too much clearance rather than too little. */
+  .ctlcard{scroll-margin-top:calc(106px + var(--ctlbar-h, 259px) + 16px)}
 }
 .ctlcard{border-top:0;margin-top:0;padding-top:26px}
 @media(min-width:761px){
@@ -925,6 +930,22 @@ function sowhat(h){
     +'°C for '+names[ST.workload]+' work in the '+ST.setting+' at '+h.name
     +', the worst on '+WK.days[wi][2]+' with '+hrs[wi]+'. '+tail;
 }
+
+/* the sticky filter bar's height drives the scroll offset of the heading below it */
+(function(){
+ var bar=document.querySelector('.ctlbar');
+ if(!bar)return;
+ function sync(){
+  var h=bar.offsetHeight;
+  document.documentElement.style.setProperty('--ctlbar-h',h+'px');
+  /* the tab marker's threshold has to clear this bar too, or jumping to By hub
+     leaves the marker reading This week */
+  window.__navLine=106+h+18;
+ }
+ sync();
+ if(window.ResizeObserver)new ResizeObserver(sync).observe(bar);
+ else addEventListener('resize',sync,{passive:true});
+})();
 
 var SEL=null;
 function fill(id){
