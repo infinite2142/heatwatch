@@ -1058,7 +1058,7 @@ def brandrow(active_view="updates", with_switch=True):
     brand row's, which is already accounted for in scroll-margin-top."""
     sw = viewswitch(active_view) if with_switch else ""
     return (f'<span id="top"></span><div class="brandrow" id="brandrow"><div class="brandinner">'
-            f'<a class="brandlink" href="#top" aria-label="HeatWatch, back to the top">'
+            f'<a class="brandlink" href="index.html" aria-label="HeatWatch home">'
             f'{brandmark()}<span class="mininame">HeatWatch</span></a>'
             f'{sw}'
             f'<button class="ghost" onclick="tog()" aria-label="Switch between light '
@@ -1475,6 +1475,22 @@ def footer(state):
 
 
 JS_COMMON = """
+/* The brand mark is the site's home link, which is what a logo means: from
+   Workability it goes to Updates. On Updates itself that would be a 290KB reload
+   to move the scroll position, so the click is intercepted and the page scrolls
+   instead. An href of "#top" was the earlier version and it looked broken --
+   from anywhere in the first screen, scrolling to the top is a move of a few
+   pixels or none at all, and a link that does nothing visible reads as dead. */
+(function(){
+ var a=document.querySelector('.brandlink');
+ if(!a)return;
+ a.addEventListener('click',function(e){
+  if(a.pathname!==location.pathname)return;          /* let the navigation happen */
+  e.preventDefault();
+  scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches
+            ?'auto':'smooth'});
+ });
+})();
 function tog(){var r=document.documentElement;
  var t=r.dataset.theme==='dark'?'light':'dark';
  r.dataset.theme=t;

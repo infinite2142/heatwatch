@@ -45,10 +45,16 @@ section a tab jumps to starts below the chrome and never crosses a line drawn ab
 it, so the marker stays on the previous section. Workability sets it from the filter
 bar's measured height.
 
-Overview points at `#map`, not at document top; the brand mark is the link home. A
-nav tab that scrolls to y=0 does nothing visible when you are already near the top,
-which is most of the time — which is why it read as broken on desktop and not on a
-phone, where the taller hero made the same scroll obvious.
+Overview points at `#map`. The brand mark is the site home link, `index.html`: from
+Workability it navigates to Updates, and on Updates itself the click is intercepted
+and the page scrolls to the top, because a 290KB reload to move the scroll position
+is absurd.
+
+Both were `#top` first and both read as broken. From anywhere in the first screen,
+scrolling to document top is a move of a few pixels or none at all, and a link that
+produces no visible change is indistinguishable from a dead one. It showed up on
+desktop rather than on a phone, where the taller hero makes the same scroll
+obvious.
 
 ## The map's time windows are gated on real coverage
 
