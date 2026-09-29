@@ -343,7 +343,7 @@ SOLUTIONS = [
      ["Armoured vehicle crews", "Formula and endurance racing", "EVA suits and hazmat entry"]),
     ("sun", "Passive & radiative fabrics", "Material", "lab",
      "Textiles engineered to emit infrared through the atmospheric window, with no power.",
-     ["Zero power and zero maintenance", "Nothing to recharge or refill",
+     ["Works unpowered", "Maintenance-free once issued",
       "Scales as ordinary clothing"],
      ["Single-digit degrees at best", "Needs sky view to work", "Mostly still lab-stage"],
      ["Early architectural and tenting products", "Field trials in agriculture"]),
@@ -1747,7 +1747,7 @@ def section_block(state, slug, label, key):
         "extremes": "Records, anomalies, and what the heat did.",
         "fire":     "Fire weather and burned area, and who is sent to work in it.",
         "health":   "Excess mortality and heat-attributable illness, with the "
-                    "surveillance gaps stated rather than smoothed over.",
+                    "surveillance gaps stated.",
         "workers":  "Who is exposed, where, and what the rules are about to require.",
     }.get(key, "")
     src = {
@@ -1783,8 +1783,8 @@ def solutions_block(state):
 <section class="card" id="solutions">
   <h2>Solutions</h2>
   <p class="lede">What exists to keep people working safely in heat, where each
-  approach stops working, and where it is in use. Grouped by approach, not by vendor
-  — no products, no ranking. Maturity is lab → pilot → commercial.</p>
+  approach stops working, and where it is in use. Solutions are grouped by cooling
+  approach. Maturity is lab → pilot → commercial.</p>
   {sol}
 </section>"""
 
@@ -1820,10 +1820,10 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
 <section class="card" id="map">
   <h2>Global heat signals</h2>
   <p class="lede">Shading is how many signals a country carries in the window — heat,
-  health, workers, fire — counted flat, with no weighting. Outlined countries have
-  heat-at-work rules, the mitigation rather than the hazard, so it is drawn
-  separately. Hover or tap a country for detail: each line names the category, with
-  the headline where one was written about that country.</p>
+  health, workers, fire — counted flat. Heat-at-work rules sit on a separate outline
+  layer: the fill is the hazard and the outline is the mitigation. Hover or tap a
+  country for detail: each line names the category, with the headline where one was
+  written about that country.</p>
   <div class="ctrlrow">
     <span class="ctrllab">Window</span>
     <div class="opts">{wins}</div>
@@ -2064,19 +2064,19 @@ def method_html(state):
                         "written against; it is explained in full under This week. It is "
                         "solved hour by hour after Liljegren et al. (2008) from temperature, "
                         "humidity, wind, pressure and the direct and diffuse solar components. "
-                        "Shade is the same model with the direct beam removed, not a fixed "
-                        "offset. Limits are the ISO 7243:2017 reference values for the "
+                        "Shade recomputes the same model with the direct beam removed. "
+                        "Limits are the ISO 7243:2017 reference values for the "
                         "workload and acclimatisation selected."),
         ("Rules", "Every rule shown comes from a dated record with at least one source. A "
-                  "record that has not been confirmed against a primary source is labelled "
-                  "as such and is not counted as a rule in force. Rule summaries are not "
-                  "legal advice."),
+                  "record confirmed against a primary source can read In force; the rest "
+                  "are labelled Reported, unconfirmed and their hours count as "
+                  "unprotected. Rule summaries are not legal advice."),
         ("Archive", "Each day's forecast, computed hours and rule status are written once and "
                     "listed in a published manifest of SHA-256 hashes, so a past day can be "
                     "shown to be unchanged."),
-        ("Limits", "The hours are a forecast of heat stress, not an official instruction to "
-                   "stop work, and they are computed for a location rather than a site. "
-                   "Employers keep their own records; this page does not hold them."),
+        ("Limits", "The hours are a forecast of heat stress, computed for a location. A "
+                   "site differs: shade, surfaces, enclosure and the work itself all move "
+                   "the number. Each employer keeps their own records."),
     ]
     if m.get("disclosure"):
         blocks.append(("Disclosure", m["disclosure"]))

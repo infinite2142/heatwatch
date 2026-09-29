@@ -81,6 +81,32 @@ this file — a denylist inside a public file publishes the terms it exists to s
 Dates in generated labels take a human form ("Recorded 19 September 2026"), never a
 reference to an internal artifact.
 
+## Say what a thing is
+
+Write the plain declarative form. Do not define something by what it is not.
+
+```
+no:   Grouped by approach, not by vendor — no products, no ranking.
+yes:  Solutions are grouped by cooling approach.
+
+no:   Shade is the same model with the direct beam removed, not a fixed offset.
+yes:  Shade recomputes the same model with the direct beam removed.
+```
+
+The tells are `X, not Y`, `rather than`, `no A, no B`, and the em-dash-then-negation
+rhythm. They spend the sentence on a contrast the reader never proposed and bury the
+fact. The register to aim for is a scientific presentation: simple and descriptive.
+The same rule is in `prompts/daily.md`, so the daily run's own copy follows it.
+
+Two exceptions. A **finding of absence** is a fact and stays one — "India has no
+binding national heat limit for outdoor work" is the finding. A **legal disclaimer**
+stays literal: "Rule summaries are not legal advice."
+
+This does **not** apply to code comments or to the notes in this file. "Not an
+IntersectionObserver, because its callback only carries the sections whose
+intersection changed" is the recorded reason a later session must not undo the fix,
+and that is the entire value of those comments.
+
 ## Text length
 
 `short()` returns complete sentences and **never an ellipsis**. A clipped clause with

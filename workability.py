@@ -673,7 +673,7 @@ def rule_detail_html(rule, today):
         "none": "No rule",
     }.get(rule.get("status"), rule.get("status") or "—")
     if not is_confirmed(rule) and rule.get("status") in ("in_force", "in_force_seasonal_inactive"):
-        status_txt = "Reported, not confirmed"
+        status_txt = "Reported, unconfirmed"
 
     parts = [f'<div class="rulebox"><h4>The rule</h4>',
              f'<p><b>{esc(rule.get("title",""))}</b>']
@@ -721,9 +721,9 @@ def rule_detail_html(rule, today):
                      'record was created.</p>')
 
     if not is_confirmed(rule):
-        parts.append('<div class="unconf"><h4>Not confirmed</h4><p>This record has not yet '
-                     'been confirmed against a primary source. It is shown for information and '
-                     'is not counted as a rule in force anywhere on this page.</p></div>')
+        parts.append('<div class="unconf"><h4>Unconfirmed</h4><p>This record still needs '
+                     'confirming against a primary source. It is shown for information, and '
+                     'its hours count as unprotected everywhere on this page.</p></div>')
     parts.append("</div>")
     return "".join(parts)
 
@@ -792,7 +792,7 @@ def season_record_html(rules, today):
             f'<p class="srcline">Days covered is the period each 2026 ordinance ran, not the '
             f'number of days a stoppage was actually called — that depends on the daily risk '
             f'map for each comune, which has no public data terms yet. Records marked '
-            f'unconfirmed are not counted as rules in force elsewhere on this page.</p>')
+            f'unconfirmed count as unprotected hours elsewhere on this page.</p>')
 
 
 # The row markup exists twice, here and in JS_WK below. They must stay in step:
@@ -1036,19 +1036,17 @@ def wbgt_explainer():
         f'<span class="hd"><b>{esc(name)}</b><span class="pc">{pc}</span></span>'
         f'<span class="ds">{esc(desc)}</span></li>'
         for cls, name, pc, desc in parts)
-    return f"""<details class="wbgtx"><summary>What is WBGT, and why not just the
- air temperature?</summary>
+    return f"""<details class="wbgtx"><summary>What is WBGT?</summary>
 <div class="wxbody">
 <p><b>WBGT</b> is the wet-bulb globe temperature: one number combining the four
 things that decide whether a body can stay cool outdoors \u2014 humidity, radiant
 heat, air temperature and wind. Occupational heat standards are written against it,
-ISO 7243 among them, which is why this page counts hours in WBGT rather than in
-degrees of air temperature.</p>
+ISO 7243 among them, and it is what this page counts hours in.</p>
 <p>Air temperature on its own is a poor guide. 30&deg;C in dry shade with a breeze
 and 30&deg;C in humid air under open sun are the same forecast and a different day's
 work. The body sheds heat by sweating, and sweat stops evaporating once the air is
-already wet \u2014 so humidity, not heat, is usually what makes outdoor work
-unsafe.</p>
+already wet \u2014 so humidity is usually what decides whether outdoor work is
+safe.</p>
 <p>That is why the terms are weighted the way they are:</p>
 <div class="wxbar" role="img" aria-label="WBGT is 70 percent natural wet bulb,
  20 percent globe temperature and 10 percent air temperature">
@@ -1057,16 +1055,16 @@ unsafe.</p>
   <span class="wxseg wx3" style="flex:10"></span>
 </div>
 <ul class="wxkey">{key}</ul>
-<p style="margin-top:14px">The limit is not a single number either. Harder work
+<p style="margin-top:14px">The limit depends on the work and the worker. Harder work
 produces more heat, and a worker not yet used to heat has less room before it
 becomes dangerous, so ISO 7243 sets six of them \u2014 from 30&deg;C for light work
 by an acclimatised worker down to 22&deg;C for heavy work by someone new to it. The
 Workload and Workers controls switch between the six.</p>
-<p><b>What this is not.</b> These hours are computed from a public weather forecast
-for each hub's location. They are not a reading taken on your site, where shade,
-surfaces, enclosure and the work itself all move the number, and they are not an
-instruction to stop work. What the law requires is in the rule column beside them,
-and it comes from dated records, not from this forecast.</p>
+<p><b>What these hours cover.</b> They are computed from a public weather forecast
+for each hub's location. A site differs: shade, surfaces, enclosure and the work
+itself all move the number, so a reading on your own site is the one that governs
+your own site. What the law requires sits in the rule column beside them, drawn from
+dated records.</p>
 </div></details>"""
 
 
@@ -1093,7 +1091,7 @@ def controls_html():
 def key_numbers_html():
     tiles = [
         ("kn-total", "0", "Unsafe working hours", "kn-total-s"),
-        ("kn-unprot", "0", "Of those, not covered by a rule in force", "kn-unprot-s"),
+        ("kn-unprot", "0", "Of those, unprotected by a rule in force", "kn-unprot-s"),
         ("kn-hubs", "0", "Hubs with at least one unsafe hour", "kn-hubs-s"),
         ("kn-worst", "0 h", None, "kn-worst-s"),
     ]
@@ -1194,8 +1192,8 @@ def render(core_dir, today, issued):
   <p class="srcline">Working day {wbgt.WORK_START:02d}:00–{wbgt.WORK_END:02d}:00 local.
   WBGT computed hour by hour after Liljegren et al. (2008) from Open-Meteo forecast data
   (CC BY 4.0); limits from ISO 7243:2017. Shade recomputes the model with the direct beam
-  removed. The hours are a forecast, not an official status: the rule column comes from
-  dated rule records and is kept separate for that reason.</p>
+  removed. The hours are a forecast of heat stress; the rule column carries the official
+  position, drawn from dated rule records, and is kept separate for that reason.</p>
 </section>
 
 <div class="ctlbar"><div class="ctlinner">{controls_html()}</div></div>
