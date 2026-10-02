@@ -54,10 +54,6 @@ jobs:
           if [ -f workability-week.csv ]; then
             cp workability-week.csv _site/workability-week.csv
           fi
-          # TEMPORARY: a typeface comparison, so a choice can be made from a
-          # machine that is not the mini. Delete the file and this block once the
-          # display face is chosen.
-          if [ -f type-preview.html ]; then cp type-preview.html _site/type-preview.html; fi
           # The archive is served as static JSON from the same origin, one file
           # per hub per date plus the published manifest of hashes. It is
           # append-only, so this copies the tree rather than naming files.

@@ -113,6 +113,26 @@ IntersectionObserver, because its callback only carries the sections whose
 intersection changed" is the recorded reason a later session must not undo the fix,
 and that is the entire value of those comments.
 
+## Type
+
+Three faces, each with one job:
+
+- **Fraunces** — the hero title and section headings (`.hero-title`, `.card h2`)
+- **Space Grotesk** — body text
+- **Space Mono** — labels, data cells, source lines, the eyebrow
+
+The hierarchy is serif at page and section level, sans at item level, so an item
+title (`.hl h3`, `.hubdlg h3`) stays Space Grotesk on purpose.
+
+Only weight **700** of Fraunces is fetched, an 11KB woff2 subset, with the
+**optical-size axis left variable** (`opsz 9..144`, `font-optical-sizing:auto`) so
+the same face is drawn correctly at a 78px hero and a 28px heading. Requesting a
+weight range instead of the single weight roughly doubles the download for nothing.
+
+Serifs need less negative tracking than a geometric sans: the display letter-spacing
+is −.028em and −.022em, where Space Grotesk wanted −.038em and −.032em. If the face
+changes again, those move with it.
+
 ## Text length
 
 `short()` returns complete sentences and **never an ellipsis**. A clipped clause with

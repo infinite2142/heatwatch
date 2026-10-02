@@ -686,7 +686,7 @@ def head(title, desc, extra_css=""):
 document.documentElement.dataset.theme=t;}}catch(e){{}}}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>{TOKENS}
 *{{box-sizing:border-box}}
 html{{scroll-behavior:smooth}}
@@ -700,8 +700,16 @@ body{{margin:0;background:var(--bg);color:var(--ink);
 .card{{border-top:1px solid var(--line);padding:54px 0 0;margin-top:52px;
   scroll-margin-top:118px}}   /* clears both sticky bars */
 .card:first-of-type{{border-top:0;margin-top:0;padding-top:36px}}
-.card h2{{font-size:clamp(28px,3.3vw,40px);line-height:1.02;font-weight:700;
-  letter-spacing:-.032em;margin:0 0 10px}}
+/* Display face. Fraunces carries the page and section headings; Space Grotesk
+   keeps the body and Space Mono keeps the labels, so the hierarchy is serif at
+   page level and sans at item level. Only weight 700 is fetched (an 11KB subset),
+   with the optical-size axis left variable so the same face is drawn for a 78px
+   hero and a 28px heading. Serifs need less negative tracking than a geometric
+   sans, so the letter-spacing is looser here than Space Grotesk wanted. */
+.card h2{{font-family:'Fraunces',Georgia,'Times New Roman',serif;
+  font-optical-sizing:auto;
+  font-size:clamp(28px,3.3vw,40px);line-height:1.04;font-weight:700;
+  letter-spacing:-.022em;margin:0 0 10px}}
 .lede{{font-size:16px;color:var(--ink-dim);margin:0}}
 h3{{letter-spacing:-.015em}}
 .ico{{width:20px;height:20px;flex:none;color:var(--muted)}}
@@ -730,8 +738,10 @@ h3{{letter-spacing:-.015em}}
 .hero-txt{{position:relative;z-index:2;max-width:620px}}
 .eyebrow{{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;
   text-transform:uppercase;color:var(--muted);font-weight:700}}
-.hero-title{{font-size:clamp(44px,6.8vw,78px);font-weight:700;letter-spacing:-.038em;
-  line-height:.9;margin:13px 0 15px}}
+.hero-title{{font-family:'Fraunces',Georgia,'Times New Roman',serif;
+  font-optical-sizing:auto;
+  font-size:clamp(44px,6.8vw,78px);font-weight:700;letter-spacing:-.028em;
+  line-height:.92;margin:13px 0 15px}}
 .hero-sub{{font-size:16.5px;color:var(--ink-dim);max-width:600px;margin:0}}
 .hero-meta{{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:17px}}
 .hero-art{{position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:min(50%,520px);
