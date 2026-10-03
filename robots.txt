@@ -1,0 +1,10 @@
+# HeatWatch
+User-agent: *
+Allow: /
+
+# The forecast archive is machine-readable JSON, one file per hub per date, held
+# so a published number can be checked later. Search results belong on the pages
+# that explain it.
+Disallow: /heatwatch/archive/
+
+Sitemap: https://infinite2142.github.io/heatwatch/sitemap.xml

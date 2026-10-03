@@ -17,6 +17,7 @@ or the next daily run silently destroys the edit.
 Geometry: world_paths.json (Natural Earth 110m, public domain) via globe.py.
 """
 import json
+import hashlib
 import os
 import re
 import sys
@@ -701,6 +702,7 @@ def head(title, desc, extra_css="", path="", stamp=""):
 <meta name="twitter:title" content="{esc(title)}">
 <meta name="twitter:description" content="{esc(desc)}">
 <meta name="twitter:image" content="{SITE}preview.png{('?v=' + stamp) if stamp else ''}">
+<link rel="alternate" type="application/atom+xml" title="HeatWatch" href="{SITE}feed.xml">
 <link rel="icon" href="{globe.favicon()}">
 <script>/* before paint: no flash, and the choice survives navigation */
 (function(){{try{{var t=localStorage.getItem('hw-theme')||'light';
@@ -944,7 +946,7 @@ summary{{cursor:pointer}}
 .geo{{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;
   letter-spacing:.14em;color:var(--ink);font-weight:700;margin:34px 0 0;
   padding-bottom:7px;border-bottom:1px solid var(--line-2)}}
-.hl{{display:grid;grid-template-columns:var(--gut) 1fr auto;gap:16px;border-top:1px solid var(--line);
+.hl{{display:grid;grid-template-columns:var(--gut) 1fr auto;gap:16px;scroll-margin-top:118px;border-top:1px solid var(--line);
   padding:16px 0}}
 .hl:first-of-type{{border-top:0}}
 .geo + .hl{{border-top:0}}
@@ -1400,12 +1402,27 @@ def short(text, limit=200):
     if len(t) <= limit:
         return t
     out = ""
-    for part in re.findall(r"[^.!?]+[.!?]*", t):
-        cand = (out + part).strip()
+    # A sentence break is a terminator followed by WHITESPACE. Splitting on the
+    # terminator alone treated the decimal point as one, so "South Australia ran
+    # 3.55 °C above average" was cut after "3." and the page printed "South
+    # Australia ran 3." -- the amputated clause this function exists to prevent,
+    # produced by the function itself. Every body here quotes a decimal
+    # temperature, so it was the common case rather than a corner.
+    for part in re.split(r"(?<=[.!?])\s+", t):
+        cand = f"{out} {part}".strip() if out else part
         if out and len(cand) > limit:
             break
         out = cand
     return out or t
+
+
+def item_id(title):
+    """The anchor for one item. The page and the feed both call this, so a feed
+    entry's fragment always matches a heading the page actually has.
+
+    Keyed on the title rather than on the item's position, so an item that moves
+    up its section keeps the link that was already sent out."""
+    return "i-" + hashlib.sha1(title.encode("utf-8")).hexdigest()[:10]
 
 
 def entry(it, cat, thumb_key=None):
@@ -1421,8 +1438,9 @@ def entry(it, cat, thumb_key=None):
             if status else (f'<span class="chip {band}">{esc(band)}</span>' if band else ""))
     gap = it.get("gap")
     extra = f'<p class="hlsrc">Gap — {esc(gap)}</p>' if gap else ""
-    return (f'<div class="hl">{lead}<div>'
-            f'<div class="hlhead"><h3>{esc(it.get("title", "Untitled"))}</h3></div>'
+    title = it.get("title", "Untitled")
+    return (f'<div class="hl" id="{item_id(title)}">{lead}<div>'
+            f'<div class="hlhead"><h3>{esc(title)}</h3></div>'
             f'<p>{esc(body)}</p>'
             + src_line(it) + extra
             + f'</div><span class="statcell">'
@@ -1901,6 +1919,114 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
 <script>{JS_COMMON}{js}{globe_js()}</script></body></html>"""
 
 
+# ---------------------------------------------------------------------------- #
+# Syndication. Three small text artifacts, built from the same state file and the
+# same helpers as the page, so what a feed reader receives is what a browser sees.
+
+
+def feed_xml(state, today):
+    """Atom 1.0 over the current report's items.
+
+    The feed carries one build rather than a rolling history because every entry
+    deep-links into index.html, and index.html carries one report. An entry from
+    last Tuesday would point at an anchor the page has since dropped, which lands
+    the reader at the top of the page with nothing to explain it. Feed readers keep
+    the entries they have already fetched, so a subscriber's history accumulates on
+    their side.
+
+    An entry carries the title, short() of the body and the sources -- exactly the
+    three things entry() puts on the page. so_what stays out: it is not rendered on
+    the page either, and it is where a writer reaches for an analogy about
+    somewhere else, which is the same reason it is kept out of map tooltips.
+    """
+    # 06:00Z is when the run publishes. Atom needs a timestamp and the state file
+    # carries a date; inventing midnight would date every entry to the evening
+    # before in every timezone west of here.
+    stamp = f"{today.isoformat()}T06:00:00Z"
+    ents = []
+    for slug, _label, _t, key in SECTORS:
+        cat_label = CATS[SECTION_CAT[key]][0]
+        for it in (state.get("sections") or {}).get(key) or []:
+            title = it.get("title", "Untitled")
+            iid = item_id(title)
+            summary = short(it.get("body") or "")
+            srcs = [str(x) for x in (it.get("sources") or [])]
+            if srcs:
+                summary += " — Sources: " + " · ".join(srcs)
+            ents.append(f"""  <entry>
+    <title>{esc(title)}</title>
+    <link rel="alternate" type="text/html" href="{SITE}#{iid}"/>
+    <id>tag:infinite2142.github.io,{today.isoformat()}:heatwatch/{iid}</id>
+    <updated>{stamp}</updated>
+    <category term="{esc(slug)}" label="{esc(cat_label)}"/>
+    <summary type="text">{esc(summary)}</summary>
+  </entry>""")
+    return f"""<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>HeatWatch</title>
+  <subtitle>{esc(DESC)}</subtitle>
+  <id>tag:infinite2142.github.io,2026:heatwatch</id>
+  <link rel="self" type="application/atom+xml" href="{SITE}feed.xml"/>
+  <link rel="alternate" type="text/html" href="{SITE}"/>
+  <updated>{stamp}</updated>
+  <author><name>HeatWatch</name></author>
+{chr(10).join(ents)}
+</feed>
+"""
+
+
+def sitemap_xml(today, has_workability):
+    """The two pages. preview.png, feed.xml and the archive JSON stay out: a
+    sitemap lists pages a reader would land on."""
+    urls = [(SITE, today)]
+    if has_workability:
+        urls.append((SITE + "workability.html", today))
+    rows = "".join(
+        f"  <url><loc>{esc(loc)}</loc><lastmod>{d.isoformat()}</lastmod>"
+        f"<changefreq>daily</changefreq></url>\n" for loc, d in urls)
+    return ('<?xml version="1.0" encoding="utf-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            + rows + "</urlset>\n")
+
+
+def robots_txt():
+    """Ships now, takes effect at the Cloudflare move.
+
+    A crawler reads robots.txt at the ORIGIN root. This file is served from
+    /heatwatch/robots.txt, a path on a github.io origin shared with every other
+    repo, so today it is inert: the file that governs this site is the one at
+    infinite2142.github.io/robots.txt, which belongs to a different repo. Putting
+    it here now makes the move to a custom domain a DNS change on its own.
+    """
+    return f"""# HeatWatch
+User-agent: *
+Allow: /
+
+# The forecast archive is machine-readable JSON, one file per hub per date, held
+# so a published number can be checked later. Search results belong on the pages
+# that explain it.
+Disallow: /heatwatch/archive/
+
+Sitemap: {SITE}sitemap.xml
+"""
+
+
+def check_feed(feed, html):
+    """Every feed entry must link to an anchor the page actually has.
+
+    The fragments come from item_id() on both sides, so they agree today; they
+    stop agreeing the moment an item is rendered somewhere that does not carry the
+    id, and the only symptom is a subscriber landing at the top of the page with
+    no idea why. Nobody hovers a feed link to check."""
+    frags = set(re.findall(r'href="[^"#]*#(i-[0-9a-f]{10})"', feed))
+    ids = set(re.findall(r'id="(i-[0-9a-f]{10})"', html))
+    missing = sorted(frags - ids)
+    if missing:
+        raise SystemExit(f"feed entries link to anchors index.html does not have: "
+                         f"{missing[:5]}")
+    return len(frags)
+
+
 def check_names(sig, rules=None):
     """Every ISO3 the map can show must have a name. BHR was missing, so the table
     printed "BHR" -- a build failure is better than a country code in the page.
@@ -2181,6 +2307,23 @@ def main():
         with open(os.path.join(out_dir, name), "w") as fh:
             fh.write(html)
         print(f"wrote {name} — {len(html):,} bytes")
+
+    # Syndication goes through the same two guards as the pages. The feed carries
+    # item prose verbatim, so it is exactly the surface the denylist exists for --
+    # a term kept off the page and shipped in the feed would be published just the
+    # same, and in a file nobody looks at.
+    feed = feed_xml(state, today)
+    print(f"feed entries: {check_feed(feed, pages['index.html'])}")
+    aux = {"feed.xml": feed,
+           "sitemap.xml": sitemap_xml(today, bool(wk)),
+           "robots.txt": robots_txt()}
+    for name, text in aux.items():
+        print(f"-- {name}")
+        check_chars(text, name)
+        check_terms(text, denypath)
+        with open(os.path.join(out_dir, name), "w") as fh:
+            fh.write(text)
+        print(f"wrote {name} — {len(text):,} bytes")
 
     if wk:
         n = workability.write_csv(out_dir, wk["hubs"], wk["computed"])

@@ -15,6 +15,8 @@ on:
       - "*.html"
       - "*.csv"
       - "preview.png"
+      - "*.xml"
+      - "robots.txt"
       - "archive/**"
       - .github/workflows/pages.yml
   workflow_dispatch:
@@ -53,6 +55,12 @@ jobs:
           # the same way workability.html is: a build on a machine with no
           # headless Chrome has none to stage.
           if [ -f preview.png ]; then cp preview.png _site/preview.png; fi
+          # Syndication. feed.xml is linked from both pages' <head>, sitemap.xml
+          # is named by robots.txt, and robots.txt only takes effect once the site
+          # has its own origin -- see robots_txt() for why it ships before then.
+          for f in feed.xml sitemap.xml robots.txt; do
+            if [ -f "$f" ]; then cp "$f" "_site/$f"; fi
+          done
           # "if", not "[ -f x ] && cp": the runner is bash -e, and a test that
           # fails as the left side of && takes the exit status of the whole list
           # with it, so a missing optional file would fail the publish.

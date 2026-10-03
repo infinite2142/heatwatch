@@ -139,6 +139,14 @@ changes again, those move with it.
 no way to read the rest is worse than a slightly long card. Keeping bodies short is
 the writer's job, not the renderer's.
 
+A sentence break is a terminator **followed by whitespace**. Splitting on the
+terminator alone makes the decimal point one, and every body here quotes a decimal
+temperature — so this was the common case, not a corner. Five of thirteen items on
+3 October published as amputated clauses: "South Australia ran 3." for 3.55 °C, and
+"Argentina's Las Lomitas reached 44." for 44.x, which reads as a different number
+rather than as a truncation. It was the function's own output doing the thing the
+function exists to prevent, and it took building the feed to see it.
+
 ## The globe
 
 `world_paths.json` is a Robinson projection with no lat/lon in it, so `globe.py`
@@ -376,6 +384,47 @@ Both pages point at the one card. `preview.png` is a runtime asset, so it is in 
 `pages.yml` allowlist and in the `on: paths` trigger, and `make_preview.py` is in the
 leak guard beside the other build inputs.
 
+## Syndication, and why the feed holds one build
+
+`feed.xml` (Atom 1.0), `sitemap.xml` and `robots.txt` are built by
+`generate_site.py` from the same state file and the same helpers as the page, so a
+feed reader receives what a browser sees.
+
+**The feed carries the current report's items only.** Every entry deep-links into
+`index.html`, and `index.html` carries one report: an entry from last Tuesday would
+point at an anchor the page has since dropped, landing a subscriber at the top with
+nothing to explain it. Readers keep what they have already fetched, so a
+subscriber's history accumulates on their side. Making the feed roll over several
+days means giving past reports somewhere to live first.
+
+An entry carries the title, `short()` of the body, and the sources — the same three
+things `entry()` puts on the page. **`so_what` stays out**, for the reason it stays
+out of map tooltips: it is where a writer reaches for an analogy about somewhere
+else, and it is not rendered on the page either.
+
+`item_id()` hashes the title into the `i-xxxxxxxxxx` anchor, and the page and the
+feed both call it, so the two cannot drift. Keyed on the title rather than position,
+so an item that moves up its section keeps a link already sent out. `.hl` carries
+`scroll-margin-top:118px` for the same reason section anchors do.
+
+`check_feed()` fails the build if any entry links to an anchor `index.html` does not
+have. Nobody hovers a feed link to check, so the symptom is a subscriber landing at
+the top of the page and no one ever hearing about it.
+
+**The feed goes through `check_terms()` and `check_chars()` like the pages.** It
+carries item prose verbatim, which makes it exactly the surface the denylist exists
+for — a term kept off the page and shipped in the feed is published just the same,
+in a file nobody looks at.
+
+**`robots.txt` is inert today.** A crawler reads it at the *origin* root, and this
+one is served from `/heatwatch/robots.txt` — a path on a github.io origin shared
+with every other repo. The file that governs the site right now is
+`infinite2142.github.io/robots.txt`, which belongs to a different repo. It ships
+anyway so the Cloudflare move is a DNS change on its own.
+
+`SITE` in `generate_site.py` is the only place the site knows its own URL, and the
+canonical, `og:image`, feed, sitemap and robots lines all read it. It moves once.
+
 ## No one-sided borders
 
 A box gets a border on all four sides or none. The accent-bar-on-the-left pattern is
@@ -455,6 +504,8 @@ to go first.
 - Deploy surface is deny-by-default and always an allowlist: the staging step in
   `.github/workflows/pages.yml`, and `.assetsignore` after the Cloudflare move. The
   mechanism changes, the rule does not. It now stages `index.html`,
-  `workability.html`, `workability-week.csv` and the `archive/` tree; a new runtime
-  asset needs a line there or it silently 404s.
+  `workability.html`, `workability-week.csv`, `preview.png`, `feed.xml`,
+  `sitemap.xml`, `robots.txt` and the `archive/` tree; a new runtime asset needs a
+  line there **and** a line in the workflow's `on: paths` trigger, or it silently
+  404s.
 - Every claim on the page carries its source. Rule summaries are not legal advice.
