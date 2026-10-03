@@ -425,6 +425,10 @@ anyway so the Cloudflare move is a DNS change on its own.
 `SITE` in `generate_site.py` is the only place the site knows its own URL, and the
 canonical, `og:image`, feed, sitemap and robots lines all read it. It moves once.
 
+Pages serves `feed.xml` as `application/xml`, and that is not configurable there.
+Readers accept it, so it is left alone; `application/atom+xml` is a header rule to
+set at the Cloudflare move, along with the origin that makes `robots.txt` live.
+
 ## No one-sided borders
 
 A box gets a border on all four sides or none. The accent-bar-on-the-left pattern is
