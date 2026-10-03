@@ -676,10 +676,31 @@ def rules_from_db(rules, today):
 
 
 # ---------------------------------------------------------------------------- #
-def head(title, desc, extra_css=""):
+# The published origin. og:image and canonical have to be absolute -- a relative
+# og:image is simply dropped by every unfurler -- so the one place the site knows
+# its own URL lives here. It moves when the Cloudflare switch happens.
+SITE = "https://infinite2142.github.io/heatwatch/"
+
+
+def head(title, desc, extra_css="", path="", stamp=""):
     return f"""<!doctype html><html lang="en" data-theme="light"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}">
+<link rel="canonical" href="{SITE}{path}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HeatWatch">
+<meta property="og:url" content="{SITE}{path}">
+<meta property="og:title" content="{esc(title)}">
+<meta property="og:description" content="{esc(desc)}">
+<meta property="og:image" content="{SITE}preview.png{('?v=' + stamp) if stamp else ''}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="HeatWatch — a globe shaded by climate anomaly, beside the day's headline figure">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{esc(title)}">
+<meta name="twitter:description" content="{esc(desc)}">
+<meta name="twitter:image" content="{SITE}preview.png{('?v=' + stamp) if stamp else ''}">
 <link rel="icon" href="{globe.favicon()}">
 <script>/* before paint: no flash, and the choice survives navigation */
 (function(){{try{{var t=localStorage.getItem('hw-theme')||'light';
@@ -1839,7 +1860,8 @@ def page(state, sig, depth, rules, nav, dl, has_workability=True):
     hero_noswitch = (brandrow("updates", with_switch=False)
                      + hero("HeatWatch", DESC, "Global heat intelligence", dl).split("</div></div>", 1)[1]
                      if not has_workability else "")
-    return head("HeatWatch — global heat intelligence", DESC) + f"""
+    return head("HeatWatch — global heat intelligence", DESC, path="",
+                stamp=state.get("meta", {}).get("report_date", "")) + f"""
 {hero("HeatWatch", DESC, "Global heat intelligence", dl, active_view="updates") if has_workability else hero_noswitch}
 {topbar("top", "", nav)}
 <div class="wrap">
@@ -2063,7 +2085,9 @@ def workability_page(wk, state, dl, issued):
     tabs = "".join(
         f'<a class="tab" href="#{slug}" data-jump="{slug}">{esc(label)}</a>'
         for slug, label in WK_NAV)
-    return head("HeatWatch — workable hours", WK_DESC, wk["css"]) + f"""
+    return head("HeatWatch — workable hours", WK_DESC, wk["css"],
+                path="workability.html",
+                stamp=state.get("meta", {}).get("report_date", "")) + f"""
 {hero("Workable hours", WK_DESC, "Heat, work and the rules", dl, meta=meta,
       active_view="workability")}
 <nav class="topbar" id="topbar"><div class="topinner"><span class="tabs">{tabs}</span></div></nav>

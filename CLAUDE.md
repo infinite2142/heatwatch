@@ -352,6 +352,30 @@ Put the literal character in the source. `check_chars()` fails the build on any 
 or C1 control character in the output, which is what a swallowed escape leaves
 behind.
 
+## The link preview is a screenshot, and the build must not need a browser
+
+`make_preview.py` writes the 1200x630 card as **HTML**; `daily-update.sh` turns it
+into `preview.png` with headless Chrome after the render. Keeping the PNG out of
+`generate_site.py` is the point: a build on a machine with no browser still produces
+both pages, and a run where Chrome is missing or hangs keeps yesterday's card and
+publishes anyway. A slightly stale preview is a worse card; a failed render is no
+page at all. The size floor catches the other failure, where Chrome exits 0 having
+written a blank or truncated PNG.
+
+The card copies nothing. The strapline is `generate_site.DESC`, the globe is the same
+`globe.build()` the masthead draws, and the number is the state file's headline, so
+the card cannot drift from the page it advertises.
+
+`og:image` **must be absolute** — a relative one is dropped by every unfurler — which
+is why `SITE` exists in `generate_site.py`. It is the only place the site knows its own
+URL, and it moves when the Cloudflare switch happens. The URL carries `?v=<report
+date>`: without a changing query string Slack, X and iMessage keep serving the first
+PNG they cached for days.
+
+Both pages point at the one card. `preview.png` is a runtime asset, so it is in the
+`pages.yml` allowlist and in the `on: paths` trigger, and `make_preview.py` is in the
+leak guard beside the other build inputs.
+
 ## No one-sided borders
 
 A box gets a border on all four sides or none. The accent-bar-on-the-left pattern is
