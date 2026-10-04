@@ -5,110 +5,38 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-03T06:00:00Z</updated>
+  <updated>2026-10-04T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Australia had its second-warmest September on record and its warmest September nights</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-7f70b72e29"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-7f70b72e29</id>
-    <updated>2026-10-03T06:00:00Z</updated>
+    <title>A flash flood killed a 102-year-old woman in Spain as storms returned to the same warm sea</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-8dd0b8882f"/>
+    <id>tag:infinite2142.github.io,2026-10-04:heatwatch/i-8dd0b8882f</id>
+    <updated>2026-10-04T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Australia's September 2026 ran 2.71 °C above average, and minimum temperatures were the highest on record for the month. — Sources: Bureau of Meteorology September 2026 summary, via Weatherzone, 1 October 2026</summary>
+    <summary type="text">A second wave of storms fed by an unusually warm Mediterranean killed a 102-year-old woman in Madrigueras, Albacete, on 3 October, trapped by floodwater over a metre deep inside her home. — Sources: Regional emergency services, via the Olive Press, 3 October 2026 · AEMET</summary>
   </entry>
   <entry>
-    <title>France had its second-warmest September since 1900 and a record soil drought</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-3f2fbe1237"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-3f2fbe1237</id>
-    <updated>2026-10-03T06:00:00Z</updated>
+    <title>Southern California's heat wave became the longest October extreme heat warning on record</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-75d0561134"/>
+    <id>tag:infinite2142.github.io,2026-10-04:heatwatch/i-75d0561134</id>
+    <updated>2026-10-04T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">France's September 2026 ran 3.1 °C above normal, the fourth month in a row above 3 °C. — Sources: Météo-France, September 2026 climate summary, 2 October 2026</summary>
+    <summary type="text">Downtown Los Angeles, Long Beach, Santa Ana and Anaheim each set all-time October heat records on 2 October, with Los Angeles reaching 103 degrees Fahrenheit. — Sources: National Weather Service · CBS Los Angeles, 2 October 2026 · The Watchers, 3 October 2026</summary>
   </entry>
   <entry>
-    <title>Southern California is under a seven-day October heat warning as grid demand forecasts rise</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-eb0b750aaa"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-eb0b750aaa</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">A heat warning covers Los Angeles, San Diego and inland Orange County from 2 to 8 October, with valley highs to 107 °F. — Sources: National Weather Service · California Independent System Operator, via Bloomberg, 2 October 2026 · San Diego Gas &amp; Electric, via KPBS, 2 October 2026 · Cal/OSHA advisory 2026-79, 2 October 2026</summary>
-  </entry>
-  <entry>
-    <title>Storms fed by a sea 4 °C warmer than normal shut schools for 400,000 pupils in eastern Spain</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-aa5e61e4d3"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-aa5e61e4d3</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">With sea temperatures off eastern Spain about 4 °C above normal, more than 200 litres per square metre of rain fell on 1 and 2 October, 90 in one hour at Castellón. — Sources: Euronews, 2 October 2026 · AEMET</summary>
-  </entry>
-  <entry>
-    <title>Paraguay and Argentina set heat records in South America's first spring heatwave</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-02c6aa0b23"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-02c6aa0b23</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Paraguay's Mariscal Estigarribia reached 43.8 °C on 28 September, beating a record from 1952, and 14 Paraguayan localities set records that day. — Sources: Paraguay Directorate of Meteorology and Hydrology, via El Litoral · INMET Brazil, via Agência Brasil, 28 September 2026</summary>
-  </entry>
-  <entry>
-    <title>The United Kingdom, the Netherlands and Belgium each had a top-five warm September</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-505359c20b"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-505359c20b</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The United Kingdom had its joint-fourth warmest September since 1884, peaking at 28.1 °C on 29 September. — Sources: Met Office, 1 October 2026 · KNMI, 30 September 2026 · Royal Meteorological Institute of Belgium, via VRT, 1 October 2026</summary>
-  </entry>
-  <entry>
-    <title>Correction: the Netherlands' 30 September record was 27.1 °C at Hupsel</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-ea2db73cd4"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-ea2db73cd4</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The highest 30 September reading ever measured in the Netherlands was 27.1 °C at Hupsel, beating 26.7 °C set at Winterswijk in 1895. — Sources: Weeronline, citing KNMI, 30 September 2026</summary>
-  </entry>
-  <entry>
-    <title>Indonesia's fires keep haze risk high over Malaysia and Singapore into November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-563bad8061"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-563bad8061</id>
-    <updated>2026-10-03T06:00:00Z</updated>
+    <title>Malaysia and Singapore have almost no legal recourse against Indonesia over wildfire haze</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2bc8e9bc9b"/>
+    <id>tag:infinite2142.github.io,2026-10-04:heatwatch/i-2bc8e9bc9b</id>
+    <updated>2026-10-04T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Regional haze risk over Indonesia, Malaysia and Singapore stays high through November, and Indonesia's weather agency expects meaningful monsoon rain only in late October or early November. — Sources: ASEAN Specialised Meteorological Centre · Indonesia Agency for Meteorology, Climatology and Geophysics, via Tempo</summary>
+    <summary type="text">Haze from Indonesian wildfires has closed schools and driven respiratory complaints across Malaysia and Singapore for more than a month. — Sources: The Japan Times, 1 October 2026 · The Jakarta Post, 1 October 2026</summary>
   </entry>
   <entry>
-    <title>Spain attributed 556 deaths to heat in September 2026</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-09203a04b4"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-09203a04b4</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="health" label="Health"/>
-    <summary type="text">Spain's daily mortality monitoring system attributed 556 deaths to heat in September and 2,149 in August. September was provisionally Spain's warmest since 1961, at 3.3 °C above normal. — Sources: Carlos III Health Institute MoMo system, via eldiario.es, 1 October 2026 · AEMET provisional estimate, 24 September 2026</summary>
-  </entry>
-  <entry>
-    <title>France counted 7,824 excess deaths across its three summer heatwaves</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-ab88e5aed0"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-ab88e5aed0</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="health" label="Health"/>
-    <summary type="text">France's public health agency counted 5,764 excess deaths in the 17 June to 2 July heatwave, 1,243 from 3 to 22 July and 817 from 27 July to 20 August. The figures are provisional. — Sources: Santé publique France, provisional, September 2026</summary>
-  </entry>
-  <entry>
-    <title>Kenya and South Sudan pilot the Horn of Africa's first heat-health early warning system</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-368dd56815"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-368dd56815</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="health" label="Health"/>
-    <summary type="text">The regional climate centre ICPAC is piloting heat-health warnings in Nairobi, Kenya and Juba, South Sudan until August 2027. — Sources: ICPAC, 4 September 2026</summary>
-  </entry>
-  <entry>
-    <title>A 24-year-old farmworker died of heat exposure harvesting sweet potatoes in Mississippi</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-8487581882"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-8487581882</id>
-    <updated>2026-10-03T06:00:00Z</updated>
+    <title>European Union ministers will discuss the Quality Jobs Act's workplace safety update on 19 October</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-7b3aae6860"/>
+    <id>tag:infinite2142.github.io,2026-10-04:heatwatch/i-7b3aae6860</id>
+    <updated>2026-10-04T06:00:00Z</updated>
     <category term="workers" label="Workers"/>
-    <summary type="text">Obed Azahel Hernandez Perez died on 8 September at a farm in Vardaman, Mississippi, with a heat index near 98 °F. — Sources: Mississippi Today, 1 October 2026</summary>
-  </entry>
-  <entry>
-    <title>South Korea found four break-rule violations in 1,197 worksites in its heat-break rule's second year</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2b42c99ba0"/>
-    <id>tag:infinite2142.github.io,2026-10-03:heatwatch/i-2b42c99ba0</id>
-    <updated>2026-10-03T06:00:00Z</updated>
-    <category term="workers" label="Workers"/>
-    <summary type="text">South Korea requires a 20-minute break every two hours at an apparent temperature of 33 °C. — Sources: Ministry of Employment and Labor and KOSHA, via Seoul Economic Daily, 28 September 2026</summary>
+    <summary type="text">A Council of the European Union document confirms the European Commission's Quality Jobs Act proposal, which would update workplace safety rules including heat exposure, remains due before the end of 2026. — Sources: Council of the European Union, document 13885/26, 2 October 2026</summary>
   </entry>
 </feed>
