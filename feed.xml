@@ -5,46 +5,30 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-08T06:00:00Z</updated>
+  <updated>2026-10-09T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Southern California's heat wave ended close to forecast, running a day longer in the desert</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-993cc5fd30"/>
-    <id>tag:infinite2142.github.io,2026-10-08:heatwatch/i-993cc5fd30</id>
-    <updated>2026-10-08T06:00:00Z</updated>
+    <title>This year's El Nino is forecast to reach the strongest level recorded since 1950</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-c762195dba"/>
+    <id>tag:infinite2142.github.io,2026-10-09:heatwatch/i-c762195dba</id>
+    <updated>2026-10-09T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The extreme heat warning covering most of Los Angeles and San Diego counties expired Thursday evening as expected. Desert areas and some San Diego County advisories ran through Friday instead. — Sources: National Weather Service San Diego, 7-8 October 2026 · National Weather Service Los Angeles, 7-8 October 2026</summary>
+    <summary type="text">The US Climate Prediction Center's 8 October outlook puts the Nino 3.4 ocean-temperature index at 2.1 degrees Celsius above normal, up from 1.8 a month earlier. — Sources: US Climate Prediction Center, ENSO Diagnostic Discussion, 8 October 2026</summary>
   </entry>
   <entry>
-    <title>California broke a decades-old heat record this week while wildfires burned nearby</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-167bcbc70f"/>
-    <id>tag:infinite2142.github.io,2026-10-08:heatwatch/i-167bcbc70f</id>
-    <updated>2026-10-08T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">San Diego Airport reached 40.6 degrees Celsius on 5 October, breaking a daily record that had stood since 1987, with more than 34 million people across California under heat alerts at the time. — Sources: Wire reporting via multiple outlets, 5 October 2026</summary>
-  </entry>
-  <entry>
-    <title>Singapore's air quality crossed into the unhealthy range two days before its own forecast</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-e5d094caed"/>
-    <id>tag:infinite2142.github.io,2026-10-08:heatwatch/i-e5d094caed</id>
-    <updated>2026-10-08T06:00:00Z</updated>
+    <title>Malaysia's haze reading overtook Singapore's as the region's worst this week</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2473fa17eb"/>
+    <id>tag:infinite2142.github.io,2026-10-09:heatwatch/i-2473fa17eb</id>
+    <updated>2026-10-09T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Fire hotspot counts in Sumatra, Indonesia eased slightly from 212 on 6 October to 188 on 7 October, but a wind shift pushed Singapore's air quality past the unhealthy threshold on the morning of 7 October. — Sources: National Environment Agency, Singapore, 7 October 2026</summary>
+    <summary type="text">28 areas across Malaysia recorded unhealthy air quality by 6 October, with Johor's Batu Pahat reaching an Air Pollutant Index of 194. — Sources: The Vibes/Malay Mail, 6 October 2026 · National Environment Agency, Singapore, 9 October 2026</summary>
   </entry>
   <entry>
-    <title>Health professionals across five countries report rising heat harm to pregnant women and newborns</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-e5cbc228fc"/>
-    <id>tag:infinite2142.github.io,2026-10-08:heatwatch/i-e5cbc228fc</id>
-    <updated>2026-10-08T06:00:00Z</updated>
-    <category term="health" label="Health"/>
-    <summary type="text">A survey of 1,000 maternal-health professionals across Australia, Brazil, India, the UK and Zimbabwe found 73% had seen a rise in heat-related pregnancy complications over the past five years and 76% a rise in impacts on newborn health, including dehydration, low birth weight and feeding difficulties. — Sources: Wellcome Trust survey, via Business Today, 6 October 2026</summary>
-  </entry>
-  <entry>
-    <title>South Africa's heat-stress rule now has a confirmed numeric trigger</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-9291ffff8f"/>
-    <id>tag:infinite2142.github.io,2026-10-08:heatwatch/i-9291ffff8f</id>
-    <updated>2026-10-08T06:00:00Z</updated>
+    <title>Qatar closed 388 work sites for violating its summer heat-work ban</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6c2981578e"/>
+    <id>tag:infinite2142.github.io,2026-10-09:heatwatch/i-6c2981578e</id>
+    <updated>2026-10-09T06:00:00Z</updated>
     <category term="workers" label="Workers"/>
-    <summary type="text">A direct reading of South Africa's Physical Agents Regulations sets a heat-stress action level of 27 degrees Celsius WBGT and a time-weighted average exposure limit of 30 degrees Celsius WBGT on a one-hour basis. — Sources: Government Gazette No. 52226, Government Notice No. 5952, Department of Employment and Labour, South Africa, 6 March 2025</summary>
+    <summary type="text">Qatar's Ministry of Labour closed 388 work sites found in violation of the rule requiring all outdoor work to stop once heat crosses a set threshold, for violations recorded between June and September 2026. — Sources: Qatar News Agency, 24 September 2026</summary>
   </entry>
 </feed>
