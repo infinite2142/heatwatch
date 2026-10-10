@@ -5,30 +5,134 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-09T06:00:00Z</updated>
+  <updated>2026-10-10T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>This year's El Nino is forecast to reach the strongest level recorded since 1950</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-c762195dba"/>
-    <id>tag:infinite2142.github.io,2026-10-09:heatwatch/i-c762195dba</id>
-    <updated>2026-10-09T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany fell below zero for the first time since records began in 1880</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-d562096087"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-d562096087</id>
+    <updated>2026-10-10T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The US Climate Prediction Center's 8 October outlook puts the Nino 3.4 ocean-temperature index at 2.1 degrees Celsius above normal, up from 1.8 a month earlier. — Sources: US Climate Prediction Center, ENSO Diagnostic Discussion, 8 October 2026</summary>
+    <summary type="text">Germany's Kaub gauge read minus 6 centimetres on 1 October, beating the previous low of 25 centimetres from October 2018. — Sources: Kaub gauge readings via logistik-heute, October 2026 · wetter.net, October 2026</summary>
   </entry>
   <entry>
-    <title>Malaysia's haze reading overtook Singapore's as the region's worst this week</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2473fa17eb"/>
-    <id>tag:infinite2142.github.io,2026-10-09:heatwatch/i-2473fa17eb</id>
-    <updated>2026-10-09T06:00:00Z</updated>
+    <title>US forecasters give an 83% chance this El Niño reaches its strongest level since 1950</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-e5919ae439"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-e5919ae439</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The US Climate Prediction Center's 8 October outlook puts the Niño 3.4 index at 2.1 °C above normal and gives an 83% chance October to December averages above 2.5 °C. — Sources: US Climate Prediction Center, ENSO Diagnostic Discussion, 8 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Phoenix, Arizona is having its longest triple-digit heat season on record</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-df1498e0b3"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-df1498e0b3</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Phoenix has had 129 days at 100 °F or more in 2026, the fifth-highest count on record. The first came on 18 March, the earliest ever, so the season is the longest on record. — Sources: KJZZ, 8 October 2026, citing the National Weather Service</summary>
+  </entry>
+  <entry>
+    <title>Southern California's October heat wave set date records from Los Angeles to San Diego</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-217327d973"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-217327d973</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">On 2 October downtown Los Angeles and Long Beach reached 103 °F and Santa Ana 105 °F, all date records. — Sources: CBS Los Angeles, 3 October 2026, citing the National Weather Service · National Weather Service San Diego, record report, 9 October 2026 · North Coast Current, 9 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Southern China set October heat records at dozens of weather stations</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f4ca4bfc32"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-f4ca4bfc32</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Late-season heat on 1 and 2 October set October station records across southern China, with Qiaojia in Yunnan reaching 39.5 °C and Yongding in Fujian 39.1 °C. — Sources: The Watchers, 3 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Correction: the 117 °F Palm Springs October record dates from 2024</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2094770e09"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-2094770e09</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">A reading of 117 °F in Palm Springs, California on 1 October 2026, published here on 6 October, was the October 2024 record. Palm Springs peaked at 109 °F on 8 October 2026, tying the daily record. — Sources: NBC Palm Springs, 1 October 2024 and 1 October 2026 · National Weather Service San Diego, record report, 9 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Haze closed schools in Batu Pahat, Malaysia as air quality passed 200</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6ce2b723f9"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-6ce2b723f9</id>
+    <updated>2026-10-10T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">28 areas across Malaysia recorded unhealthy air quality by 6 October, with Johor's Batu Pahat reaching an Air Pollutant Index of 194. — Sources: The Vibes/Malay Mail, 6 October 2026 · National Environment Agency, Singapore, 9 October 2026</summary>
+    <summary type="text">Malaysia had 28 areas with unhealthy air on 6 October. Batu Pahat in Johor reached an air pollution index of 194 that afternoon and 203 by evening, and its schools closed on 7 October. — Sources: Business Today Malaysia, 6 October 2026 · The Star, 7 October 2026</summary>
   </entry>
   <entry>
-    <title>Qatar closed 388 work sites for violating its summer heat-work ban</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6c2981578e"/>
-    <id>tag:infinite2142.github.io,2026-10-09:heatwatch/i-6c2981578e</id>
-    <updated>2026-10-09T06:00:00Z</updated>
+    <title>Indonesia counted 21,708 fire hotspots in a single day</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-66728a42e0"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-66728a42e0</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="fire" label="Fire"/>
+    <summary type="text">Indonesia's SiPongi monitoring system counted 21,708 hotspots in the 24 hours to 6 October across all confidence levels, 1,120 of them high-confidence. — Sources: Indonesia Ministry of Forestry SiPongi data via Databoks, 6 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Correction: Singapore's PSI range of 73 to 105 was a September reading</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5b12178e4c"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-5b12178e4c</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="fire" label="Fire"/>
+    <summary type="text">A 24-hour PSI range of 73 to 105 published here on 9 October was Singapore's reading for 10 September. Verified October readings include 166 in the central region on 29 September and 130 on 6 October. — Sources: Bernama, 10 September 2026 · Bernama, 29 September 2026 · Asia News Network, 6 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Spain recorded 5,805 heat-attributable deaths this summer, the highest in its series</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-41f3e51182"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-41f3e51182</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">Spain's daily mortality monitoring system attributed 5,805 deaths to heat between 15 May and 30 September 2026, the deadliest season since the series began in 2015. September alone accounted for 556. — Sources: Carlos III Health Institute MoMo system, via Bloomberg, 1 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Maricopa County, Arizona has confirmed 275 heat deaths this year with 515 more under investigation</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-76a1f08aeb"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-76a1f08aeb</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">Maricopa County's confirmed heat deaths reached 275, with 515 cases still under investigation, up 76% on the same point last year. — Sources: NPR, 1 October 2026 · AZFamily, 3 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Maternal-health workers in five countries report extreme heat harming pregnancies and newborns</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-fa62c2d54c"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-fa62c2d54c</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">Wellcome surveyed 1,001 maternal-health professionals in Australia, Brazil, India, the United Kingdom and Zimbabwe: 98% had treated a pregnant woman harmed by extreme heat. — Sources: Wellcome survey, via IPS News, 5 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Qatar closed 388 work sites for breaking its summer heat-work rule</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a216d496f5"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-a216d496f5</id>
+    <updated>2026-10-10T06:00:00Z</updated>
     <category term="workers" label="Workers"/>
-    <summary type="text">Qatar's Ministry of Labour closed 388 work sites found in violation of the rule requiring all outdoor work to stop once heat crosses a set threshold, for violations recorded between June and September 2026. — Sources: Qatar News Agency, 24 September 2026</summary>
+    <summary type="text">Qatar's Ministry of Labour closed 388 work sites for violations of Ministerial Decision 17 of 2021 recorded between 1 June and 15 September 2026. Each site was closed for three days. — Sources: Qatar News Agency, 24 September 2026</summary>
+  </entry>
+  <entry>
+    <title>Oman's midday work ban is set by a 2008 ministerial decision</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-1decc87aec"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-1decc87aec</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">Oman's Ministry of Labour cites Ministerial Decision 286 of 2008, Article 16, which stops work on construction sites and in exposed areas from 12:30 to 15:30 in June, July and August. — Sources: Oman Ministry of Labour, mol.gov.om · Oman Observer, July 2026</summary>
+  </entry>
+  <entry>
+    <title>Kuwait's 2026 decision also stops outdoor work in exceptional heat, humidity and dust storms</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b151ae36ea"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-b151ae36ea</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">Kuwait's Public Authority for Manpower Decision 3 of 2026 bans open-air work from 11:00 to 16:00, 1 June to 31 August. — Sources: Mesfer Law, reproduction of PAM Decision 3 of 2026 · Al-Rai · Gulf News</summary>
+  </entry>
+  <entry>
+    <title>South Africa's heat rule sets a WBGT action level of 27 °C</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-9a1ece4798"/>
+    <id>tag:infinite2142.github.io,2026-10-10:heatwatch/i-9a1ece4798</id>
+    <updated>2026-10-10T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">South Africa's Physical Agents Regulations, enforceable since 6 September 2026, set a heat-stress action level of 27 °C WBGT and a one-hour exposure limit of 30 °C WBGT, according to the Government Gazette. — Sources: Government Gazette No. 52226, Government Notice 5952, 6 March 2025</summary>
   </entry>
 </feed>
