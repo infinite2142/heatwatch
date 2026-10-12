@@ -5,38 +5,46 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-11T06:00:00Z</updated>
+  <updated>2026-10-12T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>The Rhine at Kaub, Germany is recovering from its record low but remains far below normal</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-094fb05907"/>
-    <id>tag:infinite2142.github.io,2026-10-11:heatwatch/i-094fb05907</id>
-    <updated>2026-10-11T06:00:00Z</updated>
+    <title>Europe's climate monitor confirms September was the second-warmest on record globally</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-816a2a43b2"/>
+    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-816a2a43b2</id>
+    <updated>2026-10-12T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's main shipping gauge read 16 centimetres on 11 October, up from the record low of minus 6 centimetres set on 1 October. — Sources: Kaub gauge readings, direct fetch via rivercruise.ai, 11 October 2026</summary>
+    <summary type="text">The Copernicus Climate Change Service's September report, published four days late, puts the global average temperature 1.63°C above pre-industrial levels. — Sources: Copernicus Climate Change Service, climate bulletin, 12 October 2026</summary>
   </entry>
   <entry>
-    <title>Phoenix, Arizona's longest triple-digit heat season on record is ending</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-eec2daf2be"/>
-    <id>tag:infinite2142.github.io,2026-10-11:heatwatch/i-eec2daf2be</id>
-    <updated>2026-10-11T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany is recovering from its record low, slowly</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b704ae0e26"/>
+    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-b704ae0e26</id>
+    <updated>2026-10-12T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Highs near 100°F eased toward the mid-to-upper 80s this weekend as moisture from Tropical Storm Rachel brought rain and wind into Arizona, closing out a season that reached 129 days of 100°F-or-higher heat, the fifth-most on record. — Sources: FOX10 Phoenix, 8 October 2026 · AZFamily, 7 October 2026</summary>
+    <summary type="text">Germany's main shipping gauge read 17 centimetres on 12 October, up from the record low of minus 6 centimetres set on 1 October. — Sources: Kaub gauge readings, direct fetch via rivercruise.ai, 12 October 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia's fire-hotspot count reached its highest daily total of the year</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-844526b1b0"/>
-    <id>tag:infinite2142.github.io,2026-10-11:heatwatch/i-844526b1b0</id>
-    <updated>2026-10-11T06:00:00Z</updated>
+    <title>Singapore recorded its worst air quality of 2026 on 9 October</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-3cb4f86a69"/>
+    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-3cb4f86a69</id>
+    <updated>2026-10-12T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Indonesia's Ministry of Forestry counted 24,952 fire hotspots nationally in the 24 hours to 8 October, up from 23,331 on 7 October and 21,708 on 6 October. — Sources: Indonesia Ministry of Forestry, via databoks.katadata.co.id, 8 October 2026</summary>
+    <summary type="text">The 24-hour Pollutant Standards Index in central Singapore climbed to a new 2026 high as haze from Indonesian fires drifted across the region. — Sources: The Star Malaysia, 9 October 2026 · Malay Mail, 9 October 2026</summary>
   </entry>
   <entry>
-    <title>Malaysia's haze stayed unhealthy in 38 areas even as its worst-hit town improved</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2b1e6c0b8a"/>
-    <id>tag:infinite2142.github.io,2026-10-11:heatwatch/i-2b1e6c0b8a</id>
-    <updated>2026-10-11T06:00:00Z</updated>
+    <title>Indonesia's fire-hotspot count eased from its 2026 peak but stayed high</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-016b53fcd6"/>
+    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-016b53fcd6</id>
+    <updated>2026-10-12T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Batu Pahat's air pollutant index eased from 203 on the evening of 6 October, when its schools closed, to 161 by 8 October. — Sources: Malay Mail, 8 October 2026 · The Star, 7 October 2026</summary>
+    <summary type="text">The Ministry of Forestry counted 20,818 hotspots nationally on 12 October, down from a 2026 high of 24,952 on 8 October. The count has fallen for several consecutive days from that peak. — Sources: Indonesia Ministry of Forestry, via databoks.katadata.co.id, 12 October 2026</summary>
+  </entry>
+  <entry>
+    <title>US federal data puts 2024 heat-related worker deaths above the long-run average</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-21f9cbf368"/>
+    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-21f9cbf368</id>
+    <updated>2026-10-12T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">The Bureau of Labor Statistics recorded 48 worker deaths from environmental heat exposure in 2024, above the roughly 42-per-year average across 2011 to 2024. — Sources: US Bureau of Labor Statistics, Census of Fatal Occupational Injuries, 2024 data</summary>
   </entry>
 </feed>
