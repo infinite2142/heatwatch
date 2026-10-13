@@ -5,46 +5,38 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-12T06:00:00Z</updated>
+  <updated>2026-10-13T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Europe's climate monitor confirms September was the second-warmest on record globally</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-816a2a43b2"/>
-    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-816a2a43b2</id>
-    <updated>2026-10-12T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany continued its slow recovery from its record low</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-139a061a24"/>
+    <id>tag:infinite2142.github.io,2026-10-13:heatwatch/i-139a061a24</id>
+    <updated>2026-10-13T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The Copernicus Climate Change Service's September report, published four days late, puts the global average temperature 1.63°C above pre-industrial levels. — Sources: Copernicus Climate Change Service, climate bulletin, 12 October 2026</summary>
+    <summary type="text">Germany's main shipping gauge read 20 centimetres on 13 October, up from 17 centimetres the day before. — Sources: Kaub gauge readings, direct fetch via rivercruise.ai, 13 October 2026</summary>
   </entry>
   <entry>
-    <title>The Rhine at Kaub, Germany is recovering from its record low, slowly</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b704ae0e26"/>
-    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-b704ae0e26</id>
-    <updated>2026-10-12T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's main shipping gauge read 17 centimetres on 12 October, up from the record low of minus 6 centimetres set on 1 October. — Sources: Kaub gauge readings, direct fetch via rivercruise.ai, 12 October 2026</summary>
-  </entry>
-  <entry>
-    <title>Singapore recorded its worst air quality of 2026 on 9 October</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-3cb4f86a69"/>
-    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-3cb4f86a69</id>
-    <updated>2026-10-12T06:00:00Z</updated>
+    <title>Indonesia's fire-hotspot count swung up and down well past its 8 October peak</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6a62af53bd"/>
+    <id>tag:infinite2142.github.io,2026-10-13:heatwatch/i-6a62af53bd</id>
+    <updated>2026-10-13T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">The 24-hour Pollutant Standards Index in central Singapore climbed to a new 2026 high as haze from Indonesian fires drifted across the region. — Sources: The Star Malaysia, 9 October 2026 · Malay Mail, 9 October 2026</summary>
+    <summary type="text">The Ministry of Forestry recorded 11,772 hotspots nationally on 10 October, well below the 20,818 already reported for 12 October, showing the count rose again after an earlier, sharper dip from its 24,952 peak on 8 October. — Sources: Indonesia Ministry of Forestry, via databoks.katadata.co.id, 8-12 October 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia's fire-hotspot count eased from its 2026 peak but stayed high</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-016b53fcd6"/>
-    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-016b53fcd6</id>
-    <updated>2026-10-12T06:00:00Z</updated>
+    <title>Singapore's air stayed in the unhealthy band through 10 October</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f58b46d52b"/>
+    <id>tag:infinite2142.github.io,2026-10-13:heatwatch/i-f58b46d52b</id>
+    <updated>2026-10-13T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">The Ministry of Forestry counted 20,818 hotspots nationally on 12 October, down from a 2026 high of 24,952 on 8 October. The count has fallen for several consecutive days from that peak. — Sources: Indonesia Ministry of Forestry, via databoks.katadata.co.id, 12 October 2026</summary>
+    <summary type="text">The 24-hour Pollutant Standards Index reached 176 in central Singapore at 7am on 10 October, the most recent confirmed reading, with other regions ranging from 125 to 162 the same morning as haze from Indonesian fires continued to drift across the region. — Sources: The Star Malaysia, 10 October 2026</summary>
   </entry>
   <entry>
-    <title>US federal data puts 2024 heat-related worker deaths above the long-run average</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-21f9cbf368"/>
-    <id>tag:infinite2142.github.io,2026-10-12:heatwatch/i-21f9cbf368</id>
-    <updated>2026-10-12T06:00:00Z</updated>
-    <category term="workers" label="Workers"/>
-    <summary type="text">The Bureau of Labor Statistics recorded 48 worker deaths from environmental heat exposure in 2024, above the roughly 42-per-year average across 2011 to 2024. — Sources: US Bureau of Labor Statistics, Census of Fatal Occupational Injuries, 2024 data</summary>
+    <title>UK and European mortality surveillance both read back at their expected baseline</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6048f107e6"/>
+    <id>tag:infinite2142.github.io,2026-10-13:heatwatch/i-6048f107e6</id>
+    <updated>2026-10-13T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">The UK's health security agency found no signal of mortality above the expected baseline for the week of 8-14 September. — Sources: UK Health Security Agency, Weekly all-cause mortality surveillance, week 41 2026 report (week 37 data) · EuroMOMO Bulletin, week 32 2026</summary>
   </entry>
 </feed>
