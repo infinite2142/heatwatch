@@ -5,46 +5,54 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-14T06:00:00Z</updated>
+  <updated>2026-10-15T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>France and Romania lost more nuclear-power capacity to drought this summer than previously reported</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-0d72c6043b"/>
-    <id>tag:infinite2142.github.io,2026-10-14:heatwatch/i-0d72c6043b</id>
-    <updated>2026-10-14T06:00:00Z</updated>
+    <title>Hungary's only nuclear power plant shut down completely for the first time in its history</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a3025c6e77"/>
+    <id>tag:infinite2142.github.io,2026-10-15:heatwatch/i-a3025c6e77</id>
+    <updated>2026-10-15T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">France took two more reactors offline in late July, adding over 5 gigawatts to an already-reported June shutdown, as river levels fell too low to safely accept cooling water. — Sources: Anadolu Agency, 'France shuts down 3 nuclear reactors as drought lowers river flows', 2026 · Industrial Info Resources, August 2026 · Associated Press wire reporting, July-August 2026</summary>
+    <summary type="text">The Paks plant, which normally supplies close to half of Hungary's electricity, went fully offline on 2 August as the Danube fell to a record low in Budapest. — Sources: Al Jazeera, 2 August 2026 · euronews, 30 July 2026 · Associated Press wire reporting, August 2026 · enerdata, 26 August 2026</summary>
   </entry>
   <entry>
-    <title>The Rhine at Kaub, Germany dipped again after two days of recovery</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f8d4058c58"/>
-    <id>tag:infinite2142.github.io,2026-10-14:heatwatch/i-f8d4058c58</id>
-    <updated>2026-10-14T06:00:00Z</updated>
+    <title>France cut a larger share of its nuclear fleet to drought than previously reported</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-820e6d8de6"/>
+    <id>tag:infinite2142.github.io,2026-10-15:heatwatch/i-820e6d8de6</id>
+    <updated>2026-10-15T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's main shipping gauge read 18 centimetres on 14 October, down from 20 centimetres the day before. — Sources: Kaub gauge readings, direct fetch via rivercruise.ai, 14 October 2026</summary>
+    <summary type="text">France's electricity utility cut output from 12 percent of its entire nuclear fleet on 4 August, naming three further reactors beyond the shutdowns already reported, as river levels used for reactor cooling fell further during the summer's drought. — Sources: energynews.pro, August 2026 · Industrial Info Resources, August 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia's fire-hotspot count kept swinging for a third consecutive day past its peak</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4c99ee9611"/>
-    <id>tag:infinite2142.github.io,2026-10-14:heatwatch/i-4c99ee9611</id>
-    <updated>2026-10-14T06:00:00Z</updated>
-    <category term="fire" label="Fire"/>
-    <summary type="text">The Ministry of Forestry recorded 12,176 hotspots nationally on 11 October, filling in a day between two already-reported counts and confirming the fire activity behind the region's haze rose and fell for three consecutive days after its 8 October peak. — Sources: Indonesia Ministry of Forestry, via databoks.katadata.co.id, 11 October 2026</summary>
+    <title>The Rhine at Kaub, Germany dipped again, continuing an uneven recovery</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f31b9fb3cb"/>
+    <id>tag:infinite2142.github.io,2026-10-15:heatwatch/i-f31b9fb3cb</id>
+    <updated>2026-10-15T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Germany's main shipping gauge read 16 centimetres on 15 October, down from 18 centimetres the day before. — Sources: Kaub gauge readings, direct fetch via rivercruise.ai, 15 October 2026</summary>
   </entry>
   <entry>
-    <title>Singapore's worst air quality of the 2026 season was higher than previously reported, and has since eased</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a23346850d"/>
-    <id>tag:infinite2142.github.io,2026-10-14:heatwatch/i-a23346850d</id>
-    <updated>2026-10-14T06:00:00Z</updated>
+    <title>Singapore's air quality returned to moderate, though forecasters warn it could worsen again this weekend</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-bdbe9554cc"/>
+    <id>tag:infinite2142.github.io,2026-10-15:heatwatch/i-bdbe9554cc</id>
+    <updated>2026-10-15T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">The 24-hour Pollutant Standards Index reached 191 in central Singapore on 9 October, the actual high point of the season. — Sources: Must Share News, 9 October 2026 · National Environment Agency Singapore, via theindependent.sg, 11-12 October 2026</summary>
+    <summary type="text">Singapore's 24-hour air quality index fell into the moderate range by the morning of 14 October, improving from the season's worst reading of 191 recorded on 9 October. — Sources: National Environment Agency Singapore, 13-14 October 2026</summary>
   </entry>
   <entry>
-    <title>Malaysia widened school closures as haze crossed a lowered threshold</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-7712005b9d"/>
-    <id>tag:infinite2142.github.io,2026-10-14:heatwatch/i-7712005b9d</id>
-    <updated>2026-10-14T06:00:00Z</updated>
+    <title>Malaysia offered Indonesia firefighting aircraft and helicopters to fight the region's haze-causing fires, still unanswered</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-d139129278"/>
+    <id>tag:infinite2142.github.io,2026-10-15:heatwatch/i-d139129278</id>
+    <updated>2026-10-15T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Nine air-quality monitoring stations exceeded the unhealthy threshold on 9 October, with schools closed across Kuala Lumpur, Putrajaya and five states. — Sources: Khaleej Times, 9 October 2026 · Al Jazeera, 9 October 2026</summary>
+    <summary type="text">Malaysia's government offered one firefighting aircraft, three helicopters and 52 personnel to help Indonesia contain the fires behind the region's transboundary haze. — Sources: Malay Mail, 10-11 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Malaysia's haze eased enough that two states reopened schools</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b934e1f2e6"/>
+    <id>tag:infinite2142.github.io,2026-10-15:heatwatch/i-b934e1f2e6</id>
+    <updated>2026-10-15T06:00:00Z</updated>
+    <category term="fire" label="Fire"/>
+    <summary type="text">Twenty-one Malaysian air-quality monitoring stations recorded unhealthy readings on 13 October, down from nine stations that breached a stricter threshold on 9 October. — Sources: Bernama, 13 October 2026 · The Vibes, 13 October 2026</summary>
   </entry>
 </feed>
