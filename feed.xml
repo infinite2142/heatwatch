@@ -5,46 +5,126 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-16T06:00:00Z</updated>
+  <updated>2026-10-17T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>The Rhine at Kaub, Germany dipped again, continuing an uneven recovery</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f31b9fb3cb"/>
-    <id>tag:infinite2142.github.io,2026-10-16:heatwatch/i-f31b9fb3cb</id>
-    <updated>2026-10-16T06:00:00Z</updated>
+    <title>Spain's September 2026 was its warmest since national records began in 1961</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5e3ea8f0c8"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-5e3ea8f0c8</id>
+    <updated>2026-10-17T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's main shipping gauge at Kaub read 11 centimetres at 6:30am on 16 October, down from 16 centimetres the previous day. — Sources: Pegelonline (Wasserstraßen- und Schifffahrtsverwaltung), direct gauge fetch, 16 October 2026</summary>
+    <summary type="text">Spain's national weather agency put September's mean at 22.5 °C, 3.4 °C above normal and the first September warmer than an average summer. — Sources: AEMET, September 2026 climate summary, 16 October 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia ruled out declaring its forest fires a national disaster and confirmed Malaysia's and Singapore's aid offers were not discussed</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-115862527a"/>
-    <id>tag:infinite2142.github.io,2026-10-16:heatwatch/i-115862527a</id>
-    <updated>2026-10-16T06:00:00Z</updated>
+    <title>El Niño strengthened again, with weekly Niño-3.4 at 2.4 °C above normal</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-1622cb379f"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-1622cb379f</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The US Climate Prediction Center's 13 October update puts weekly Niño-3.4 at 2.4 °C above normal and keeps an 83% chance October to December reaches historic strength. — Sources: NOAA Climate Prediction Center, ENSO weekly update, 13 October 2026 · Bureau of Meteorology, Climate Driver Update, 13 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Mumbai, India reached 38.2 °C, its second-hottest October day on record</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-9becd095c8"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-9becd095c8</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Santacruz in Mumbai recorded 38.2 °C on 12 October, 5.1 °C above normal and second only to an October day in 2015. — Sources: Time Out Mumbai, citing India Meteorological Department, 13 October 2026 · The Bridge Chronicle, 9 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Australia's Northern Territory, northern Western Australia and Tasmania face a severe heatwave</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-dc641d9498"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-dc641d9498</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Australia's Bureau of Meteorology assessed a severe heatwave for the Northern Territory's Top End and Tiwi Islands, Western Australia's Kimberley, Pilbara and North Interior, and south-eastern Tasmania from 17 to 19 October, continuing in the Top End to around 23 October. — Sources: Bureau of Meteorology, heatwave assessment, 17 October 2026</summary>
+  </entry>
+  <entry>
+    <title>The Rhine at Kaub, Germany has stalled at about 10 centimetres</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-27b03f9206"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-27b03f9206</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Germany's federal gauge at Kaub read 10 centimetres on the morning of 17 October. — Sources: Pegelonline, Federal Waterways and Shipping Administration, Kaub gauge, 1 to 17 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Correction: Kaub first fell below zero on 25 September, and minus 6 centimetres on 1 October is the record low</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2b9ac98c1d"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-2b9ac98c1d</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">This page reported on 10 October that the Rhine at Kaub first fell below zero on 1 October. Germany's federal gauge data show it first read minus 1 centimetre on 25 September. — Sources: Pegelonline, Federal Waterways and Shipping Administration, Kaub gauge, 20 September to 1 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Correction: Hungary's Paks nuclear plant ran at reduced output in August and was never fully shut</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6080112792"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-6080112792</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">This page reported on 15 October that Paks shut down completely on 2 August. — Sources: NucNet, 3 August 2026 · Euronews, 10 August 2026 · CGTN, 24 August 2026 · Montel, 3 August 2026</summary>
+  </entry>
+  <entry>
+    <title>Singapore's haze reached the very unhealthy band for the first time this year</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-87eef01c95"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-87eef01c95</id>
+    <updated>2026-10-17T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Indonesia's coordinating minister said the government remains capable of handling the fires without declaring a national disaster, directing resources toward protecting Tanjung Puting National Park. — Sources: Antara/asianews.network, 13 October 2026 · The Vibes, 13 October 2026</summary>
+    <summary type="text">Singapore's 24-hour PSI peaked at 229 in the central region on 16 October, after the west reached 205 on 14 October and 212 on 15 October. — Sources: National Environment Agency, hourly PSI data via data.gov.sg, 9 to 17 October 2026 · National Environment Agency, haze situation updates, 13 to 16 October 2026 · AsiaOne, 16 October 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia's fire-hotspot count fell for a second straight reading</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b1e0d41cc5"/>
-    <id>tag:infinite2142.github.io,2026-10-16:heatwatch/i-b1e0d41cc5</id>
-    <updated>2026-10-16T06:00:00Z</updated>
+    <title>Correction: Singapore's air did not return to moderate on 11 or 14 October</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-211cb4dda1"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-211cb4dda1</id>
+    <updated>2026-10-17T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Indonesia's Ministry of Forestry recorded 11,037 hotspots nationally on 13 October, continuing a fall from the season's peak of 24,952 on 8 October and an interim reading of 20,818 on 12 October. — Sources: Ministry of Forestry/SiPongi, via databoks.katadata.co.id, 13 October 2026</summary>
+    <summary type="text">This page reported a moderate PSI of 56 to 81 for 11 October and a moderate reading on the morning of 14 October. The 11 October figures came from a 2023 report. — Sources: National Environment Agency, hourly PSI data via data.gov.sg, 11 and 14 October 2026</summary>
   </entry>
   <entry>
-    <title>Haze-driven school closures in Johor, Malaysia affected more than 600,000 students</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-dbf46ad283"/>
-    <id>tag:infinite2142.github.io,2026-10-16:heatwatch/i-dbf46ad283</id>
-    <updated>2026-10-16T06:00:00Z</updated>
+    <title>Indonesia's daily fire-hotspot count is swinging between about 11,000 and 20,000</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5550bd2bd5"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-5550bd2bd5</id>
+    <updated>2026-10-17T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">All schools and religious institutions across Johor state stayed closed from 10 to 16 October as the state's air quality readings held between 170 and 180 with no sustained improvement, a closure affecting 617,258 students across 1,198 schools. — Sources: The Star Malaysia, 10 October 2026 · New Straits Times, 10 October 2026</summary>
+    <summary type="text">Indonesia's Ministry of Forestry counted 20,334 hotspots on 14 October, 19,712 on 15 October, 11,658 on 16 October and 11,041 on 17 October, against a peak of 24,952 on 8 October. — Sources: Ministry of Forestry SiPongi data via databoks.katadata.co.id, 14 to 17 October 2026 · The Star, 12 October 2026</summary>
   </entry>
   <entry>
-    <title>Luxembourg will not set a binding workplace heat limit, unlike its neighbours</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f03703ba3a"/>
-    <id>tag:infinite2142.github.io,2026-10-16:heatwatch/i-f03703ba3a</id>
-    <updated>2026-10-16T06:00:00Z</updated>
+    <title>Johor, Malaysia closed all 1,198 of its schools twice in a week as haze returned</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-97f79bfd3a"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-97f79bfd3a</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="fire" label="Fire"/>
+    <summary type="text">Johor closed its schools on 8 and 9 October and again from 12 to 16 October, affecting 617,258 students across 1,198 schools. — Sources: The Star, 10 October 2026 · New Straits Times, 10 October 2026 · Malay Mail and Business Today, 17 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Indonesia's fire-season respiratory infections passed 280,000 cases</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-45a4e13e31"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-45a4e13e31</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">Indonesia recorded 283,270 acute respiratory infection cases by 13 October, up from 113,336 on 9 September. — Sources: Mongabay, 16 October 2026 · The Edge, 17 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Malaysia ordered employers to give N95 masks to outdoor workers during the haze</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-43f4a7f7fa"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-43f4a7f7fa</id>
+    <updated>2026-10-17T06:00:00Z</updated>
     <category term="workers" label="Workers"/>
-    <summary type="text">Luxembourg's labour minister told Parliament that existing risk-assessment rules already allow for the necessary protections, and declined to adopt a maximum workplace temperature, unlike France, Belgium and Spain. — Sources: Paperjam, 16 October 2026</summary>
+    <summary type="text">Malaysia's Health Ministry directive of 16 October requires employers to provide N95 masks to outdoor workers. — Sources: The Star, 16 October 2026</summary>
+  </entry>
+  <entry>
+    <title>A UK bill on maximum workplace temperature has its second reading set for 13 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-0f676408bb"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-0f676408bb</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">The Maximum Workplace Temperature Bill, introduced on 13 July, would set up an independent body to recommend a maximum safe workplace temperature. — Sources: UK Parliament, Maximum Workplace Temperature Bill, bills.parliament.uk, updated 12 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Correction: Luxembourg's heat-inspection figures run to early July</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2db0111823"/>
+    <id>tag:infinite2142.github.io,2026-10-17:heatwatch/i-2db0111823</id>
+    <updated>2026-10-17T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">This page reported on 16 October that Luxembourg ruled out a binding workplace heat limit, with 46 heat inspections so far in 2026. — Sources: Paperjam, 7 July 2026</summary>
   </entry>
 </feed>
