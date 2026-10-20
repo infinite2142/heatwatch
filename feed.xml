@@ -5,30 +5,46 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-19T06:00:00Z</updated>
+  <updated>2026-10-20T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Australia's northern heatwave escalated to extreme warnings across Western Australia and the Northern Territory</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f0781945da"/>
-    <id>tag:infinite2142.github.io,2026-10-19:heatwatch/i-f0781945da</id>
-    <updated>2026-10-19T06:00:00Z</updated>
+    <title>England declared severe drought across six regions as reservoirs fell to near-record lows</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-c9a374dfc5"/>
+    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-c9a374dfc5</id>
+    <updated>2026-10-20T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The Bureau of Meteorology raised extreme heatwave warnings across Western Australia's Kimberley, Pilbara and North Interior districts, with severe conditions in Gascoyne and South Interior, while the Northern Territory's Top End and central districts carry severe-to-extreme warnings. — Sources: Bureau of Meteorology heatwave warnings, via SBS News and Western Australian regional press, 18-19 October 2026</summary>
+    <summary type="text">The government declared severe drought in parts of Cornwall, Devon, Dorset, Somerset, East Sussex and West Sussex on 15 October. — Sources: UK Environment Agency, Dry weather and drought in England, 9-15 October 2026, updated 16 October 2026</summary>
   </entry>
   <entry>
-    <title>The United States' run of out-of-season autumn heat records ended as a cold front swept through</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-9fd271f886"/>
-    <id>tag:infinite2142.github.io,2026-10-19:heatwatch/i-9fd271f886</id>
-    <updated>2026-10-19T06:00:00Z</updated>
+    <title>The Rhine at Kaub doubled in a day as its recovery from the river's record low continued</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-088592ace7"/>
+    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-088592ace7</id>
+    <updated>2026-10-20T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">More than 270 daily temperature records were broken or tied in the two weeks to 19 October, including 183 in a single day on 13 October across 21 states. — Sources: NOAA Global Historical Climatology Network Daily records, via weatheronthisday.com · FOX Weather, 16-19 October 2026</summary>
+    <summary type="text">Germany's federal gauge at Kaub read 20 centimetres at 06:30 on 20 October, up from 10 centimetres at the same hour the day before. — Sources: Pegelonline (Wasserstrassen- und Schifffahrtsverwaltung), direct fetch, 20 October 2026</summary>
   </entry>
   <entry>
-    <title>Singapore's haze broke its two-week plateau in the very unhealthy band</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-9828db4c58"/>
-    <id>tag:infinite2142.github.io,2026-10-19:heatwatch/i-9828db4c58</id>
-    <updated>2026-10-19T06:00:00Z</updated>
+    <title>A cold front brought the US its first widespread frost of the season</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a9801f4433"/>
+    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-a9801f4433</id>
+    <updated>2026-10-20T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Freeze watches covered Wisconsin and the New York-New Jersey-Connecticut region, with a frost advisory for the Minneapolis area forecasting temperatures as low as 34 degrees Fahrenheit, as a cold front swept through the country. — Sources: National Weather Service, via local affiliate reporting, 17-19 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Washington State's Yakima Basin reservoirs fell to about 8 percent of capacity</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-90cbbe2edd"/>
+    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-90cbbe2edd</id>
+    <updated>2026-10-20T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The basin's five reservoirs sit at roughly a quarter of their typical volume for this time of year. State water-use restrictions covering the basin remain in force through 31 October. — Sources: Washington State Department of Ecology</summary>
+  </entry>
+  <entry>
+    <title>Singapore's haze eased only briefly before its PSI climbed back up</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-eb77aeb381"/>
+    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-eb77aeb381</id>
+    <updated>2026-10-20T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Singapore's 24-hour PSI fell steadily through 19 October, with the west dropping from 161 at midnight to 122 at noon and the central region from 128 to 103, down sharply from 227 and 180 at the same point the day before. — Sources: National Environment Agency, real-time PSI data, 19 October 2026</summary>
+    <summary type="text">Singapore's west region 24-hour PSI fell from 227 to 122 between 18 and 19 October, then rose back to 130 by midday on 20 October. — Sources: National Environment Agency, real-time PSI data, direct fetch, 20 October 2026</summary>
   </entry>
 </feed>

@@ -1,0 +1,25 @@
+{
+ "algorithm": "sha256",
+ "date": "2026-10-20",
+ "files": {
+  "archive/forecast/2026-10-20/antwerp.json": "9603017652c6059ff72915884eed5b2bafdd22f1d94c68d5c8133054c70e8614",
+  "archive/forecast/2026-10-20/athens.json": "6ec61df6c0540bde923195d520a041afa081b8938b29450e35cabb81dcd39913",
+  "archive/forecast/2026-10-20/bologna.json": "ef8c49981b69f8c155d5561ac097b8e4e1fbf740e077236eb2ba34d73131ce21",
+  "archive/forecast/2026-10-20/brisbane.json": "6f4a9115e7269d97420fa138c6f520eadffd8d2dd6d54a6cc918779c629419d0",
+  "archive/forecast/2026-10-20/delhi.json": "c7eb091448911f4ead2e4d67a1282b36139d3f4adfe1f3c96e113eaa862d1af2",
+  "archive/forecast/2026-10-20/doha.json": "0fdd6082111a3c21d757db4aedd736e7289b9b2c0be167ebccd9747d743f4d27",
+  "archive/forecast/2026-10-20/dubai.json": "ac89ed58dee73875bb726b9e81e3f2012040af9c6c53eac606dae0a97bca77ef",
+  "archive/forecast/2026-10-20/foggia.json": "8c38d4fb471b0c9b522c9431138c89ffde1cc5d6a9bced6a4ac0fbbca5c2325b",
+  "archive/forecast/2026-10-20/fresno.json": "a3a71116c72c9fee24415e486090ac0afb800eaccbace62f974b477a8cb0d06f",
+  "archive/forecast/2026-10-20/houston.json": "e65af0e24571431ccf0d4bd1f0e7ea68e0d57065a0ee560d4698f8ceb9eebc34",
+  "archive/forecast/2026-10-20/latina.json": "9c7616b94f1394403c89e1427c1dc499f5ade422a37f4125acd2a1d030ec05f8",
+  "archive/forecast/2026-10-20/london.json": "52efc651b0268961932089ae21c39e67141023be17da85c3834ba5fc6ebe1a3a",
+  "archive/forecast/2026-10-20/milan.json": "e53796e7a1d41ab47682f113cf3e05f7a16c19ea9e3ed0a6c56fd6aa7c507d66",
+  "archive/forecast/2026-10-20/palermo.json": "ec223e13ba4e812d12a9aee0822ad4efa6306a9a6c0925f52d6250c87fd9afdc",
+  "archive/forecast/2026-10-20/riyadh.json": "0f01418563366ef89ba6290252ced3928bc7ed770de4ec373bd0ff9c51693ad3",
+  "archive/forecast/2026-10-20/seville.json": "9f183bc2c3f4bd393874ae4f77154a7d454872d289bd31902fa833a84f785443",
+  "archive/forecast/2026-10-20/singapore.json": "53873518c80eaeaf8ae76fe65d45065b47f338c060dbe9177f328d07413c2418",
+  "archive/forecast/2026-10-20/vienna.json": "05d8ea8a21d19a9df3d6aa5161206a18dede2b5eba0bfa0e783a7b0493372e10"
+ },
+ "issued_utc": "2026-10-20"
+}
