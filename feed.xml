@@ -5,46 +5,30 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-20T06:00:00Z</updated>
+  <updated>2026-10-22T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>England declared severe drought across six regions as reservoirs fell to near-record lows</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-c9a374dfc5"/>
-    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-c9a374dfc5</id>
-    <updated>2026-10-20T06:00:00Z</updated>
+    <title>England's Severn Trent reservoirs sit far below last year's level</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b6fcbab5ea"/>
+    <id>tag:infinite2142.github.io,2026-10-22:heatwatch/i-b6fcbab5ea</id>
+    <updated>2026-10-22T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The government declared severe drought in parts of Cornwall, Devon, Dorset, Somerset, East Sussex and West Sussex on 15 October. — Sources: UK Environment Agency, Dry weather and drought in England, 9-15 October 2026, updated 16 October 2026</summary>
+    <summary type="text">Severn Trent's own reservoirs held 49.8 percent of capacity in late October, against 82.2 percent on the same date last year. — Sources: Severn Trent Water reservoir levels / UK Environment Agency drought status, reported late October 2026</summary>
   </entry>
   <entry>
-    <title>The Rhine at Kaub doubled in a day as its recovery from the river's record low continued</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-088592ace7"/>
-    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-088592ace7</id>
-    <updated>2026-10-20T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's federal gauge at Kaub read 20 centimetres at 06:30 on 20 October, up from 10 centimetres at the same hour the day before. — Sources: Pegelonline (Wasserstrassen- und Schifffahrtsverwaltung), direct fetch, 20 October 2026</summary>
-  </entry>
-  <entry>
-    <title>A cold front brought the US its first widespread frost of the season</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a9801f4433"/>
-    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-a9801f4433</id>
-    <updated>2026-10-20T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Freeze watches covered Wisconsin and the New York-New Jersey-Connecticut region, with a frost advisory for the Minneapolis area forecasting temperatures as low as 34 degrees Fahrenheit, as a cold front swept through the country. — Sources: National Weather Service, via local affiliate reporting, 17-19 October 2026</summary>
-  </entry>
-  <entry>
-    <title>Washington State's Yakima Basin reservoirs fell to about 8 percent of capacity</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-90cbbe2edd"/>
-    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-90cbbe2edd</id>
-    <updated>2026-10-20T06:00:00Z</updated>
-    <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The basin's five reservoirs sit at roughly a quarter of their typical volume for this time of year. State water-use restrictions covering the basin remain in force through 31 October. — Sources: Washington State Department of Ecology</summary>
-  </entry>
-  <entry>
-    <title>Singapore's haze eased only briefly before its PSI climbed back up</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-eb77aeb381"/>
-    <id>tag:infinite2142.github.io,2026-10-20:heatwatch/i-eb77aeb381</id>
-    <updated>2026-10-20T06:00:00Z</updated>
+    <title>Singapore's haze eased today, but the west region remains unhealthy</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5183eb8add"/>
+    <id>tag:infinite2142.github.io,2026-10-22:heatwatch/i-5183eb8add</id>
+    <updated>2026-10-22T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Singapore's west region 24-hour PSI fell from 227 to 122 between 18 and 19 October, then rose back to 130 by midday on 20 October. — Sources: National Environment Agency, real-time PSI data, direct fetch, 20 October 2026</summary>
+    <summary type="text">Singapore's four eastern, northern, southern and central regions moved back into the moderate air-quality band this afternoon, reading between 72 and 90. — Sources: National Environment Agency, real-time PSI data, direct fetch, 22 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Indonesia's fire-hotspot count jumped to its highest reading in over a week</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4f8954f8e7"/>
+    <id>tag:infinite2142.github.io,2026-10-22:heatwatch/i-4f8954f8e7</id>
+    <updated>2026-10-22T06:00:00Z</updated>
+    <category term="fire" label="Fire"/>
+    <summary type="text">Indonesia's hotspot count rose to 20,392 on 19 October, up from 17,706 the day before, reversing a dip reported earlier in the month. No figure has been found for 20, 21 or 22 October. — Sources: Ministry of Forestry/BMKG via Katadata, 19 October 2026</summary>
   </entry>
 </feed>
