@@ -5,30 +5,30 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-22T06:00:00Z</updated>
+  <updated>2026-10-23T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>England's Severn Trent reservoirs sit far below last year's level</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b6fcbab5ea"/>
-    <id>tag:infinite2142.github.io,2026-10-22:heatwatch/i-b6fcbab5ea</id>
-    <updated>2026-10-22T06:00:00Z</updated>
+    <title>England's Severn Trent has applied for a winter drought permit</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4fd8b0b257"/>
+    <id>tag:infinite2142.github.io,2026-10-23:heatwatch/i-4fd8b0b257</id>
+    <updated>2026-10-23T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Severn Trent's own reservoirs held 49.8 percent of capacity in late October, against 82.2 percent on the same date last year. — Sources: Severn Trent Water reservoir levels / UK Environment Agency drought status, reported late October 2026</summary>
+    <summary type="text">Severn Trent's reservoirs held 49.8 percent of capacity on 20 October, and the company has applied to the Environment Agency for a permit to keep abstracting water from the River Derwent through winter. — Sources: Severn Trent Water / UK Environment Agency drought reporting, October 2026</summary>
   </entry>
   <entry>
-    <title>Singapore's haze eased today, but the west region remains unhealthy</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5183eb8add"/>
-    <id>tag:infinite2142.github.io,2026-10-22:heatwatch/i-5183eb8add</id>
-    <updated>2026-10-22T06:00:00Z</updated>
+    <title>Singapore's haze cleared to the moderate band in every region today</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2f48247b33"/>
+    <id>tag:infinite2142.github.io,2026-10-23:heatwatch/i-2f48247b33</id>
+    <updated>2026-10-23T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Singapore's four eastern, northern, southern and central regions moved back into the moderate air-quality band this afternoon, reading between 72 and 90. — Sources: National Environment Agency, real-time PSI data, direct fetch, 22 October 2026</summary>
+    <summary type="text">A direct reading of Singapore's real-time air-quality data at midday gave 67 to 92 across the five regions. — Sources: National Environment Agency, real-time PSI data, direct fetch, 23 October 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia's fire-hotspot count jumped to its highest reading in over a week</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4f8954f8e7"/>
-    <id>tag:infinite2142.github.io,2026-10-22:heatwatch/i-4f8954f8e7</id>
-    <updated>2026-10-22T06:00:00Z</updated>
+    <title>Indonesia's fire-hotspot count fell sharply, two days after rising</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-887f13163c"/>
+    <id>tag:infinite2142.github.io,2026-10-23:heatwatch/i-887f13163c</id>
+    <updated>2026-10-23T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Indonesia's hotspot count rose to 20,392 on 19 October, up from 17,706 the day before, reversing a dip reported earlier in the month. No figure has been found for 20, 21 or 22 October. — Sources: Ministry of Forestry/BMKG via Katadata, 19 October 2026</summary>
+    <summary type="text">Indonesia's hotspot count fell to 8,973 on 20 October, down from 20,392 two days earlier, more than halving in a single day. — Sources: Ministry of Forestry/BMKG via Katadata, 20 October 2026</summary>
   </entry>
 </feed>
