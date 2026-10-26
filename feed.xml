@@ -5,38 +5,22 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-25T06:00:00Z</updated>
+  <updated>2026-10-26T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Malawi's heatwave warning lapsed as South Africa's Limpopo heat was forecast to ease the same day</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-14a0a78bc6"/>
-    <id>tag:infinite2142.github.io,2026-10-25:heatwatch/i-14a0a78bc6</id>
-    <updated>2026-10-25T06:00:00Z</updated>
+    <title>The Rhine at Kaub recovered to its highest level since this year's drought began</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-c6ae7eccbf"/>
+    <id>tag:infinite2142.github.io,2026-10-26:heatwatch/i-c6ae7eccbf</id>
+    <updated>2026-10-26T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Malawi's weather service ran a severe heatwave warning across its southern and central districts from 20 to 23 October, a window that has now closed. — Sources: Malawi Department of Climate Change and Meteorological Services, warnings of 18 and 20 October 2026 · South African Weather Service via Briefly.co.za, 21 October 2026</summary>
+    <summary type="text">Germany's own federal gauge network measured the Rhine at Kaub at 53 centimetres, up from a range of 10 to 20 centimetres logged through mid-October. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, direct reading, 26 October 2026</summary>
   </entry>
   <entry>
-    <title>Spain's 2026 heat season was its deadliest on record, with 5,807 attributable deaths</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-e9c9d607e1"/>
-    <id>tag:infinite2142.github.io,2026-10-25:heatwatch/i-e9c9d607e1</id>
-    <updated>2026-10-25T06:00:00Z</updated>
-    <category term="health" label="Health"/>
-    <summary type="text">Spain's health institute recorded 5,807 heat-attributable deaths between 15 May and 30 September, the highest total since its surveillance series began in 2015. — Sources: Instituto de Salud Carlos III, MoMo surveillance, final 2026 season total, reported 14 October 2026</summary>
-  </entry>
-  <entry>
-    <title>Indonesia's haze-season respiratory illness count passed 283,000</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-aedf738c50"/>
-    <id>tag:infinite2142.github.io,2026-10-25:heatwatch/i-aedf738c50</id>
-    <updated>2026-10-25T06:00:00Z</updated>
-    <category term="health" label="Health"/>
-    <summary type="text">Indonesia has recorded 283,270 acute respiratory infections from its haze crisis between 18 August and 13 October, with 22.5 percent in children aged five and under. — Sources: Indonesian Ministry of Health data via Vietnam Plus and The Rakyat Post, 14-15 October 2026</summary>
-  </entry>
-  <entry>
-    <title>The Philippines set heat-index thresholds for suspending outdoor work</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5f16a0bffb"/>
-    <id>tag:infinite2142.github.io,2026-10-25:heatwatch/i-5f16a0bffb</id>
-    <updated>2026-10-25T06:00:00Z</updated>
-    <category term="workers" label="Workers"/>
-    <summary type="text">The labour department's new policy lets workers skip work when the heat index reaches 52°C, rated extreme danger, and bars forcing workers into direct sun exposure above 40°C, between noon and 3pm. — Sources: Daily Tribune (Philippines), 21 October 2026</summary>
+    <title>Singapore's haze cleared to moderate across every region</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-09aca4f8c2"/>
+    <id>tag:infinite2142.github.io,2026-10-26:heatwatch/i-09aca4f8c2</id>
+    <updated>2026-10-26T06:00:00Z</updated>
+    <category term="fire" label="Fire"/>
+    <summary type="text">Singapore's National Environment Agency recorded a 24-hour PSI of 67 to 72 across the north, south, east, west and central regions at 1pm local time, moderate everywhere. — Sources: National Environment Agency, Singapore, direct reading, 26 October 2026, 1pm SGT</summary>
   </entry>
 </feed>
