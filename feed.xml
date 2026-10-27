@@ -5,22 +5,46 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-26T06:00:00Z</updated>
+  <updated>2026-10-27T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>The Rhine at Kaub recovered to its highest level since this year's drought began</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-c6ae7eccbf"/>
-    <id>tag:infinite2142.github.io,2026-10-26:heatwatch/i-c6ae7eccbf</id>
-    <updated>2026-10-26T06:00:00Z</updated>
+    <title>South Africa's heat continues into November across five provinces</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-3c4214ca22"/>
+    <id>tag:infinite2142.github.io,2026-10-27:heatwatch/i-3c4214ca22</id>
+    <updated>2026-10-27T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's own federal gauge network measured the Rhine at Kaub at 53 centimetres, up from a range of 10 to 20 centimetres logged through mid-October. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, direct reading, 26 October 2026</summary>
+    <summary type="text">South Africa's weather service forecasts hot, dry conditions across Limpopo, Mpumalanga, North West, Northern Cape and northern Gauteng through 3 November, extending the region's heat beyond the Limpopo and Malawi warnings that expired on 23 October. — Sources: South African Weather Service, via South African press reporting, 21-23 October 2026</summary>
   </entry>
   <entry>
-    <title>Singapore's haze cleared to moderate across every region</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-09aca4f8c2"/>
-    <id>tag:infinite2142.github.io,2026-10-26:heatwatch/i-09aca4f8c2</id>
-    <updated>2026-10-26T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany, rose a further 3 centimetres</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-3af66153a0"/>
+    <id>tag:infinite2142.github.io,2026-10-27:heatwatch/i-3af66153a0</id>
+    <updated>2026-10-27T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 56 centimetres on the morning of 27 October, up from 53 centimetres the day before and the river's highest reading since this year's drought began on 1 October. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, direct reading, 27 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Singapore's haze held in the moderate band for a second consecutive day</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4add2f7ab0"/>
+    <id>tag:infinite2142.github.io,2026-10-27:heatwatch/i-4add2f7ab0</id>
+    <updated>2026-10-27T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Singapore's National Environment Agency recorded a 24-hour PSI of 67 to 72 across the north, south, east, west and central regions at 1pm local time, moderate everywhere. — Sources: National Environment Agency, Singapore, direct reading, 26 October 2026, 1pm SGT</summary>
+    <summary type="text">Singapore's National Environment Agency recorded a 24-hour PSI of 61 to 73 across all five regions at 1pm local time, moderate everywhere, after a previous improvement this month reversed within about a day. — Sources: National Environment Agency, Singapore, direct reading, 27 October 2026, 1pm SGT</summary>
+  </entry>
+  <entry>
+    <title>UK health surveillance found no mortality signal above baseline for a further week</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-ce666840a7"/>
+    <id>tag:infinite2142.github.io,2026-10-27:heatwatch/i-ce666840a7</id>
+    <updated>2026-10-27T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">The UK Health Security Agency's week 43 report, covering data to week 39, continues to find no signal of mortality above the expected baseline in England, in any age group or region. — Sources: UK Health Security Agency, Weekly all-cause mortality surveillance, published 23 October 2026</summary>
+  </entry>
+  <entry>
+    <title>The Philippines is drafting a heat-index threshold for suspending outdoor work</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a5b56ff4e1"/>
+    <id>tag:infinite2142.github.io,2026-10-27:heatwatch/i-a5b56ff4e1</id>
+    <updated>2026-10-27T06:00:00Z</updated>
+    <category term="workers" label="Workers"/>
+    <summary type="text">The Philippines' labour department is drafting work-suspension guidelines tied to the heat index, coordinating with the country's weather and science agencies. — Sources: Tribune.net.ph, 21 October 2026</summary>
   </entry>
 </feed>
