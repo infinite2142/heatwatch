@@ -5,22 +5,30 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-10-29T06:00:00Z</updated>
+  <updated>2026-10-30T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>The Rhine at Kaub, Germany, resumed its climb</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-e7ebfb23f6"/>
-    <id>tag:infinite2142.github.io,2026-10-29:heatwatch/i-e7ebfb23f6</id>
-    <updated>2026-10-29T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany, dropped sharply overnight</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-20cbb512ce"/>
+    <id>tag:infinite2142.github.io,2026-10-30:heatwatch/i-20cbb512ce</id>
+    <updated>2026-10-30T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 58 centimetres on 29 October, up from 56 centimetres over the previous two days. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, direct reading, 29 October 2026</summary>
+    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 46 centimetres on 30 October, down 12 centimetres from 58 centimetres the previous day. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, direct reading, 30 October 2026</summary>
   </entry>
   <entry>
-    <title>Singapore's haze held in the moderate band for a fourth consecutive day</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4110ff7276"/>
-    <id>tag:infinite2142.github.io,2026-10-29:heatwatch/i-4110ff7276</id>
-    <updated>2026-10-29T06:00:00Z</updated>
+    <title>England's drought body set a rainfall target to avoid the drought continuing into 2027</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-7a85e1aad2"/>
+    <id>tag:infinite2142.github.io,2026-10-30:heatwatch/i-7a85e1aad2</id>
+    <updated>2026-10-30T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The Environment Agency told the National Drought Group on 28 October that England has received only 61 percent of its expected rainfall this year and needs at least full average rainfall between now and March 2027 to avoid the drought continuing into next year. — Sources: Environment Agency, National Drought Group meeting, 28 October 2026</summary>
+  </entry>
+  <entry>
+    <title>Singapore's haze held moderate for a fifth consecutive day, at a softer reading</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-6122a3327b"/>
+    <id>tag:infinite2142.github.io,2026-10-30:heatwatch/i-6122a3327b</id>
+    <updated>2026-10-30T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Singapore's National Environment Agency recorded a 24-hour PSI of 69 to 78 across all five regions at 1pm local time, moderate everywhere for a fourth day running, the longest such run recorded this season. — Sources: National Environment Agency, Singapore, direct reading, 29 October 2026, 1pm SGT</summary>
+    <summary type="text">Singapore's National Environment Agency recorded a 24-hour PSI of 55 to 60 across all five regions at 1pm local time, moderate everywhere for a fifth day running, though lower than the 69 to 78 range recorded the previous day. — Sources: National Environment Agency, Singapore, direct reading, 30 October 2026, 1pm SGT</summary>
   </entry>
 </feed>
