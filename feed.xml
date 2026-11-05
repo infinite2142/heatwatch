@@ -5,22 +5,22 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-11-04T06:00:00Z</updated>
+  <updated>2026-11-05T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Queensland, Australia issued a severe heatwave warning for six northern districts, with Mount Isa forecast at 40 °C daily</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5292c7aeaa"/>
-    <id>tag:infinite2142.github.io,2026-11-04:heatwatch/i-5292c7aeaa</id>
-    <updated>2026-11-04T06:00:00Z</updated>
+    <title>Queensland, Australia reaches the peak of a severe heatwave warning for six northern districts, with Mount Isa forecast at 40 °C</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-459c3f061e"/>
+    <id>tag:infinite2142.github.io,2026-11-05:heatwatch/i-459c3f061e</id>
+    <updated>2026-11-05T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Australia's Bureau of Meteorology warned of severe heatwave conditions from 3 to 6 November across the Peninsula, Gulf Country and four further districts. — Sources: Australian Bureau of Meteorology, Queensland heatwave warning, 3 November 2026 · ABC News, 2 November 2026, citing senior meteorologist Steve Hadley</summary>
+    <summary type="text">Australia's Bureau of Meteorology warning runs from 3 to 6 November across the Peninsula, Gulf Country and four further districts. — Sources: Australian Bureau of Meteorology, Queensland heatwave warning, 3 November 2026 · ABC News, 2 November 2026, citing senior meteorologist Steve Hadley</summary>
   </entry>
   <entry>
-    <title>The Rhine at Kaub, Germany, edged up to 23 centimetres, staying near its early-November low</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-df616cc75c"/>
-    <id>tag:infinite2142.github.io,2026-11-04:heatwatch/i-df616cc75c</id>
-    <updated>2026-11-04T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany, fell back to 17 centimetres, close to its early-November low</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-639a096c24"/>
+    <id>tag:infinite2142.github.io,2026-11-05:heatwatch/i-639a096c24</id>
+    <updated>2026-11-05T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 23 centimetres at 06:15 on 4 November, up from 18 centimetres on 3 November and well below the 61 centimetre peak of 28 October. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, reading of 4 November 2026</summary>
+    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 17 centimetres at 06:15 on 5 November, down from 23 centimetres on 4 November and well below the 61 centimetre peak of 28 October. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, reading of 4 November 2026</summary>
   </entry>
 </feed>
