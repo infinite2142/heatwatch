@@ -1,0 +1,25 @@
+{
+ "algorithm": "sha256",
+ "date": "2026-11-08",
+ "files": {
+  "archive/forecast/2026-11-08/antwerp.json": "1cfd0e012db1d096724cfbbf3058494433f0893a58457e23de6b97d998019145",
+  "archive/forecast/2026-11-08/athens.json": "25c72ffa9f86d10726a6956535e571a2ad9eb9b60c2938af3ec2c42cf6319b94",
+  "archive/forecast/2026-11-08/bologna.json": "74d3cb2eb964e922114118f81f1916b8b5dc916638e085c5d40cea5f5bfa93dd",
+  "archive/forecast/2026-11-08/brisbane.json": "84d7bc71bdab2aefb8b7ffb55926da431d8339788dd76dc2c161d23c35b0a90d",
+  "archive/forecast/2026-11-08/delhi.json": "7883de2d1df0091a5741bbb28ea47da4c536799eb50abd373963c88ddd3acfc9",
+  "archive/forecast/2026-11-08/doha.json": "10a5e1cd361eb3e1c5fc99a1691f87aaf5e1afa2a557688ba40d6b26e68f0173",
+  "archive/forecast/2026-11-08/dubai.json": "aac44651ff8a7b84fdf0509ba00352538592b206a0a928bcec4b46a4789e441b",
+  "archive/forecast/2026-11-08/foggia.json": "5ac12a22e54eba197363a949fdc41de4ea926ff0d89d11f03686530a33ad3543",
+  "archive/forecast/2026-11-08/fresno.json": "e2ff944366d0bd2bb65a44ed6120fb92346786819a623188236dff085c973126",
+  "archive/forecast/2026-11-08/houston.json": "5544373ef020631ad5aa23087c75017dd07db012537cfeb1786e8721a2c16573",
+  "archive/forecast/2026-11-08/latina.json": "2c3e0335a36b3d2d46f4b214cf2ce7dc2ddbe82077cfe7f504684ad4a6b7862d",
+  "archive/forecast/2026-11-08/london.json": "5ed72c3d1a75d3613b2569a36057358a78fc0b85b07ead00fcccdb6931b26b02",
+  "archive/forecast/2026-11-08/milan.json": "e8cab58873643debfb7cb1705cbd32fa4c9171c26ff4c13b8c78184d27448b6c",
+  "archive/forecast/2026-11-08/palermo.json": "9b95bdb1f82a89cb2a44da8b5f04fddf59ec34eb84c1530253797535b895d95e",
+  "archive/forecast/2026-11-08/riyadh.json": "b9f377fa49c4890a3c9e459c9ca530dbc1811f8180ebe88b5285af7bbd651aee",
+  "archive/forecast/2026-11-08/seville.json": "7db82161a7461918e282c491b8ee186fd4d31c8e0a12cc32bbc6e4df02ca70ae",
+  "archive/forecast/2026-11-08/singapore.json": "d59293200f03c3a1dce0b317080a2fb1c3b8aa09abf16c4f2ed1447bb817dc9e",
+  "archive/forecast/2026-11-08/vienna.json": "e3ba161d688414341f0c369ed101406920ab3771207beda7d9a34f835e7c9e58"
+ },
+ "issued_utc": "2026-11-08"
+}
