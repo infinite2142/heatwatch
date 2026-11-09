@@ -5,22 +5,30 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-11-08T06:00:00Z</updated>
+  <updated>2026-11-09T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>The Rhine at Kaub, Germany, fell to 9 centimetres on 8 November, with a 5 centimetre low overnight</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f1cbc4d260"/>
-    <id>tag:infinite2142.github.io,2026-11-08:heatwatch/i-f1cbc4d260</id>
-    <updated>2026-11-08T06:00:00Z</updated>
+    <title>Global temperature: October 2026 was the warmest October on record at 1.75 °C above pre-industrial</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-5c15f20f5f"/>
+    <id>tag:infinite2142.github.io,2026-11-09:heatwatch/i-5c15f20f5f</id>
+    <updated>2026-11-09T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 9 centimetres at 06:15 on 8 November, down from 21 centimetres on 7 November. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, reading of 8 November 2026</summary>
+    <summary type="text">Copernicus puts the October global air temperature at 15.35 °C, 0.90 °C above the 1991–2020 average and above the 2023 record. — Sources: Copernicus Climate Change Service, surface air temperature for October 2026</summary>
   </entry>
   <entry>
-    <title>Queensland's heatwave warning was raised to Extreme on 7 November after Mount Isa spent five days at or above 40 °C</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-b01cac91ba"/>
-    <id>tag:infinite2142.github.io,2026-11-08:heatwatch/i-b01cac91ba</id>
-    <updated>2026-11-08T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany, read 11 centimetres on 9 November after a 5 centimetre low on 7 to 8 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-fc91fbf30e"/>
+    <id>tag:infinite2142.github.io,2026-11-09:heatwatch/i-fc91fbf30e</id>
+    <updated>2026-11-09T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Mount Isa recorded 40.2 to 41.6 °C from 1 to 5 November and Julia Creek 42.2 °C. Queensland's Extreme warning runs to 10 November, and the Northern Territory has an Extreme warning for Tiwi. — Sources: Australian Bureau of Meteorology, Queensland heatwave warning IDQ21013, issued 7 November 2026 · Australian Bureau of Meteorology, daily weather observations, Mount Isa and Julia Creek, November 2026 · Australian Bureau of Meteorology, Northern Territory heatwave warning, 7 November 2026</summary>
+    <summary type="text">Germany's federal gauge network measured the Rhine at Kaub at 11 centimetres at 06:15 on 9 November, up from 9 centimetres on 8 November. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, readings of 7 to 9 November 2026</summary>
+  </entry>
+  <entry>
+    <title>Queensland's heatwave warning was reissued on 9 November, severe to extreme in the Peninsula, Gulf Country and North Tropical Coast</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-1cd898836c"/>
+    <id>tag:infinite2142.github.io,2026-11-09:heatwatch/i-1cd898836c</id>
+    <updated>2026-11-09T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The Bureau of Meteorology issued the warning at 14:51 on 9 November for the Peninsula, Gulf Country and North Tropical Coast and Tablelands. Mount Isa recorded 40.2 to 41.6 °C from 1 to 5 November. — Sources: Australian Bureau of Meteorology, Queensland heatwave warning IDQ21013, issued 9 November 2026 · Australian Bureau of Meteorology, daily weather observations, Mount Isa, November 2026</summary>
   </entry>
 </feed>
