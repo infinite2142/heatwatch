@@ -5,14 +5,14 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-11-17T06:00:00Z</updated>
+  <updated>2026-11-18T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>The Rhine at Kaub, Germany, read 62 centimetres on 17 November, up from 61 centimetres on 16 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-09597f6c9e"/>
-    <id>tag:infinite2142.github.io,2026-11-17:heatwatch/i-09597f6c9e</id>
-    <updated>2026-11-17T06:00:00Z</updated>
+    <title>The Rhine at Kaub, Germany, rose 27 centimetres in a day to 89 centimetres on 18 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-045cc18c39"/>
+    <id>tag:infinite2142.github.io,2026-11-18:heatwatch/i-045cc18c39</id>
+    <updated>2026-11-18T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The 06:15 reading is 1 centimetre above the day before and 3 above 15 November, after a recovery from a 5 centimetre low on 8 November. Barges still load below capacity at this depth. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, Kaub readings of 15, 16 and 17 November 2026</summary>
+    <summary type="text">The 06:15 reading is 27 centimetres above the same hour on 17 November and 84 above the 5 centimetre low of 8 November. The gauge rose through 17 November, from 61 to 77 centimetres. — Sources: Wasserstraßen- und Schifffahrtsverwaltung, Pegelonline gauge network, Kaub readings of 16, 17 and 18 November 2026</summary>
   </entry>
 </feed>
