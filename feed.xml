@@ -5,86 +5,118 @@
   <id>tag:infinite2142.github.io,2026:heatwatch</id>
   <link rel="self" type="application/atom+xml" href="https://infinite2142.github.io/heatwatch/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/"/>
-  <updated>2026-11-27T06:00:00Z</updated>
+  <updated>2026-11-28T06:00:00Z</updated>
   <author><name>HeatWatch</name></author>
   <entry>
-    <title>Sydney, Australia, was under a severe heatwave warning that peaked on 22 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-45632c3241"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-45632c3241</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Western Australia's Kimberley is under an extreme heatwave warning from 28 November to 1 December</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-53eb83a291"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-53eb83a291</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Severe conditions covered the Sydney metropolitan area, the Illawarra and the South Coast of New South Wales, with a cooler southerly change forecast for Monday 23 November. — Sources: Bureau of Meteorology severe heatwave warning for Metropolitan, Illawarra and South Coast, as reported by About Regional and News24, 21 to 22 November 2026</summary>
+    <summary type="text">The Bureau of Meteorology upgraded the Kimberley to extreme on 28 November, with severe warnings for the Pilbara, Gascoyne and North Interior. Fitzroy Crossing reached 44.8 °C on 24 November. — Sources: Bureau of Meteorology, Heatwave Warning for Western Australia IDW21013, issued 13:15 WST 28 November 2026 · Bureau of Meteorology, daily weather observations, Western Australia, 21 to 27 November 2026</summary>
   </entry>
   <entry>
-    <title>The Rhine at Kaub, Germany, fell to 202 centimetres on the morning of 27 November, after peaking at 242 centimetres on 25 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-d19b254d3d"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-d19b254d3d</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Australia's weekly El Niño ocean index rose to +2.67 °C after two weekly falls</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-2e6671e577"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-2e6671e577</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">Daily ranges were 229 to 242 cm on 25 November, 218 to 237 cm on 26 November and 202 to 218 cm in the hours to 06:15 on 27 November, a fall of 35 cm in a day. — Sources: Pegelonline, Wasserstraßen- und Schifffahrtsverwaltung des Bundes, Kaub gauge, read 27 November 2026</summary>
+    <summary type="text">The relative Niño3.4 index was +2.67 °C for 16 to 22 November, up from +2.64 °C. The Bureau of Meteorology now expects the El Niño peak in December or January. — Sources: Bureau of Meteorology, weekly relative Niño3.4 and Indian Ocean Dipole data files, read 28 November 2026 · Bureau of Meteorology, climate driver update, 24 November 2026</summary>
   </entry>
   <entry>
-    <title>San Juan, Puerto Rico, United States, set or tied daily high-temperature records on five straight days, 10 to 14 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-f0d1f09ec0"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-f0d1f09ec0</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Birdsville, Queensland, reached 46.8 °C and Jervois, Northern Territory, 45.1 °C on 22 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-313b86aff5"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-313b86aff5</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The airport reached 92 to 93 °F (33 to 34 °C), 6 to 7 °F above the normal 86 °F. Four days broke the daily record and 12 November tied the 1983 mark of 93 °F. — Sources: Airport climate station readings for San Juan, 10 to 14 November 2026, as reported by The Rio Times</summary>
+    <summary type="text">These were the highest readings in Australia for the week. — Sources: Bureau of Meteorology, daily weather observations and station climate statistics, 21 to 27 November 2026</summary>
   </entry>
   <entry>
-    <title>Weipa, Queensland, Australia, set an all-time station high of 40.4 °C on 19 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-20fda4aa6b"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-20fda4aa6b</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Brazil's electricity demand set records on three consecutive days, peaking at 108.17 gigawatts on 25 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-050e1e57eb"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-050e1e57eb</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The reading beat the town's November record of 39.9 °C set on 10 November. — Sources: Bureau of Meteorology, Weipa Aero daily weather observations, November 2026 · Bureau of Meteorology, Weipa Aero climate statistics (1992 to 2026), read 21 November 2026</summary>
+    <summary type="text">Preliminary grid-operator data show 106.61 GW on 23 November, 108.03 GW on 24 November and 108.17 GW on 25 November, the highest of 2026. The rise is attributed to heat. — Sources: Agência iNFRA, citing preliminary data from Brazil's national grid operator ONS, 26 to 27 November 2026</summary>
   </entry>
   <entry>
-    <title>Australia's weekly El Niño ocean index fell for a second week, to +2.64 °C</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4401e3f56c"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-4401e3f56c</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Sydney's severe heatwave peaked at 36.5 °C in Penrith on 22 November and set no records</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-1b7fec00b1"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-1b7fec00b1</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="climate" label="Heat &amp; climate"/>
-    <summary type="text">The relative Niño3.4 index was +2.64 °C for 9 to 15 November, after +2.75 °C and a series high of +2.88 °C. The Indian Ocean Dipole rose to +0.80 °C. — Sources: Bureau of Meteorology, weekly relative Niño3.4 and Indian Ocean Dipole data files, read 21 November 2026 · Bureau of Meteorology climate driver update, 10 November 2026</summary>
+    <summary type="text">Richmond reached 36.4 °C, Bankstown 35.2 °C and Parramatta 35.0 °C, while Observatory Hill stayed at 28.1 °C. The warmest night was 23 November, and the warning has ended. — Sources: Bureau of Meteorology, daily weather observations for Sydney stations, 21 to 23 November 2026</summary>
   </entry>
   <entry>
-    <title>Brazil's satellites counted 6,229 fire foci from 14 to 20 November, about 70 percent of them in the Amazon</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-50b4b6c4cb"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-50b4b6c4cb</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Weipa, Queensland, keeps its all-time high of 40.4 °C as the Cape York heatwave warning ends</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-12e87c9492"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-12e87c9492</id>
+    <updated>2026-11-28T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The Bureau of Meteorology cancelled the Peninsula heatwave warning on 27 November. Weipa's maxima from 21 to 27 November ranged from 36.6 to 38.5 °C, and the 40.4 °C record of 19 November stands. — Sources: Bureau of Meteorology, Weipa Aero daily weather observations, November 2026 · Bureau of Meteorology, Queensland heatwave warning cancellation, 13:31 EST 27 November 2026</summary>
+  </entry>
+  <entry>
+    <title>San Juan, Puerto Rico, United States, broke daily heat records on 25 and 26 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4c7c7d3a55"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-4c7c7d3a55</id>
+    <updated>2026-11-28T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">The airport reached 92 °F (33 °C) on 25 November, beating 90 °F from 1981, and 91 °F (33 °C) on 26 November, beating 89 °F from 2024. These follow five record days from 10 to 14 November. — Sources: NOAA Applied Climate Information System, San Juan airport station, 24 to 26 November 2026</summary>
+  </entry>
+  <entry>
+    <title>Peru's weather service issued red-level warnings for high temperatures on the coast and highlands through 2 December</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-3d4fdd232c"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-3d4fdd232c</id>
+    <updated>2026-11-28T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">Senamhi warnings 488 and 489, issued 27 November, cover higher daytime and night-time temperatures from 29 November to 2 December, after red warnings for 19 to 28 November. — Sources: Senamhi, avisos meteorológicos 476, 480, 484, 485, 488 and 489, November 2026</summary>
+  </entry>
+  <entry>
+    <title>England has hosepipe bans at 10 water companies, with reservoirs at 60.2 percent</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-205b9f1ea5"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-205b9f1ea5</id>
+    <updated>2026-11-28T06:00:00Z</updated>
+    <category term="climate" label="Heat &amp; climate"/>
+    <summary type="text">November rainfall is 61 percent of average. Severe drought continues in parts of Devon, Cornwall and Wessex and in parts of Kent, South London and the South Downs, with three drought orders pending. — Sources: Environment Agency, Dry weather and drought in England, 20 to 26 November 2026, published 27 November 2026</summary>
+  </entry>
+  <entry>
+    <title>Brazil's satellites counted 10,989 fire foci from 21 to 27 November, up 76 percent on the week before</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-fb2b3d8882"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-fb2b3d8882</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">Pará had the most, followed by Maranhão and Ceará. Daily counts ranged from 261 on 15 November to 1,681 on 19 November. — Sources: INPE daily fire foci, reference satellite, 14 to 20 November 2026</summary>
+    <summary type="text">The Amazon had 6,587 foci, the Cerrado 2,390 and the Caatinga 1,898. Pará and Maranhão led, and the daily count peaked at 2,571 on 24 November. — Sources: INPE daily fire foci, reference satellite, 21 to 27 November 2026</summary>
   </entry>
   <entry>
-    <title>A fire on the Beecroft Weapons Range in Shoalhaven, New South Wales, Australia, reached 410 hectares on 21 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-7456abe3cb"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-7456abe3cb</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>A lightning-started fire burned about 15,320 hectares on Flinders Island, Tasmania, Australia</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-4b830da298"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-4b830da298</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">It is one of eight New South Wales fires at Advice level, alongside the H Pots fire near Cessnock at 101 hectares. No total fire ban was declared for 21 or 22 November. — Sources: NSW Rural Fire Service major incidents feed, 21 November 2026</summary>
+    <summary type="text">The fire covered more than a tenth of the island and damaged or destroyed at least eight structures. An emergency warning applied from 25 November, and one firefighter was taken to hospital. — Sources: ABC News, 27 November 2026</summary>
   </entry>
   <entry>
-    <title>Western Australia issued bushfire advice for five Kimberley fires on 20 and 21 November</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-0896b9fbf1"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-0896b9fbf1</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>Indonesia's fire hotspots have moved east to Papua, with 399 counted on 28 November</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-a354316216"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-a354316216</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="fire" label="Fire"/>
-    <summary type="text">The fires are at the Mueller Ranges, Durack and Lake Argyle, the Ord River, Derby and Meda, and Stove Hill. A separate heatwave advice covers Drysdale River, Kalumburu and the Mitchell Plateau. — Sources: Department of Fire and Emergency Services Western Australia alert feed, 20 and 21 November 2026</summary>
+    <summary type="text">Daily counts ranged from 307 to about 818 during the week. Papua Selatan led on 28 November with 235, as burning shifted from Kalimantan to Papua, Sulawesi and Maluku. — Sources: SiPongi hotspot counts as reported by Databoks, 21 to 28 November 2026 · National Environment Agency Singapore, 24-hour PSI, 28 November 2026</summary>
   </entry>
   <entry>
-    <title>Indonesia counted 1,095 hotspots on 18 November, mostly in East Kalimantan, and Singapore's air stayed moderate</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-493ded7f64"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-493ded7f64</id>
-    <updated>2026-11-27T06:00:00Z</updated>
-    <category term="fire" label="Fire"/>
-    <summary type="text">The count was 1,046 on 15 November and 425 on 17 November. Singapore's 24-hour PSI peaked at 79 on 14 November and read 26 to 38 on 26 November. — Sources: Indonesia Ministry of Forestry SiPongi hotspot counts, as reported by Databoks, 15 to 18 November 2026 · National Environment Agency Singapore PSI readings, 14 to 26 November 2026</summary>
-  </entry>
-  <entry>
-    <title>Queensland, Australia, has reported one person treated for heat stress on Cape York, and publishes no hospital series</title>
-    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-45cfd5fa26"/>
-    <id>tag:infinite2142.github.io,2026-11-27:heatwatch/i-45cfd5fa26</id>
-    <updated>2026-11-27T06:00:00Z</updated>
+    <title>England's health agency estimates 5,258 heat-associated deaths in summer 2026, the highest since its records began</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-14de31e539"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-14de31e539</id>
+    <updated>2026-11-28T06:00:00Z</updated>
     <category term="health" label="Health"/>
-    <summary type="text">Queensland Health reported the case for the week to 14 November. — Sources: ABC News, 14 November 2026, quoting Queensland Health · Watchers.news, 16 November 2026, on Northern Peninsula Area water restrictions</summary>
+    <summary type="text">The UK Health Security Agency counts 5,258 deaths from May to September across seven heat episodes, against a previous high of 2,985 in 2022. The 21 to 28 June heatwave accounts for 2,401. — Sources: UK Health Security Agency, Interim heat mortality monitoring report, England: summer 2026, updated 24 November 2026</summary>
+  </entry>
+  <entry>
+    <title>Queensland, the Northern Territory and Western Australia publish no count of heat illness through this season's heatwaves</title>
+    <link rel="alternate" type="text/html" href="https://infinite2142.github.io/heatwatch/#i-35d7d8549d"/>
+    <id>tag:infinite2142.github.io,2026-11-28:heatwatch/i-35d7d8549d</id>
+    <updated>2026-11-28T06:00:00Z</updated>
+    <category term="health" label="Health"/>
+    <summary type="text">Australia's northern states and territory have had severe and extreme heatwave warnings since early October with no public series of heat-related hospital or ambulance presentations. — Sources: Bureau of Meteorology heatwave warnings for Queensland, the Northern Territory and Western Australia, October to November 2026 · ABC News, Cape York heat and housing, 14 November 2026</summary>
   </entry>
 </feed>
